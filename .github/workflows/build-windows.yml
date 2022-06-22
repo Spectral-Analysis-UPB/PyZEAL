@@ -11,11 +11,10 @@ on:
 jobs:
   build:
 
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
         python-version: ["3.8", "3.9"]
 
     steps:
@@ -30,16 +29,14 @@ jobs:
         python -m pip install flake8 pytest pylint mypy docstr-coverage
     - name: Lint with flake8 and pylint
       run: |
-        flake8 --count src/
-        flake8 --count test/test_pkg1/*.py
-        pylint --fail-under=8 src/
-        pylint --fail-under=8 test/test_pkg1/*.py
+        flake8 --count src
+        pylint --fail-under=8 src
     - name: Test with pytest
       run: |
-        pytest test/
+        pytest test
     - name: Type checking with mypy
       run: |
-        mypy src/
+        mypy src
     - name: Check docstring coverage
       run: |
-        docstr-coverage -m -f -F 80.0 src/
+        docstr-coverage -m -f -F 80.0 src
