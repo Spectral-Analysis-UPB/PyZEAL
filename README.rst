@@ -5,6 +5,9 @@ The PyZEAL numerical project
 .. image:: https://img.shields.io/badge/Language-Python-blue.svg
    :target: https://www.python.org/
 
+.. image:: https://github.com/Spectral-Analysis-UPB/PyZEAL/actions/workflows/python-packaging.yml/badge.svg
+
+
 .. image:: https://img.shields.io/badge/docs-docstr--cov-success
    :target: https://pypi.org/project/docstr-coverage/
 
