@@ -1,4 +1,4 @@
-name: Python package
+name: python-package
 
 on:
   push:
@@ -10,7 +10,8 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
