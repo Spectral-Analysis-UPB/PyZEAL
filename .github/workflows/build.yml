@@ -1,4 +1,4 @@
-name: python-package
+name: build
 
 on:
   push:
@@ -33,8 +33,8 @@ jobs:
       run: |
         flake8 --count src/
         flake8 --count test/test_pkg1/*.py
-        pylint src/
-        pylint test/test_pkg1/*.py
+        pylint --fail-under=8 src/
+        pylint --fail-under=8 test/test_pkg1/*.py
     - name: Test with pytest
       run: |
         pytest test/
