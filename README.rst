@@ -1,6 +1,6 @@
-========================
-PyZEAL numerical project
-========================
+============================
+The PyZEAL numerical project
+============================
 
 .. image:: https://img.shields.io/badge/Language-Python-blue.svg
    :target: https://www.python.org/
