@@ -18,7 +18,9 @@ jobs:
         python -m pip install .[dev]
         pyzeal
     - name: Test with pytest
+      working-directory: ./test/
       run: |
-        pytest --cov-config=./test/.coveragerc --cov-report=xml --cov=./src/ ./test/
+        pytest --cov-config=.coveragerc --cov-report=xml --cov=../src/
     - name: Upload coverage report to codecov
+      working-directory: ./test/
       uses: codecov/codecov-action@v3
