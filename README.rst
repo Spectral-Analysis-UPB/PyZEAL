@@ -8,6 +8,9 @@ The PyZEAL numerical project
 .. image:: https://github.com/Spectral-Analysis-UPB/PyZEAL/workflows/build/badge.svg
    :target: https://github.com/Spectral-Analysis-UPB/PyZEAL/actions
 
+.. image:: https://codecov.io/gh/Spectral-Analysis-UPB/PyZEAL/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/Spectral-Analysis-UPB/PyZEAL
+
 .. image:: https://img.shields.io/badge/docs-docstr--cov-success
    :target: https://pypi.org/project/docstr-coverage/
 
