@@ -19,6 +19,6 @@ jobs:
         pyzeal
     - name: Test with pytest
       run: |
-        pytest --cov .
+        pytest --cov=src/
     - name: Upload coverage report to codecov
       uses: codecov/codecov-action@v3
