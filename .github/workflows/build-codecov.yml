@@ -21,4 +21,4 @@ jobs:
       run: |
         pytest --cov-config=./test/.coveragerc --cov-report=xml --cov=./src
     - name: Upload coverage report to codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
