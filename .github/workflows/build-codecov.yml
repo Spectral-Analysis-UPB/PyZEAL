@@ -19,6 +19,6 @@ jobs:
         pyzeal
     - name: Test with pytest
       run: |
-        pytest --cov=src/
+        pytest --cov-config=./test/.coveragerc --cov-report=xml --cov=./src
     - name: Upload coverage report to codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v2

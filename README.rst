@@ -8,8 +8,8 @@ The PyZEAL numerical project
 .. image:: https://github.com/Spectral-Analysis-UPB/PyZEAL/workflows/build/badge.svg
    :target: https://github.com/Spectral-Analysis-UPB/PyZEAL/actions
 
-.. image:: https://codecov.io/gh/Spectral-Analysis-UPB/PyZEAL/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/Spectral-Analysis-UPB/PyZEAL
+.. image:: https://codecov.io/gh/Spectral-Analysis-UPB/PyZEAL/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/Spectral-Analysis-UPB/PyZEAL
 
 .. image:: https://img.shields.io/badge/docs-docstr--cov-success
    :target: https://pypi.org/project/docstr-coverage/
@@ -18,7 +18,7 @@ The PyZEAL numerical project
    :target: https://mypy.readthedocs.io/en/stable/
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/psf/black
+   :target: https://github.com/psf/black
 
 ------------------------------------------------------------------------------
 
