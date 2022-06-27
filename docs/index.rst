@@ -13,15 +13,11 @@ Welcome to PyZEAL's documentation!
 
 .. py:module:: MyIndexTest
 
-.. index:: indextest
-
-
 An Example Graphic
 ==================
 
 .. image:: ./_static/images/pic1.png
    :align: center
-
 
 Bibliography
 ============
@@ -31,11 +27,4 @@ Bibliography
 .. bibliography::
    :all:
 
-.. only:: html
-
-  -------
-  Indices
-  -------
-  * :ref:`genindex`
-  * :ref:`modindex`
-  * :ref:`search`
+.. index:: index_test

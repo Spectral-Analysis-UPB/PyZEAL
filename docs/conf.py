@@ -7,16 +7,19 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+import importlib.metadata
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'PyZEAL'
-copyright = '2022, Javier Echevarria Cuesta, Philipp Schuette'
-author = 'Javier Echevarria Cuesta and Philipp Schuette'
+copyright = '2022, Philipp Schuette'
+author = 'Philipp Schuette'
 
+# The short X.Y version
+version = importlib.metadata.version("pyzeal")
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = importlib.metadata.version("pyzeal")
 
 
 # -- General configuration ---------------------------------------------------
@@ -48,8 +51,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 html_theme = 'classic'
 html_theme_options = {
-    "rightsidebar": "false",
-    "relbarbgcolor": "black"
+    "relbarbgcolor": "green",
+    "footerbgcolor": "black",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
