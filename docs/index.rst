@@ -8,6 +8,7 @@ Welcome to PyZEAL's documentation!
 
    intro
    pkg1_example
+   theoretical_background
 
 --------------------------------
 
