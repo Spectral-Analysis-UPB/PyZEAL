@@ -1,3 +1,9 @@
+# VSCode configuration file
+.vscode
+
+# asv files which can be reproduced from the database
+.asv/html/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
