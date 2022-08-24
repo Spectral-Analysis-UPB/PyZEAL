@@ -1,0 +1,9 @@
+{
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) W-2125 CPU @ 4.00GHz",
+    "machine": "spta-pc-schuett",
+    "num_cpu": "8",
+    "os": "Linux 5.2.2-050202-generic",
+    "ram": "131693172",
+    "version": 1
+}

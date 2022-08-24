@@ -15,8 +15,10 @@ lint:
 	@docstr-coverage -m -f -F 80.0 py_src
 
 clean:
-	@rm -rf src/pkg1/__pycache__
-	@rm -rf test/pkg1/__pycache__
+	@rm -rf src/*/__pycache__
+	@rm -rf test/*/__pycache__
+	@rm -rf benchmarks/__pycache__
+	@rm -rf src/__pycache__
 	@rm -rf docs/_build/html/
 	@rm -rf docs/_build/doctrees
 	@rm -rf src/*.egg-info/
@@ -24,8 +26,8 @@ clean:
 	@rm -rf ./logs/
 	@rm -rf ./build/
 	@rm -rf .hypothesis/
-	@rm -rf src/pkg1/.hypothesis/
-	@rm -rf test/pkg1/.hypothesis/
+	@rm -rf src/*/.hypothesis/
+	@rm -rf test/*/.hypothesis/
 	@rm -rf dist/
 
 %: Makefile

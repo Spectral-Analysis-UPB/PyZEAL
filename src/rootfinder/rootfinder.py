@@ -17,9 +17,14 @@ class RootFinder(ABC):
     r"""
     Base interface for class implementations of root finding algorithms.
     """
+
     @abstractmethod
-    def calcRoots(self, reRan: Tuple[float, float], imRan: Tuple[float, float],
-                  epsCplx: Optional[complex]) -> None:
+    def calcRoots(
+        self,
+        reRan: Tuple[float, float],
+        imRan: Tuple[float, float],
+        epsCplx: Optional[complex],
+    ) -> None:
         r"""
         Calculate roots in the rectangle `reRan x imRan` up to accurancy
         `epsCplx` in real and imaginary part.
