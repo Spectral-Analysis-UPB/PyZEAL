@@ -244,7 +244,8 @@ good-names=i, j, k, n, s,
            x, y, z, x0, x1, x2, y0, y1, y2, z0, z1, z2, xx, yy, zz,
            g, ax, cT,
            aZ, bZ, cZ, dZ, a, a1, a2, b, b1, b2, c, c1, c2, d, d0,
-           r, t, u, m, ud, md, td,
+           r, t, u, v, m, ud, md, td,
+           f, df,
            ex, Run, _
 
 # Good variable names regexes, separated by a comma. If names match any regex,

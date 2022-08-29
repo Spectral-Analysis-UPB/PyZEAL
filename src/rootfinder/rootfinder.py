@@ -7,7 +7,7 @@ Authors:\n
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple
+from typing import Tuple
 
 from numpy import complex128
 from numpy.typing import NDArray
@@ -23,20 +23,20 @@ class RootFinder(ABC):
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
-        epsCplx: Optional[complex],
+        precision: Tuple[int, int]
     ) -> None:
         r"""
         Calculate roots in the rectangle `reRan x imRan` up to accurancy
-        `epsCplx` in real and imaginary part.
+        `precision` in real and imaginary part.
 
         :param reRan: boundaries of calculation rectangle in real direction
         :type reRan: Tuple[float, float]
         :param imRan: boundaries of calculation rectangle in imaginary
             direction
         :type imRan: Tuple[float, float]
-        :param epsCplx: accuracy of root calculation in real and imaginary
-            directions, re-uses last value if `None`
-        :type epsCplx: Optional[complex]
+        :param precision: accuracy of root calculation in real and imaginary
+            directions in terms of decimal places
+        :type precision: Tuple[int, int]
         """
 
     @abstractmethod
