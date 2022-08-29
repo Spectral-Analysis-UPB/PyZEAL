@@ -5,6 +5,9 @@ The PyZEAL numerical project
 .. image:: https://img.shields.io/badge/Language-Python-blue.svg
    :target: https://www.python.org/
 
+.. image:: http://img.shields.io/badge/benchmarked%20by-asv-blue.svg?style=flat
+   :target: https://github.com/Spectral-Analysis-UPB/PyZEAL
+
 .. image:: https://img.shields.io/github/v/release/Spectral-Analysis-UPB/PyZEAL
    :target: https://github.com/Spectral-Analysis-UPB/PyZEAL
 
@@ -52,11 +55,19 @@ Then you can simply use ``pip`` to install the package via
 
   $ python3 -m pip install -e .[dev]
 
-locally in editable mode (``-e``) and including all requirements necessary for development (``[dev``).
+locally in editable mode (``-e``) and including all requirements necessary for development (``[dev]``).
 The latter are optional and can be skipped if you just want to use **PyZEAL** as a third-party module in your own applications.
 
 -----------
 Basic Usage
 -----------
 
+Coming Soon!
 
+------------
+Contributing
+------------
+
+If you would like to contribute anything from an improvement of the documentation, a new feature request, bug report or (parts of) a root finding algorithm,
+please feel free to do so.
+Any collaborations are welcome and the documentation or the open issues might be a good place to start.
