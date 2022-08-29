@@ -5,6 +5,5 @@ functionality will be added in the future.
 
 
 def greeting() -> None:
-    "This functions does nothing useful yet."
-    print("Welcome to PyZEAL!\n",
-          "At the moment there are no CLI functions available...")
+    r"This functions does nothing useful yet."
+    print("Welcome to PyZEAL!\nAt the moment there are no CLI functions...")

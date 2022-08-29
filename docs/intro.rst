@@ -1,7 +1,7 @@
 .. _intro:
 
-Introduction to PyZEAL's Documentation
-======================================
+Introduction, Goals of PyZEAL and Installation
+==============================================
 
 **PyZEAL** aims to provide facilities for the calculation of zeros and poles of holomorphic and
 meromorphic functions. While there exists a wealth of theoretical results as well as battle-hardened
@@ -20,3 +20,7 @@ background or practical implementation.
 
 For more information on the theoretical underpinning of the algorithms currently implemented, see the
 :ref:`theoretical_background` page.
+
+------------
+Installation
+------------

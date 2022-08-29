@@ -23,7 +23,7 @@ class RootFinder(ABC):
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
-        precision: Tuple[int, int]
+        precision: Tuple[int, int],
     ) -> None:
         r"""
         Calculate roots in the rectangle `reRan x imRan` up to accurancy

@@ -14,7 +14,7 @@ from numpy.typing import NDArray
 import numpy as np
 import scipy as sp
 
-from rootfinder.rootfinder import RootFinder
+from rootfinder.finder_interface import RootFinder
 
 
 class NewtonGridRootFinder(RootFinder):
@@ -29,7 +29,7 @@ class NewtonGridRootFinder(RootFinder):
         self,
         f: Callable[[float], float],
         df: Callable[[float], float],
-        numSamplePoints: int = 50
+        numSamplePoints: int = 50,
     ) -> None:
         r"""
         Initialize a root finder which searches for roots of a given function
@@ -51,26 +51,28 @@ class NewtonGridRootFinder(RootFinder):
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
-        precision: Tuple[int, int] = (6, 6)
+        precision: Tuple[int, int] = (6, 6),
     ) -> None:
         r"""
         Calculate roots in the rectangle `reRan x imRan` up to accurancy
         `precision` in real and imaginary part.
         """
-        rePoints = np.linspace(reRan[0], reRan[1], self.numSamplePoints,
-                               dtype=complex128)
-        imPoints = np.linspace(imRan[0], imRan[1], self.numSamplePoints,
-                               dtype=complex128)
+        rePoints = np.linspace(
+            reRan[0], reRan[1], self.numSamplePoints, dtype=complex128
+        )
+        imPoints = np.linspace(
+            imRan[0], imRan[1], self.numSamplePoints, dtype=complex128
+        )
         roots: Set[complex] = set()
         for real in rePoints:
             for imag in imPoints:
                 try:
                     result = sp.optimize.newton(
-                        self.f, real + imag*1j, self.df
+                        self.f, real + imag * 1j, self.df
                     )
                     roots.add(
                         round(result.real, precision[0])
-                        + round(result.imag, precision[1])
+                        + round(result.imag, precision[1]) * 1j
                     )
                 except RuntimeError:
                     pass
@@ -80,10 +82,13 @@ class NewtonGridRootFinder(RootFinder):
             u, v = z.real, z.imag
             return reRan[0] <= u <= reRan[1] and imRan[0] <= v <= imRan[1]
 
-        self._roots = np.array((root for root in roots if _inside(root)),
-                               dtype=complex128)
+        self._roots = np.array(
+            [root for root in roots if _inside(root)], dtype=complex128
+        )
 
     def getRoots(self) -> NDArray[complex128]:
-        if self._roots:
-            return self._roots
-        raise ValueError("Must calculate roots first before retrieving them!")
+        if self._roots is None:
+            raise ValueError(
+                "Must calculate roots first before retrieving them!"
+            )
+        return self._roots
