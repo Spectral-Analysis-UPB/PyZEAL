@@ -7,6 +7,7 @@ Authors:\n
 
 from typing import Callable, List, Tuple
 import numpy as np
+import pytest
 
 from rootfinder.newton_grid import NewtonGridRootFinder
 
@@ -47,3 +48,8 @@ def test_newton_grid_rootfinder() -> None:
         foundRoots = np.sort_complex(gridRF.getRoots())
         expectedRoots = np.sort_complex(np.array(tCase[2]))
         assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
+
+    # Test exception throwing
+    gridRF = NewtonGridRootFinder(lambda x: x, lambda x: 1)
+    with pytest.raises(ValueError):
+        gridRF.getRoots()
