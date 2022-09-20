@@ -1,8 +1,8 @@
 {
-    "benchmarksRootfinding.RootfindingSuite.TimeNewtonGridRootfinder": {
-        "code": "class RootfindingSuite:\n    def TimeNewtonGridRootfinder(self):\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
+    "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinder": {
+        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinder(self):\n        \"\"\" \"\"\"\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
         "min_run_count": 2,
-        "name": "benchmarksRootfinding.RootfindingSuite.TimeNewtonGridRootfinder",
+        "name": "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinder",
         "number": 0,
         "param_names": [],
         "params": [],
@@ -12,13 +12,13 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "dde28cde14b485d9a65ccfb35dfb608f38f6dc6b4df7ad58244d70dc1dfa611c",
+        "version": "2b0c3568ec477583ed94762567127f31c8a91625155de364a42ea3ecb7d06d2f",
         "warmup_time": -1
     },
-    "benchmarksRootfinding.RootfindingSuite.TimeNewtonGridRootfinderDerivativeFree": {
-        "code": "class RootfindingSuite:\n    def TimeNewtonGridRootfinderDerivativeFree(self):\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
+    "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinderDerivativeFree": {
+        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinderDerivativeFree(self):\n        \"\"\" \"\"\"\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
         "min_run_count": 2,
-        "name": "benchmarksRootfinding.RootfindingSuite.TimeNewtonGridRootfinderDerivativeFree",
+        "name": "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinderDerivativeFree",
         "number": 0,
         "param_names": [],
         "params": [],
@@ -28,7 +28,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "6fbbdae73d05b6d445b1aaf9ce6a927fc159cbf8bb7d128c9b762428a04cbb89",
+        "version": "06bcfda726c3f2726e05b07c4dfdfab9c393ecde0f8efc6104f10ce8b1d58235",
         "warmup_time": -1
     },
     "version": 2

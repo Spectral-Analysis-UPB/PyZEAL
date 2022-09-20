@@ -33,6 +33,7 @@ jobs:
       run: |
         flake8 --count src/
         flake8 --count test/
+        flake8 --count benchmarks/
         pylint --fail-under=8 src/
         pylint --fail-under=8 test/
     - name: Test with pytest
@@ -41,6 +42,10 @@ jobs:
     - name: Type checking with mypy
       run: |
         mypy src/
+        mypy test/
+        mypy benchmarks/
     - name: Check docstring coverage
       run: |
         docstr-coverage -m -f -F 80.0 src/
+        docstr-coverage -m -f -F 90.0 test/
+        docstr-coverage -m -f -F 90.0 benchmarks/

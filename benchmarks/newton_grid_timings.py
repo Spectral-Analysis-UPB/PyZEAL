@@ -1,7 +1,18 @@
+"""
+Timing benchmark suite for the NewtonGrid root finder strategy.
+"""
+
 import numpy as np
 from rootfinder.newton_grid import NewtonGridRootFinder
 
-class RootfindingSuite:
+
+class NewtonGridSuite:
+    """
+    Timing benchmarks for `NewtonGridRootFinder`.
+
+    Includes simple polynomials and trigonometric functions.
+    """
+
     testSuite = [
         (lambda x: x**2 - 1, lambda x: 2 * x, [-1, 1]),
         (lambda x: x**2 + 1, lambda x: 2 * x, [1j, -1j]),
@@ -22,11 +33,13 @@ class RootfindingSuite:
     ]
 
     def TimeNewtonGridRootfinder(self):
+        """ """
         for tCase in self.testSuite:
             gridRF = NewtonGridRootFinder(tCase[0], tCase[1])
             gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
-    
+
     def TimeNewtonGridRootfinderDerivativeFree(self):
+        """ """
         for tCase in self.testSuite:
             gridRF = NewtonGridRootFinder(tCase[0], tCase[1])
             gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
