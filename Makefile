@@ -16,7 +16,7 @@ lint:
 
 clean:
 	@rm -rf src/*/__pycache__
-	@rm -rf test/*/__pycache__
+	@rm -rf test/__pycache__
 	@rm -rf benchmarks/__pycache__
 	@rm -rf src/__pycache__
 	@rm -rf docs/_build/html/

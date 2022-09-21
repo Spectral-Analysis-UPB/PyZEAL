@@ -53,10 +53,6 @@ class NewtonGridRootFinder(RootFinder):
         imRan: Tuple[float, float],
         precision: Tuple[int, int] = (6, 6),
     ) -> None:
-        r"""
-        Calculate roots in the rectangle `reRan x imRan` up to accurancy
-        `precision` in real and imaginary part.
-        """
         rePoints = np.linspace(
             reRan[0], reRan[1], self.numSamplePoints, dtype=complex128
         )
