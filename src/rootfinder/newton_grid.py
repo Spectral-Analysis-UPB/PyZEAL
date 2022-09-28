@@ -1,7 +1,7 @@
 """
 Module newton_grid of the rootfinder package.
 This module contains a simple root finder implementation for holomorphic
-functions base on the Newton algorithm.
+functions based on the Newton algorithm.
 
 Authors:\n
 - Luca Wasmuth\n
@@ -78,8 +78,14 @@ class NewtonGridRootFinder(RootFinder):
             u, v = z.real, z.imag
             return reRan[0] <= u <= reRan[1] and imRan[0] <= v <= imRan[1]
 
+        def _closeToZero(z: complex) -> bool:
+            "Filter predicate to ensure that the results are actually close to zero."
+            # 0.1 is an arbitrary constant that works for all tests
+            return np.abs(self.f(z)) < 0.1 
+
         self._roots = np.array(
-            [root for root in roots if _inside(root)], dtype=complex128
+            [root for root in roots if _inside(root) and _closeToZero(root)],
+            dtype=complex128
         )
 
     def getRoots(self) -> NDArray[complex128]:

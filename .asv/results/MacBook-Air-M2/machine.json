@@ -1,0 +1,9 @@
+{
+    "arch": "arm64",
+    "cpu": "Apple M2",
+    "machine": "MacBook-Air-M2",
+    "num_cpu": "8",
+    "os": "Darwin 21.6.0",
+    "ram": "8GB",
+    "version": 1
+}

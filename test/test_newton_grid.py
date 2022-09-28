@@ -114,27 +114,59 @@ elementaryFunctions = [
     )
 ]
 
-def test_newton_grid_rootfinder() -> None:
+# 20 is enough to pass all tests, while running faster than the default 50
+NUM_SAMPLE_POINTS = 20
+
+@pytest.mark.parametrize("testCase", polynomialFunctions)
+def testNewtonGridRootFinderPolynomials(testCase) -> None:
     r"""
-    Run tests for the Newton-based root finder on a grid.
+    Test the Newton-Grid-Rootfinder with polynomial functions.
     """
-    for tCase in polynomialFunctions:
-        gridRF = NewtonGridRootFinder(tCase[0], tCase[1])
-        gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    gridRF = NewtonGridRootFinder(testCase[0], testCase[1], numSamplePoints=NUM_SAMPLE_POINTS)
+    gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    foundRoots = np.sort_complex(gridRF.getRoots())
+    expectedRoots = np.sort_complex(np.array(testCase[2]))
+    assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
 
-        foundRoots = np.sort_complex(gridRF.getRoots())
-        expectedRoots = np.sort_complex(np.array(tCase[2]))
-        assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
+@pytest.mark.parametrize("testCase", elementaryFunctions)
+def testNewtonGridRootFinderElementaryFunctions(testCase) -> None:
+    r"""
+    Test the Newton-Grid-Rootfinder with elementary functions.
+    """
+    gridRF = NewtonGridRootFinder(testCase[0], testCase[1], numSamplePoints=NUM_SAMPLE_POINTS)
+    gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    foundRoots = np.sort_complex(gridRF.getRoots())
+    expectedRoots = np.sort_complex(np.array(testCase[2]))
+    assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
 
-    for tCase in elementaryFunctions:
-        gridRF = NewtonGridRootFinder(tCase[0], tCase[1])
-        gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
-
-        foundRoots = np.sort_complex(gridRF.getRoots())
-        expectedRoots = np.sort_complex(np.array(tCase[2]))
-        assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
-
-    # Test exception throwing
+def testNewtonGridRootFinderException() -> None:
+    r"""
+    Test correct exception handling of the Newton-Grid-Rootfinder.
+    """
     gridRF = NewtonGridRootFinder(lambda x: x, lambda x: 1)
     with pytest.raises(ValueError):
         gridRF.getRoots()
+
+@pytest.mark.parametrize("testCase", polynomialFunctions)
+def testNewtonGridRootFinderPolynomialDerivativefree(testCase) -> None:
+    r"""
+    Test the Newton-Grid-Rootfinder using the derivative-free algorithm with
+    polynomial functions.
+    """
+    gridRF = NewtonGridRootFinder(testCase[0], df=None, numSamplePoints=NUM_SAMPLE_POINTS)
+    gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    foundRoots = np.sort_complex(gridRF.getRoots())
+    expectedRoots = np.sort_complex(np.array(testCase[2]))
+    assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
+
+@pytest.mark.parametrize("testCase", elementaryFunctions)
+def testNewtonGridRootFinderElementaryDerivativefree(testCase) -> None:
+    r"""
+    Test the Newton-Grid-Rootfinder using the derivative-free algorithm with
+    elementary functions.
+    """
+    gridRF = NewtonGridRootFinder(testCase[0], df=None, numSamplePoints=NUM_SAMPLE_POINTS)
+    gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    foundRoots = np.sort_complex(gridRF.getRoots())
+    expectedRoots = np.sort_complex(np.array(testCase[2]))
+    assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
