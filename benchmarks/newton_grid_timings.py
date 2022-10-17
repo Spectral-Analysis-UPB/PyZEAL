@@ -32,14 +32,19 @@ class NewtonGridSuite:
         ),
     ]
 
-    def TimeNewtonGridRootfinder(self):
-        """ """
+    def TimeNewtonGridRootfinder(self) -> None:
+        r"""
+        Runs the normal version of the rootfinding algorithm for all
+        test cases
+        """
         for tCase in self.testSuite:
             gridRF = NewtonGridRootFinder(tCase[0], tCase[1])
             gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
 
-    def TimeNewtonGridRootfinderDerivativeFree(self):
-        """ """
+    def TimeNewtonGridRootfinderDerivativeFree(self) -> None:
+        r"""
+        Runs the derivative-free version of the algorithm
+        """
         for tCase in self.testSuite:
             gridRF = NewtonGridRootFinder(tCase[0], tCase[1])
             gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
