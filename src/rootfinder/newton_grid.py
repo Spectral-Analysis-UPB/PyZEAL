@@ -66,6 +66,9 @@ class NewtonGridRootFinder(RootFinder):
                     result = sp.optimize.newton(
                         self.f, real + imag * 1j, self.df
                     )
+                    # If JAX is used to compute the derivative, the result
+                    # will have type DeviceArray
+                    result = complex(result)
                     roots.add(
                         round(result.real, precision[0])
                         + round(result.imag, precision[1]) * 1j
@@ -79,13 +82,14 @@ class NewtonGridRootFinder(RootFinder):
             return reRan[0] <= u <= reRan[1] and imRan[0] <= v <= imRan[1]
 
         def _closeToZero(z: complex) -> bool:
-            "Filter predicate to ensure that the results are actually close to zero."
+            r"""Filter predicate to ensure that the results are actually
+            close to zero, as scipy sometimes returns incorrect results"""
             # 0.1 is an arbitrary constant that works for all tests
-            return np.abs(self.f(z)) < 0.1 
+            return np.abs(self.f(z)) < 0.1
 
         self._roots = np.array(
             [root for root in roots if _inside(root) and _closeToZero(root)],
-            dtype=complex128
+            dtype=complex128,
         )
 
     def getRoots(self) -> NDArray[complex128]:
