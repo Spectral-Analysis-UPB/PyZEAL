@@ -1,6 +1,6 @@
 {
     "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinder": {
-        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinder(self):\n        \"\"\" \"\"\"\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
+        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinder(self) -> None:\n        r\"\"\"\n        Runs the normal version of the rootfinding algorithm for all\n        test cases\n        \"\"\"\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
         "min_run_count": 2,
         "name": "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinder",
         "number": 0,
@@ -12,11 +12,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "2b0c3568ec477583ed94762567127f31c8a91625155de364a42ea3ecb7d06d2f",
+        "version": "cf56d5aa28ac8de970d86ffc791c1301d1dac046725c8c4dd816117eb41928cc",
         "warmup_time": -1
     },
     "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinderDerivativeFree": {
-        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinderDerivativeFree(self):\n        \"\"\" \"\"\"\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
+        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinderDerivativeFree(self) -> None:\n        r\"\"\"\n        Runs the derivative-free version of the algorithm\n        \"\"\"\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
         "min_run_count": 2,
         "name": "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinderDerivativeFree",
         "number": 0,
@@ -28,7 +28,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "06bcfda726c3f2726e05b07c4dfdfab9c393ecde0f8efc6104f10ce8b1d58235",
+        "version": "c6fad9228cc004fe92834c1603e341fcb853d3e691fcd2e2d277ff37e8bdb46c",
         "warmup_time": -1
     },
     "version": 2
