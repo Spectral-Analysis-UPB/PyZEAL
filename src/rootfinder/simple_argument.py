@@ -18,8 +18,14 @@ import numpy as np
 from rich.progress import Progress, TaskID, SpinnerColumn, TimeElapsedColumn
 from scipy.optimize import newton
 
-from custom_types.root_types import (tErrVec, tQueue, tRecGrid, tResVec, tVec,
-                                     MyManager)
+from custom_types.root_types import (
+    tErrVec,
+    tQueue,
+    tRecGrid,
+    tResVec,
+    tVec,
+    MyManager,
+)
 from utils.filter_roots import filterCoincidingRoots
 
 
@@ -516,7 +522,7 @@ class HoloRootFinder:
                 Tuple[float, float],
                 tQueue,
                 Progress,
-                TaskID
+                TaskID,
             ]
         ] = []
         # initialize result queue for subprocesses to put results into
@@ -529,9 +535,7 @@ class HoloRootFinder:
         x1, x2 = x1 - self.epsCplx.real, x2 + 2 * self.epsCplx.real
         y1, y2 = y1 - 3 * self.epsCplx.imag, y2 + 4 * self.epsCplx.imag
         recNum: Final[int] = 1
-        imagPts = np.linspace(
-            y1, y2, num=recNum * CPU_COUNT + 1
-        )
+        imagPts = np.linspace(y1, y2, num=recNum * CPU_COUNT + 1)
 
         MyManager.register("Progress", Progress)
         with MyManager() as manager:

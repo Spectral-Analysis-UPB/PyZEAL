@@ -17,15 +17,19 @@ tScal = Union[float, complex]
 tVec = NDArray[np.complex128]
 
 # types used for rootfinder results and internally
-tRecGrid = Tuple[NDArray[np.complex128], NDArray[np.complex128],
-                 NDArray[np.complex128], NDArray[np.complex128]]
+tRecGrid = Tuple[
+    NDArray[np.complex128],
+    NDArray[np.complex128],
+    NDArray[np.complex128],
+    NDArray[np.complex128],
+]
 
 tResVec = Union[List[Tuple[tScal, int]], tVec]
 tErrVec = Union[List[tScal], tVec]
 
 
 # typed queues to be used for message passing with multiprocessing.Queue
-class tQueue():
+class tQueue:
     r"""
     Queue that stores tuples of the form (root: complex, order: int).
     """
