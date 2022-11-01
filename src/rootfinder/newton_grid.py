@@ -68,6 +68,7 @@ class NewtonGridRootFinder(RootFinder):
                 result = sp.optimize.newton(
                     self.f, start[0] + start[1] * 1j, self.df
                 )
+                result = complex(result)
                 return (
                     round(result.real, precision[0])
                     + round(result.imag, precision[1]) * 1j
