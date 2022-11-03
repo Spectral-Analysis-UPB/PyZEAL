@@ -60,7 +60,9 @@ class NewtonGridRootFinder(RootFinder):
         imPoints = np.linspace(
             imRan[0], imRan[1], self.numSamplePoints, dtype=complex128
         )
-        points = [x+y*1j for (x,y) in itertools.product(rePoints, imPoints)]
+        points = [
+            x + y * 1j for (x, y) in itertools.product(rePoints, imPoints)
+        ]
         roots: Set[complex] = set()
         try:
             result = sp.optimize.newton(self.f, points, self.df)

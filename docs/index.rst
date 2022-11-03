@@ -9,6 +9,7 @@ Welcome to PyZEAL's documentation!
    intro
    theoretical_background
    rootfinder
+   automaticDifferentiation
 
 --------------------------------
 
