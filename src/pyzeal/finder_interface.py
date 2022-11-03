@@ -1,5 +1,5 @@
 """
-Module rootfinder of the rootfinder package.
+Module rootfinder of the pyzeal package.
 This module contains the base interface for all rootfinder implementations.
 
 Authors:\n

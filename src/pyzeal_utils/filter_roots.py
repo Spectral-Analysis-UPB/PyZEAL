@@ -13,7 +13,7 @@ from typing import Tuple
 
 import numpy as np
 
-from custom_types.root_types import tErrVec, tResVec
+from pyzeal_types.root_types import tErrVec, tResVec
 
 
 def filterCoincidingRoots(

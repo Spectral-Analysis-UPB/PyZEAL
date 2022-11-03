@@ -3,7 +3,7 @@ Timing benchmark suite for the NewtonGrid root finder strategy.
 """
 
 import numpy as np
-from rootfinder.newton_grid import NewtonGridRootFinder
+from pyzeal.newton_grid import NewtonGridRootFinder
 
 
 class NewtonGridSuite:

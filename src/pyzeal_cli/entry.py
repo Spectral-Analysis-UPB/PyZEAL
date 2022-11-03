@@ -1,5 +1,5 @@
 """
-This module provides a simple CLI entry point called `pyzeal`. More
+This module provides a simple CLI entry point called `greeting`. More
 functionality will be added in the future.
 """
 

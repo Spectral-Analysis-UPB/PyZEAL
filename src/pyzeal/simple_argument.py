@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Module simple_argument.py of the rootfinder package.
+Module simple_argument.py of the pyzeal package.
 This module contains a simple implementation of a root finder based on the
 argument principle and integration of the logarithmic derivative by calculating
 the total change in argument along a curve.
@@ -18,7 +18,8 @@ import numpy as np
 from rich.progress import Progress, TaskID, SpinnerColumn, TimeElapsedColumn
 from scipy.optimize import newton
 
-from custom_types.root_types import (
+from pyzeal_logging.logger import initLogger
+from pyzeal_types.root_types import (
     tErrVec,
     tQueue,
     tRecGrid,
@@ -26,7 +27,14 @@ from custom_types.root_types import (
     tVec,
     MyManager,
 )
-from utils.filter_roots import filterCoincidingRoots
+from pyzeal_utils.filter_roots import filterCoincidingRoots
+
+
+#################
+# Logging Setup #
+#################
+
+logger = initLogger("simple_argument")
 
 
 ####################

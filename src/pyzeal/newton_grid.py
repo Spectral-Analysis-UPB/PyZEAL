@@ -1,5 +1,5 @@
 """
-Module newton_grid of the rootfinder package.
+Module newton_grid of the pyzeal package.
 This module contains a simple root finder implementation for holomorphic
 functions based on the Newton algorithm.
 
@@ -15,7 +15,7 @@ from numpy.typing import NDArray
 import numpy as np
 import scipy as sp
 
-from rootfinder.finder_interface import RootFinder
+from pyzeal.finder_interface import RootFinder
 
 
 class NewtonGridRootFinder(RootFinder):
@@ -28,8 +28,8 @@ class NewtonGridRootFinder(RootFinder):
 
     def __init__(
         self,
-        f: Callable[[float], float],
-        df: Callable[[float], float],
+        f: Callable[[complex], complex],
+        df: Callable[[complex], complex],
         numSamplePoints: int = 50,
     ) -> None:
         r"""
@@ -38,13 +38,13 @@ class NewtonGridRootFinder(RootFinder):
         grid.
 
         :param f: differentiable function
-        :type f: Callable[[float], float]
+        :type f: Callable[[complex], complex]
         :param df: derivative of f
-        :type df: Callable[[float], float]
+        :type df: Callable[[complex], complex]
         """
         super().__init__()
-        self.f: Callable[[float], float] = f
-        self.df: Callable[[float], float] = df
+        self.f = f
+        self.df = df
         self.numSamplePoints = numSamplePoints
         self._roots: Optional[NDArray[complex128]] = None
 
@@ -83,7 +83,7 @@ class NewtonGridRootFinder(RootFinder):
             r"""Filter predicate to ensure that the results are actually
             close to zero, as scipy sometimes returns incorrect results"""
             # 0.1 is an arbitrary constant that works for all tests
-            return np.abs(self.f(z)) < 0.1
+            return abs(self.f(z)) < 0.1
 
         self._roots = np.array(
             [root for root in roots if _inside(root) and _closeToZero(root)],

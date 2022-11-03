@@ -11,7 +11,7 @@ import pytest
 
 from hypothesis import given, strategies, settings
 from numpy.polynomial import Polynomial
-from rootfinder.newton_grid import NewtonGridRootFinder
+from pyzeal.newton_grid import NewtonGridRootFinder
 
 polynomialFunctions = [
     (lambda x: x**2 - 1, lambda x: 2 * x, [-1, 1]),
