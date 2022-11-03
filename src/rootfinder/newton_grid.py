@@ -8,13 +8,12 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from pathos.pools import ProcessPool
+import itertools
 from typing import Callable, Optional, Set, Tuple
 from numpy import complex128
 from numpy.typing import NDArray
 import numpy as np
 import scipy as sp
-import itertools
 
 from rootfinder.finder_interface import RootFinder
 
@@ -61,26 +60,17 @@ class NewtonGridRootFinder(RootFinder):
         imPoints = np.linspace(
             imRan[0], imRan[1], self.numSamplePoints, dtype=complex128
         )
+        points = [x+y*1j for (x,y) in itertools.product(rePoints, imPoints)]
         roots: Set[complex] = set()
-
-        def _runNewton(start: Tuple[float, float]) -> Optional[complex]:
-            try:
-                result = sp.optimize.newton(
-                    self.f, start[0] + start[1] * 1j, self.df
+        try:
+            result = sp.optimize.newton(self.f, points, self.df)
+            for r in result:
+                roots.add(
+                    round(r.real, precision[0])
+                    + round(r.imag, precision[1]) * 1j
                 )
-                result = complex(result)
-                return (
-                    round(result.real, precision[0])
-                    + round(result.imag, precision[1]) * 1j
-                )
-            except RuntimeError:
-                return None
-
-        pool = ProcessPool()
-        result = pool.map(_runNewton, itertools.product(rePoints, imPoints))
-        for res in result:
-            if res is not None:
-                roots.add(res)
+        except RuntimeError:
+            pass
 
         def _inside(z: complex) -> bool:
             "Filter predicate to determine points inside the search area."
