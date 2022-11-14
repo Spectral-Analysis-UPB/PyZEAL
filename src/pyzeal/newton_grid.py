@@ -72,7 +72,7 @@ class NewtonGridRootFinder(RootFinder):
                 rootList = p.starmap(
                     self.runNewton, [(batch, precision) for batch in batches]
                 )
-            roots = {r for rootset in rootList for r in rootset}
+                roots = {r for rootset in rootList for r in rootset}
         else:
             roots = self.runNewton(points, precision)
 

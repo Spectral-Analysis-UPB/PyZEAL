@@ -99,17 +99,6 @@ elementaryFunctions = [
 NUM_SAMPLE_POINTS = 20
 
 
-def distestNewtonGridPolynomialsNew() -> None:
-    for n in range(len(polynomialFunctions)):
-        gridRF = NewtonGridRootFinder(
-            partial(polynomial, n), partial(polynomialD, n), numSamplePoints=50
-        )
-        gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
-        foundRoots = np.sort_complex(gridRF.getRoots())
-        expectedRoots = np.sort_complex(np.array(polynomialFunctions[1][2]))
-        print(foundRoots, expectedRoots)
-
-
 @pytest.mark.parametrize("testID", range(len(polynomialFunctions)))
 def testNewtonGridRootFinderPolynomials(testID) -> None:
     r"""
@@ -120,20 +109,21 @@ def testNewtonGridRootFinderPolynomials(testID) -> None:
         partial(polynomialD, testID),
         polynomialFunctions[testID][2],
     ]
-    gridRF = NewtonGridRootFinder(
-        testCase[0], testCase[1], numSamplePoints=NUM_SAMPLE_POINTS
-    )
-    gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
-    print(gridRF.getRoots())
-    foundRoots = np.sort_complex(gridRF.getRoots())
-    expectedRoots = np.sort_complex(np.array(testCase[2]))
-    # First variant fails 1 test, second fails 3 tests
-    # However, these seem to be different ones
-    # assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
-    # assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
-    assert np.allclose(
-        foundRoots, expectedRoots, atol=1e-3
-    ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
+    for numSamplePoints in [20, 50, 100]:
+        gridRF = NewtonGridRootFinder(
+            testCase[0], testCase[1], numSamplePoints=numSamplePoints
+        )
+        gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+        print(gridRF.getRoots())
+        foundRoots = np.sort_complex(gridRF.getRoots())
+        expectedRoots = np.sort_complex(np.array(testCase[2]))
+        # First variant fails 1 test, second fails 3 tests
+        # However, these seem to be different ones
+        # assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
+        # assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
+        assert np.allclose(
+            foundRoots, expectedRoots, atol=1e-3
+        ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
 
 
 @pytest.mark.parametrize("testID", range(len(elementaryFunctions)))
