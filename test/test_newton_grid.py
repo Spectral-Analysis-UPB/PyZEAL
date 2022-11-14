@@ -6,12 +6,30 @@ Authors:\n
 """
 
 from datetime import timedelta
+from functools import partial
 import numpy as np
 import pytest
 
 from hypothesis import given, strategies, settings
 from numpy.polynomial import Polynomial
 from pyzeal.newton_grid import NewtonGridRootFinder
+
+
+def polynomial(n, x):
+    return polynomialFunctions[n][0](x)
+
+
+def polynomialD(n, x):
+    return polynomialFunctions[n][1](x)
+
+
+def elementary(n, x):
+    return elementaryFunctions[n][0](x)
+
+
+def elementaryD(n, x):
+    return elementaryFunctions[n][1](x)
+
 
 polynomialFunctions = [
     (lambda x: x**2 - 1, lambda x: 2 * x, [-1, 1]),
@@ -81,15 +99,32 @@ elementaryFunctions = [
 NUM_SAMPLE_POINTS = 20
 
 
-@pytest.mark.parametrize("testCase", polynomialFunctions)
-def testNewtonGridRootFinderPolynomials(testCase) -> None:
+def distestNewtonGridPolynomialsNew() -> None:
+    for n in range(len(polynomialFunctions)):
+        gridRF = NewtonGridRootFinder(
+            partial(polynomial, n), partial(polynomialD, n), numSamplePoints=50
+        )
+        gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+        foundRoots = np.sort_complex(gridRF.getRoots())
+        expectedRoots = np.sort_complex(np.array(polynomialFunctions[1][2]))
+        print(foundRoots, expectedRoots)
+
+
+@pytest.mark.parametrize("testID", range(len(polynomialFunctions)))
+def testNewtonGridRootFinderPolynomials(testID) -> None:
     r"""
     Test the Newton-Grid-Rootfinder with polynomial functions.
     """
+    testCase = [
+        partial(polynomial, testID),
+        partial(polynomialD, testID),
+        polynomialFunctions[testID][2],
+    ]
     gridRF = NewtonGridRootFinder(
         testCase[0], testCase[1], numSamplePoints=NUM_SAMPLE_POINTS
     )
     gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    print(gridRF.getRoots())
     foundRoots = np.sort_complex(gridRF.getRoots())
     expectedRoots = np.sort_complex(np.array(testCase[2]))
     # First variant fails 1 test, second fails 3 tests
@@ -101,11 +136,16 @@ def testNewtonGridRootFinderPolynomials(testCase) -> None:
     ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
 
 
-@pytest.mark.parametrize("testCase", elementaryFunctions)
-def testNewtonGridRootFinderElementaryFunctions(testCase) -> None:
+@pytest.mark.parametrize("testID", range(len(elementaryFunctions)))
+def testNewtonGridRootFinderElementaryFunctions(testID) -> None:
     r"""
     Test the Newton-Grid-Rootfinder with elementary functions.
     """
+    testCase = [
+        partial(elementary, testID),
+        partial(elementaryD, testID),
+        elementaryFunctions[testID][2],
+    ]
     gridRF = NewtonGridRootFinder(
         testCase[0], testCase[1], numSamplePoints=NUM_SAMPLE_POINTS
     )
@@ -124,12 +164,17 @@ def testNewtonGridRootFinderException() -> None:
         gridRF.getRoots()
 
 
-@pytest.mark.parametrize("testCase", polynomialFunctions)
-def testNewtonGridRootFinderPolynomialDerivativefree(testCase) -> None:
+@pytest.mark.parametrize("testID", range(len(polynomialFunctions)))
+def testNewtonGridRootFinderPolynomialDerivativefree(testID) -> None:
     r"""
     Test the Newton-Grid-Rootfinder using the derivative-free algorithm with
     polynomial functions.
     """
+    testCase = [
+        partial(polynomial, testID),
+        partial(polynomialD, testID),
+        polynomialFunctions[testID][2],
+    ]
     gridRF = NewtonGridRootFinder(
         testCase[0], df=None, numSamplePoints=NUM_SAMPLE_POINTS
     )
@@ -143,12 +188,17 @@ def testNewtonGridRootFinderPolynomialDerivativefree(testCase) -> None:
     ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
 
 
-@pytest.mark.parametrize("testCase", elementaryFunctions)
-def testNewtonGridRootFinderElementaryDerivativefree(testCase) -> None:
+@pytest.mark.parametrize("testID", range(len(elementaryFunctions)))
+def testNewtonGridRootFinderElementaryDerivativefree(testID) -> None:
     r"""
     Test the Newton-Grid-Rootfinder using the derivative-free algorithm with
     elementary functions.
     """
+    testCase = [
+        partial(elementary, testID),
+        partial(elementaryD, testID),
+        elementaryFunctions[testID][2],
+    ]
     gridRF = NewtonGridRootFinder(
         testCase[0], df=None, numSamplePoints=NUM_SAMPLE_POINTS
     )

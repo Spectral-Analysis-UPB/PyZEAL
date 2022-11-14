@@ -9,6 +9,8 @@ Authors:\n
 """
 
 import itertools
+import os
+from multiprocessing import Pool
 from typing import Callable, Optional, Set, Tuple
 from numpy import complex128
 from numpy.typing import NDArray
@@ -64,15 +66,15 @@ class NewtonGridRootFinder(RootFinder):
             x + y * 1j for (x, y) in itertools.product(rePoints, imPoints)
         ]
         roots: Set[complex] = set()
-        try:
-            result = sp.optimize.newton(self.f, points, self.df)
-            for r in result:
-                roots.add(
-                    round(r.real, precision[0])
-                    + round(r.imag, precision[1]) * 1j
+        if self.numSamplePoints > 50:
+            batches = np.array_split(points, os.cpu_count())
+            with Pool(os.cpu_count()) as p:
+                rootList = p.starmap(
+                    self.runNewton, [(batch, precision) for batch in batches]
                 )
-        except RuntimeError:
-            pass
+            roots = {r for rootset in rootList for r in rootset}
+        else:
+            roots = self.runNewton(points, precision)
 
         def _inside(z: complex) -> bool:
             "Filter predicate to determine points inside the search area."
@@ -96,3 +98,24 @@ class NewtonGridRootFinder(RootFinder):
                 "Must calculate roots first before retrieving them!"
             )
         return self._roots
+
+    def runNewton(self, points, precision):
+        r"""
+        Internal function for the newton-grid rootfinder. Runs the
+        newton-method starting from each point in points with a given
+        precision.
+        :param points: List of starting points
+        :param precision: Precision in real and imaginary parts
+        :return: A set of roots
+        """
+        roots: Set[complex] = set()
+        try:
+            result = sp.optimize.newton(self.f, points, self.df)
+            for r in result:
+                roots.add(
+                    round(r.real, precision[0])
+                    + round(r.imag, precision[1]) * 1j
+                )
+        except RuntimeError:
+            pass
+        return roots
