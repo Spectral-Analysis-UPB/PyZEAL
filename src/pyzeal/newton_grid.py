@@ -11,7 +11,7 @@ Authors:\n
 import itertools
 import os
 from multiprocessing import Pool
-from typing import Callable, Optional, Set, Tuple
+from typing import Callable, Optional, Set, Tuple, cast
 from numpy import complex128
 from numpy.typing import NDArray
 import numpy as np
@@ -21,6 +21,7 @@ from pyzeal.finder_interface import RootFinder
 from pyzeal_logging.logger import initLogger
 
 logger = initLogger("newton_grid")
+
 
 class NewtonGridRootFinder(RootFinder):
     r"""
@@ -54,7 +55,9 @@ class NewtonGridRootFinder(RootFinder):
         if hasattr(f, "__name__"):
             logger.info("Initialized Newton-Grid-Rootfiner for %s", f.__name__)
         else:
-            logger.info("Initialized Newton-Grid-Rootfinder for unnamed function")
+            logger.info(
+                "Initialized Newton-Grid-Rootfinder for unnamed function"
+            )
 
     def calcRoots(
         self,
@@ -72,16 +75,33 @@ class NewtonGridRootFinder(RootFinder):
             x + y * 1j for (x, y) in itertools.product(rePoints, imPoints)
         ]
         roots: Set[complex] = set()
-        logger.info("Calculating roots")
+        logger.info(
+            "Calculating roots in [%f.3, %f.3] x [%f.3, %f.3]\
+                 with %d total starting points",
+            reRan[0],
+            reRan[1],
+            imRan[0],
+            imRan[1],
+            self.numSamplePoints**2,
+        )
         if self.numSamplePoints > 50:
-            logger.info("As numSamplePoints is %d, roots are calculated using %d processes", self.numSamplePoints, os.cpu_count())
-            batches = np.array_split(points, os.cpu_count())
-            with Pool(os.cpu_count()) as p:
+            logger.debug(
+                "As numSamplePoints is %d, roots\
+                 are calculated using %d processes",
+                self.numSamplePoints,
+                os.cpu_count(),
+            )
+            cpuCount: int = cast(
+                int, os.cpu_count() if os.cpu_count() is not None else 1
+            )
+            batches = np.array_split(points, cpuCount)
+            with Pool(cpuCount) as p:
                 rootList = p.starmap(
                     self.runNewton, [(batch, precision) for batch in batches]
                 )
                 roots = {r for rootset in rootList for r in rootset}
         else:
+            logger.debug("Running using a single process")
             roots = self.runNewton(points, precision)
 
         def _inside(z: complex) -> bool:
