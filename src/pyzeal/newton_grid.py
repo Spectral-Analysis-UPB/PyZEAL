@@ -18,7 +18,9 @@ import numpy as np
 import scipy as sp
 
 from pyzeal.finder_interface import RootFinder
+from pyzeal_logging.logger import initLogger
 
+logger = initLogger("newton_grid")
 
 class NewtonGridRootFinder(RootFinder):
     r"""
@@ -49,6 +51,10 @@ class NewtonGridRootFinder(RootFinder):
         self.df = df
         self.numSamplePoints = numSamplePoints
         self._roots: Optional[NDArray[complex128]] = None
+        if hasattr(f, "__name__"):
+            logger.info("Initialized Newton-Grid-Rootfiner for %s", f.__name__)
+        else:
+            logger.info("Initialized Newton-Grid-Rootfinder for unnamed function")
 
     def calcRoots(
         self,
@@ -66,7 +72,9 @@ class NewtonGridRootFinder(RootFinder):
             x + y * 1j for (x, y) in itertools.product(rePoints, imPoints)
         ]
         roots: Set[complex] = set()
+        logger.info("Calculating roots")
         if self.numSamplePoints > 50:
+            logger.info("As numSamplePoints is %d, roots are calculated using %d processes", self.numSamplePoints, os.cpu_count())
             batches = np.array_split(points, os.cpu_count())
             with Pool(os.cpu_count()) as p:
                 rootList = p.starmap(
@@ -91,6 +99,7 @@ class NewtonGridRootFinder(RootFinder):
             [root for root in roots if _inside(root) and _closeToZero(root)],
             dtype=complex128,
         )
+        logger.info("Calculated %d roots", len(self._roots))
 
     def getRoots(self) -> NDArray[complex128]:
         if self._roots is None:
