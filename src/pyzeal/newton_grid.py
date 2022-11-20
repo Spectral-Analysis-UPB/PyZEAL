@@ -12,6 +12,7 @@ import itertools
 import os
 from multiprocessing import Pool
 from typing import Callable, Optional, Set, Tuple, cast
+import warnings
 from numpy import complex128
 from numpy.typing import NDArray
 import numpy as np
@@ -138,6 +139,7 @@ class NewtonGridRootFinder(RootFinder):
         :return: A set of roots
         """
         roots: Set[complex] = set()
+        warnings.filterwarnings("ignore", ".*some failed to converge")
         try:
             result = sp.optimize.newton(self.f, points, self.df)
             for r in result:
