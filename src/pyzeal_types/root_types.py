@@ -7,7 +7,7 @@ Authors:\n
 
 from abc import ABC, abstractmethod
 from multiprocessing.managers import BaseManager
-from typing import List, Tuple, Union
+from typing import Callable, List, Tuple, Union
 
 import numpy as np
 from numpy.typing import NDArray
@@ -53,4 +53,4 @@ class MyManager(BaseManager):
     r"""
     Multiprocessing.BaseManager containing a rich.progress.Progress instance.
     """
-    progress: Progress
+    progress: Callable[..., Progress]

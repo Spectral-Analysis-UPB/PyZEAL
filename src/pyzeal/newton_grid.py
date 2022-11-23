@@ -10,16 +10,18 @@ Authors:\n
 
 import itertools
 import os
+import signal
+import warnings
 from multiprocessing import Pool
 from typing import Callable, Optional, Set, Tuple, cast
-import warnings
-from numpy import complex128
-from numpy.typing import NDArray
+
 import numpy as np
 import scipy as sp
+from numpy import complex128
+from numpy.typing import NDArray
+from pyzeal_logging.logger import initLogger
 
 from pyzeal.finder_interface import RootFinder
-from pyzeal_logging.logger import initLogger
 
 logger = initLogger("newton_grid")
 
@@ -96,13 +98,14 @@ class NewtonGridRootFinder(RootFinder):
                 int, os.cpu_count() if os.cpu_count() is not None else 1
             )
             batches = np.array_split(points, cpuCount)
-            with Pool(cpuCount) as p:
+            with Pool(cpuCount, initializer=self.initWorker) as p:
                 rootList = p.starmap(
                     self.runNewton, [(batch, precision) for batch in batches]
                 )
                 roots = {r for rootset in rootList for r in rootset}
         else:
             logger.debug("Running using a single process")
+            self.initWorker()
             roots = self.runNewton(points, precision)
 
         def _inside(z: complex) -> bool:
@@ -111,8 +114,10 @@ class NewtonGridRootFinder(RootFinder):
             return reRan[0] <= u <= reRan[1] and imRan[0] <= v <= imRan[1]
 
         def _closeToZero(z: complex) -> bool:
-            r"""Filter predicate to ensure that the results are actually
-            close to zero, as scipy sometimes returns incorrect results"""
+            r"""
+            Filter predicate to ensure that the results are actually
+            close to zero, as scipy sometimes returns incorrect results.
+            """
             # 0.1 is an arbitrary constant that works for all tests
             return abs(self.f(z)) < 0.1
 
@@ -134,6 +139,7 @@ class NewtonGridRootFinder(RootFinder):
         Internal function for the newton-grid rootfinder. Runs the
         newton-method starting from each point in points with a given
         precision.
+
         :param points: List of starting points
         :param precision: Precision in real and imaginary parts
         :return: A set of roots
@@ -150,3 +156,11 @@ class NewtonGridRootFinder(RootFinder):
         except RuntimeError:
             pass
         return roots
+
+    def initWorker(self) -> None:
+        r"""
+        Initialization function for workers executing `self.setupWorker`. This
+        step is necessary to guarantee correct processing of user signals
+        `ctrl+c`.
+        """
+        signal.signal(signal.SIGINT, signal.SIG_IGN)

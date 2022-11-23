@@ -12,23 +12,21 @@ Authors:\n
 import os
 import signal
 from multiprocessing import Manager, Pool
-from typing import Callable, Final, List, Optional, Tuple
+from typing import Callable, Final, List, Optional, Tuple, cast
 
 import numpy as np
-from rich.progress import Progress, TaskID, SpinnerColumn, TimeElapsedColumn
-from scipy.optimize import newton
-
 from pyzeal_logging.logger import initLogger
 from pyzeal_types.root_types import (
+    MyManager,
     tErrVec,
     tQueue,
     tRecGrid,
     tResVec,
     tVec,
-    MyManager,
 )
 from pyzeal_utils.filter_roots import filterCoincidingRoots
-
+from rich.progress import Progress, SpinnerColumn, TaskID, TimeElapsedColumn
+from scipy.optimize import newton
 
 #################
 # Logging Setup #
@@ -534,7 +532,7 @@ class HoloRootFinder:
             ]
         ] = []
         # initialize result queue for subprocesses to put results into
-        resultQueue: tQueue = Manager().Queue()
+        resultQueue: tQueue = cast(tQueue, Manager().Queue())
 
         # generate initial array on rectangle
         x1, x2 = sorted(reRan)
@@ -545,9 +543,10 @@ class HoloRootFinder:
         recNum: Final[int] = 1
         imagPts = np.linspace(y1, y2, num=recNum * CPU_COUNT + 1)
 
-        MyManager.register("Progress", Progress)
+        MyManager.register("progress", Progress)
         with MyManager() as manager:
-            progress = manager.Progress(
+            manager = cast(MyManager, manager)
+            progress = manager.progress(
                 *Progress.get_default_columns()[:],
                 SpinnerColumn(),
                 "Elapsed:",

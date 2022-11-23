@@ -13,7 +13,7 @@ echo ""
 echo "|------------------------------------------------|"
 echo "|[running mypy on sources, tests, and benchmarks]|"
 echo "|------------------------------------------------|"
-mypy src/ && mypy test/ && mypy benchmarks/ && echo "type hints look good!"
+export MYPYPATH=src && mypy src/ --namespace-packages --explicit-package-bases && mypy test/ && mypy benchmarks/ && echo "type hints look good!"
 echo ""
 
 echo "|---------------------------|"

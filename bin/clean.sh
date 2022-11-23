@@ -9,6 +9,7 @@ rm -rf test/__pycache__
 rm -rf benchmarks/__pycache__
 
 # remove all logging directories
+rm -rf logs/
 rm -rf src/logs
 rm -rf src/*/logs
 rm -rf test/logs
