@@ -2,6 +2,7 @@
 Timing benchmark suite for the NewtonGrid root finder strategy.
 """
 
+from typing import List, Tuple, Callable
 import numpy as np
 from pyzeal.newton_grid import NewtonGridRootFinder
 
@@ -13,7 +14,13 @@ class NewtonGridSuite:
     Includes simple polynomials and trigonometric functions.
     """
 
-    testSuite = [
+    testSuite: List[
+        Tuple[
+            Callable[[complex], complex],
+            Callable[[complex], complex],
+            List[complex],
+        ]
+    ] = [
         (lambda x: x**2 - 1, lambda x: 2 * x, [-1, 1]),
         (lambda x: x**2 + 1, lambda x: 2 * x, [1j, -1j]),
         (lambda x: x**4 - 1, lambda x: 4 * x**3, [1, -1, 1j, -1j]),
@@ -39,7 +46,7 @@ class NewtonGridSuite:
         """
         for tCase in self.testSuite:
             gridRF = NewtonGridRootFinder(tCase[0], tCase[1])
-            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+            gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
 
     def TimeNewtonGridRootfinderDerivativeFree(self) -> None:
         r"""
@@ -47,4 +54,4 @@ class NewtonGridSuite:
         """
         for tCase in self.testSuite:
             gridRF = NewtonGridRootFinder(tCase[0], tCase[1])
-            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+            gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))

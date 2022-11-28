@@ -10,9 +10,8 @@ Authors:\n
 
 import itertools
 import os
-import signal
 import warnings
-from multiprocessing import Pool
+from multiprocessing import Pool, Manager
 from typing import Callable, Optional, Set, Tuple, cast
 
 import numpy as np
@@ -37,7 +36,7 @@ class NewtonGridRootFinder(RootFinder):
     def __init__(
         self,
         f: Callable[[complex], complex],
-        df: Callable[[complex], complex],
+        df: Optional[Callable[[complex], complex]],
         numSamplePoints: int = 50,
     ) -> None:
         r"""
@@ -77,6 +76,7 @@ class NewtonGridRootFinder(RootFinder):
         points = [
             x + y * 1j for (x, y) in itertools.product(rePoints, imPoints)
         ]
+        print("Finished calculating starting points")
         roots: Set[complex] = set()
         logger.info(
             "Calculating roots in [%f.3, %f.3] x [%f.3, %f.3]\
@@ -87,6 +87,7 @@ class NewtonGridRootFinder(RootFinder):
             imRan[1],
             self.numSamplePoints**2,
         )
+        rootQueue = Manager().Queue()
         if self.numSamplePoints > 50:
             logger.debug(
                 "As numSamplePoints is %d, roots\
@@ -97,16 +98,20 @@ class NewtonGridRootFinder(RootFinder):
             cpuCount: int = cast(
                 int, os.cpu_count() if os.cpu_count() is not None else 1
             )
-            batches = np.array_split(points, cpuCount)
+            batches = np.array_split(points, cpuCount * 10)
             with Pool(cpuCount, initializer=self.initWorker) as p:
-                rootList = p.starmap(
-                    self.runNewton, [(batch, precision) for batch in batches]
-                )
-                roots = {r for rootset in rootList for r in rootset}
+                try:
+                    p.starmap(
+                        self.runNewton, [(batch, precision, rootQueue) for batch in batches]
+                    )
+                except KeyboardInterrupt:
+                    p.terminate()
+                    p.join()
         else:
             logger.debug("Running using a single process")
-            self.initWorker()
-            roots = self.runNewton(points, precision)
+            self.runNewton(points, precision, rootQueue)
+        while not rootQueue.empty():
+            roots.add(rootQueue.get())
 
         def _inside(z: complex) -> bool:
             "Filter predicate to determine points inside the search area."
@@ -134,7 +139,7 @@ class NewtonGridRootFinder(RootFinder):
             )
         return self._roots
 
-    def runNewton(self, points, precision):
+    def runNewton(self, points, precision, rootList):
         r"""
         Internal function for the newton-grid rootfinder. Runs the
         newton-method starting from each point in points with a given
@@ -155,12 +160,5 @@ class NewtonGridRootFinder(RootFinder):
                 )
         except RuntimeError:
             pass
-        return roots
-
-    def initWorker(self) -> None:
-        r"""
-        Initialization function for workers executing `self.setupWorker`. This
-        step is necessary to guarantee correct processing of user signals
-        `ctrl+c`.
-        """
-        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        for r in roots:
+            rootList.put(r)

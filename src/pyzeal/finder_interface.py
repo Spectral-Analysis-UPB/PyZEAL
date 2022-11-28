@@ -6,6 +6,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+import signal
 from abc import ABC, abstractmethod
 from typing import Tuple
 
@@ -47,3 +48,12 @@ class RootFinder(ABC):
         :return: array of complex roots calculated previously
         :rtype: numpy.ndarray[complex128]
         """
+
+    
+    def initWorker(self) -> None:
+        r"""
+        Initialization function for workers executing `self.setupWorker`. This
+        step is necessary to guarantee correct processing of user signals
+        `ctrl+c`.
+        """
+        signal.signal(signal.SIGINT, signal.SIG_IGN)

@@ -124,7 +124,7 @@ def testNewtonGridRootFinderPolynomials(testID) -> None:
         gridRF = NewtonGridRootFinder(
             testCase[0], testCase[1], numSamplePoints=numSamplePoints
         )
-        gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+        gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
         print(gridRF.getRoots())
         foundRoots = np.sort_complex(gridRF.getRoots())
         expectedRoots = np.sort_complex(np.array(testCase[2]))
@@ -151,7 +151,7 @@ def testNewtonGridRootFinderElementaryFunctions(testID) -> None:
     gridRF = NewtonGridRootFinder(
         testCase[0], testCase[1], numSamplePoints=NUM_SAMPLE_POINTS
     )
-    gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
     foundRoots = np.sort_complex(gridRF.getRoots())
     expectedRoots = np.sort_complex(np.array(testCase[2]))
     assert np.allclose(
@@ -182,7 +182,7 @@ def testNewtonGridRootFinderPolynomialDerivativefree(testID) -> None:
     gridRF = NewtonGridRootFinder(
         testCase[0], df=None, numSamplePoints=NUM_SAMPLE_POINTS
     )
-    gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
     foundRoots = np.sort_complex(gridRF.getRoots())
     expectedRoots = np.sort_complex(np.array(testCase[2]))
     # assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
@@ -207,7 +207,7 @@ def testNewtonGridRootFinderElementaryDerivativefree(testID) -> None:
     gridRF = NewtonGridRootFinder(
         testCase[0], df=None, numSamplePoints=NUM_SAMPLE_POINTS
     )
-    gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))
+    gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
     foundRoots = np.sort_complex(gridRF.getRoots())
     expectedRoots = np.sort_complex(np.array(testCase[2]))
     assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
@@ -227,7 +227,7 @@ def testNewtonGridRootFinderHypothesis(roots) -> None:
     f = Polynomial.fromroots(roots)
     df = f.deriv()
     gridRF = NewtonGridRootFinder(f, df=df, numSamplePoints=NUM_SAMPLE_POINTS)
-    gridRF.calcRoots([-10, 10], [-10, 10], precision=(3, 3))
+    gridRF.calcRoots((-10, 10), (-10, 10), precision=(3, 3))
     foundRoots = np.sort_complex(gridRF.getRoots())
     # We only find a higher-order zero once, so we have to remove duplicates
     uniqueRoots = list(set(roots))
