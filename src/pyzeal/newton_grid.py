@@ -11,18 +11,20 @@ Authors:\n
 import itertools
 import os
 import warnings
-from multiprocessing import Pool, Manager
-from typing import Callable, Optional, Set, Tuple, cast
-
+from typing import Callable, Optional, Set, Tuple, Final
+from rich.progress import Progress, TaskID
 import numpy as np
 import scipy as sp
 from numpy import complex128
 from numpy.typing import NDArray
 from pyzeal_logging.logger import initLogger
+from pyzeal_types.root_types import tQueue
 
 from pyzeal.finder_interface import RootFinder
 
 logger = initLogger("newton_grid")
+
+CPU_COUNT: Final[int] = os.cpu_count() or 1
 
 
 class NewtonGridRootFinder(RootFinder):
@@ -53,70 +55,82 @@ class NewtonGridRootFinder(RootFinder):
         self.f = f
         self.df = df
         self.numSamplePoints = numSamplePoints
-        self._roots: Optional[NDArray[complex128]] = None
+        self._roots: Optional[Set[Tuple[complex, int]]] = None
         if hasattr(f, "__name__"):
-            logger.info("Initialized Newton-Grid-Rootfiner for %s", f.__name__)
+            logger.info(
+                "Initialized Newton-Grid-Rootfinder for %s", f.__name__
+            )
         else:
             logger.info(
                 "Initialized Newton-Grid-Rootfinder for unnamed function"
             )
 
-    def calcRoots(
+    def getRoots(self) -> NDArray[complex128]:
+        if self._roots is None:
+            raise ValueError(
+                "Must calculate roots first before retrieving them!"
+            )
+        return np.array(list(self._roots))
+
+    def runRootJobs(
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
-        precision: Tuple[int, int] = (6, 6),
+        resultQueue: tQueue,
+        progress: Progress,
+        task: TaskID,
+        precision: Tuple[int, int],
     ) -> None:
+        r"""
+        Internal function for the newton-grid rootfinder. Runs the
+        newton-method starting from each point in points with a given
+        precision.
+        :param points: List of starting points
+        :param precision: Precision in real and imaginary parts
+        :return: A set of roots
+        """
+        self._roots = set()
         rePoints = np.linspace(
             reRan[0], reRan[1], self.numSamplePoints, dtype=complex128
         )
         imPoints = np.linspace(
-            imRan[0], imRan[1], self.numSamplePoints, dtype=complex128
+            imRan[0],
+            imRan[1],
+            int(self.numSamplePoints / (CPU_COUNT + 1)),
+            dtype=complex128,
         )
         points = [
             x + y * 1j for (x, y) in itertools.product(rePoints, imPoints)
         ]
-        print("Finished calculating starting points")
-        roots: Set[complex] = set()
-        logger.info(
-            "Calculating roots in [%f.3, %f.3] x [%f.3, %f.3]\
-                 with %d total starting points",
-            reRan[0],
-            reRan[1],
-            imRan[0],
-            imRan[1],
-            self.numSamplePoints**2,
-        )
-        rootQueue = Manager().Queue()
-        if self.numSamplePoints > 50:
-            logger.debug(
-                "As numSamplePoints is %d, roots\
-                 are calculated using %d processes",
-                self.numSamplePoints,
-                os.cpu_count(),
+        roots = set()
+        warnings.filterwarnings("ignore", ".*some failed to converge")
+        try:
+            result: NDArray = sp.optimize.newton(self.f, points, self.df)
+            for z in result:
+                roots.add(
+                    round(z.real, precision[0])
+                    + round(z.imag, precision[1]) * 1j
+                )
+            progress.update(
+                task, advance=((reRan[1] - reRan[0]) * (imRan[1] - imRan[0]))
             )
-            cpuCount: int = cast(
-                int, os.cpu_count() if os.cpu_count() is not None else 1
-            )
-            batches = np.array_split(points, cpuCount * 10)
-            with Pool(cpuCount, initializer=self.initWorker) as p:
-                try:
-                    p.starmap(
-                        self.runNewton, [(batch, precision, rootQueue) for batch in batches]
-                    )
-                except KeyboardInterrupt:
-                    p.terminate()
-                    p.join()
-        else:
-            logger.debug("Running using a single process")
-            self.runNewton(points, precision, rootQueue)
-        while not rootQueue.empty():
-            roots.add(rootQueue.get())
+        except RuntimeError:
+            pass
 
         def _inside(z: complex) -> bool:
             "Filter predicate to determine points inside the search area."
             u, v = z.real, z.imag
             return reRan[0] <= u <= reRan[1] and imRan[0] <= v <= imRan[1]
+
+        for r in roots:
+            if _inside(r):
+                resultQueue.put((r, 0))
+
+    def addRoot(self, newRoot: Optional[Tuple[complex, int]]) -> None:
+        if self._roots is None:
+            self._roots = set()
+        if newRoot is None:
+            return
 
         def _closeToZero(z: complex) -> bool:
             r"""
@@ -126,39 +140,5 @@ class NewtonGridRootFinder(RootFinder):
             # 0.1 is an arbitrary constant that works for all tests
             return abs(self.f(z)) < 0.1
 
-        self._roots = np.array(
-            [root for root in roots if _inside(root) and _closeToZero(root)],
-            dtype=complex128,
-        )
-        logger.info("Calculated %d roots", len(self._roots))
-
-    def getRoots(self) -> NDArray[complex128]:
-        if self._roots is None:
-            raise ValueError(
-                "Must calculate roots first before retrieving them!"
-            )
-        return self._roots
-
-    def runNewton(self, points, precision, rootList):
-        r"""
-        Internal function for the newton-grid rootfinder. Runs the
-        newton-method starting from each point in points with a given
-        precision.
-
-        :param points: List of starting points
-        :param precision: Precision in real and imaginary parts
-        :return: A set of roots
-        """
-        roots: Set[complex] = set()
-        warnings.filterwarnings("ignore", ".*some failed to converge")
-        try:
-            result = sp.optimize.newton(self.f, points, self.df)
-            for r in result:
-                roots.add(
-                    round(r.real, precision[0])
-                    + round(r.imag, precision[1]) * 1j
-                )
-        except RuntimeError:
-            pass
-        for r in roots:
-            rootList.put(r)
+        if _closeToZero(newRoot[0]):
+            self._roots.add(newRoot)

@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from multiprocessing import Manager, Pool
 from os import cpu_count, getpid
 from signal import SIG_IGN, SIGINT, signal
-from typing import Final, List, Tuple, cast
+from typing import Final, List, Tuple, cast, Optional
 
 from numpy import complex128, linspace
 from numpy.typing import NDArray
@@ -61,6 +61,7 @@ class RootFinder(ABC):
                 tQueue,
                 Progress,
                 TaskID,
+                Tuple[int, int],
             ]
         ] = []
         # initialize result queue for subprocesses to put results into
@@ -73,7 +74,7 @@ class RootFinder(ABC):
         x1, x2 = x1 - 10 ** (-1 * precision[0]), x2 + 10 ** (-1 * precision[0])
         y1, y2 = y1 - 10 ** (-1 * precision[1]), y2 + 10 ** (-1 * precision[1])
         recNum: Final[int] = 1
-        imagPts = linspace(y1, y2, num=recNum * CPU_COUNT + 1)
+        imagPts: NDArray = linspace(y1, y2, num=recNum * CPU_COUNT + 1)
 
         MyManager.register("progress", Progress)
         with MyManager() as manager:
@@ -98,10 +99,11 @@ class RootFinder(ABC):
                 rootJobs.append(
                     (
                         (x1, x2),
-                        (imagPts[i], imagPts[i + 1]),
+                        (float(imagPts[i]), float(imagPts[i + 1])),
                         resultQueue,
                         progress,
                         task,
+                        precision,
                     )
                 )
 
@@ -125,6 +127,8 @@ class RootFinder(ABC):
             progress.stop()
 
         # append new roots to previously calculated roots
+        if resultQueue.empty():
+            self.addRoot(None)
         while not resultQueue.empty():
             self.addRoot(resultQueue.get())
 
@@ -136,6 +140,7 @@ class RootFinder(ABC):
         resultQueue: tQueue,
         progress: Progress,
         task: TaskID,
+        precision: Tuple[int, int],
     ) -> None:
         r"""
         Method template to overwrite during implemention of concrete root
@@ -153,7 +158,7 @@ class RootFinder(ABC):
         """
 
     @abstractmethod
-    def addRoot(self, newRoot: Tuple[complex, int]) -> None:
+    def addRoot(self, newRoot: Optional[Tuple[complex, int]]) -> None:
         r"""
         Method template to overwrite during implementation of concrete root
         finding algorithms. This method must contain the logic that handles
@@ -163,7 +168,6 @@ class RootFinder(ABC):
         """
 
     @staticmethod
-    @abstractmethod
     def suppressSig() -> None:
         "Initialization routine setting workers to ignore `ctrl+c`."
         signal(SIGINT, SIG_IGN)
