@@ -6,6 +6,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+import logging
 from abc import ABC, abstractmethod
 from multiprocessing import Manager, Pool
 from os import cpu_count, getpid
@@ -14,8 +15,8 @@ from typing import Final, List, Tuple, cast, Optional
 
 from numpy import complex128, linspace
 from numpy.typing import NDArray
-from pyzeal_types.root_types import MyManager, tQueue
 from rich.progress import Progress, SpinnerColumn, TaskID, TimeElapsedColumn
+from pyzeal_types.root_types import MyManager, tQueue
 
 ####################
 # Global Constants #
@@ -75,7 +76,10 @@ class RootFinder(ABC):
         y1, y2 = y1 - 10 ** (-1 * precision[1]), y2 + 10 ** (-1 * precision[1])
         recNum: Final[int] = 1
         imagPts: NDArray = linspace(y1, y2, num=recNum * CPU_COUNT + 1)
-
+        self.logger.info(
+            f"Calculating roots in [{reRan[0]}, {reRan[1]}]\
+             x [{imRan[0]}, {imRan[1]}]"
+        )
         MyManager.register("progress", Progress)
         with MyManager() as manager:
             manager = cast(MyManager, manager)
@@ -106,7 +110,7 @@ class RootFinder(ABC):
                         precision,
                     )
                 )
-
+            self.logger.info("Using %d total jobs", len(rootJobs))
             # calculate roots in parallel using the concrete algorithm
             # implemented in `runRootJobs`
             with Pool(
@@ -165,6 +169,15 @@ class RootFinder(ABC):
         duplicate roots, differing orders of duplicates roots, etc.
 
         If an algorithm does not supply zero orders put order=0 by convention!
+        """
+
+    @property
+    @abstractmethod
+    def logger(self) -> logging.Logger:
+        """Subclasses need to provide a logger.
+
+        :return: Initizialized logger from pyzeal_logging.init_logger
+        :rtype: logging.Logger
         """
 
     @staticmethod

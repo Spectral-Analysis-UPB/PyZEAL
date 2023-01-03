@@ -22,7 +22,7 @@ from pyzeal_types.root_types import tQueue
 
 from pyzeal.finder_interface import RootFinder
 
-logger = initLogger("newton_grid")
+newton_logger = initLogger("newton_grid")
 
 CPU_COUNT: Final[int] = os.cpu_count() or 1
 
@@ -57,11 +57,11 @@ class NewtonGridRootFinder(RootFinder):
         self.numSamplePoints = numSamplePoints
         self._roots: Optional[Set[Tuple[complex, int]]] = None
         if hasattr(f, "__name__"):
-            logger.info(
+            self.logger.info(
                 "Initialized Newton-Grid-Rootfinder for %s", f.__name__
             )
         else:
-            logger.info(
+            self.logger.info(
                 "Initialized Newton-Grid-Rootfinder for unnamed function"
             )
 
@@ -98,6 +98,13 @@ class NewtonGridRootFinder(RootFinder):
             imRan[1],
             int(self.numSamplePoints / (CPU_COUNT + 1)),
             dtype=complex128,
+        )
+        self.logger.debug(
+            "Running job for [%f, %f] x [%f, %f]",
+            reRan[0],
+            reRan[1],
+            imRan[0],
+            imRan[1],
         )
         points = [
             x + y * 1j for (x, y) in itertools.product(rePoints, imPoints)
@@ -141,4 +148,11 @@ class NewtonGridRootFinder(RootFinder):
             return abs(self.f(z)) < 0.1
 
         if _closeToZero(newRoot[0]):
+            self.logger.debug(
+                "Found zero at %f + %fi", newRoot[0].real, newRoot[0].imag
+            )
             self._roots.add(newRoot)
+
+    @property
+    def logger(self):
+        return newton_logger

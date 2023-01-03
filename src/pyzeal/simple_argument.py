@@ -86,13 +86,16 @@ class HoloRootFinder:
 
         :param func: Target function
         :type func: Callable[..., tVec]
-        :param prevRes: Known zeroes with corresponding orders, defaults to None
+        :param prevRes: Known zeroes with their corresponding orders,
+            defaults to None
         :type prevRes: Optional[tResVec]
-        :param prevErr: Errors associated to known roots, defaults to None
+        :param prevErr: Errors associated to known roots,
+            defaults to None
         :type prevErr: Optional[tErrVec]
         :param epsCplx: Desired accuracy, defaults to 1e-4*(1 + 1j)
         :type epsCplx: complex, optional
-        :param funcArgs: Additional arguments for the target function, defaults to ()
+        :param funcArgs: Additional arguments for the target function,
+            defaults to ()
         :type funcArgs: Tuple, optional
         """
         self.func = func
@@ -109,6 +112,16 @@ class HoloRootFinder:
                 prevErr = [self.epsCplx for root in prevRes]
             self._res, self._err = filterCoincidingRoots(
                 prevRes, prevErr, returnLists=True
+            )
+        if hasattr(func, "__name__"):
+            logger.info(
+                "Initialized argument-principle-Rootfinder for %s",
+                func.__name__,
+            )
+        else:
+            logger.info(
+                "Initialized argument-principle-Rootfinder for an\
+                unnamed function"
             )
 
     def __str__(self) -> str:
@@ -184,6 +197,7 @@ class HoloRootFinder:
         funcArr = self.func(zArr, *self.funcArgs)
         zerosOnLine = np.where(funcArr == 0)[0]
         while zerosOnLine.size > 0:
+            logger.debug(f"Root found on the line [{zArr[0]}, {zArr[-1]}]")
             newZeros = zArr[zerosOnLine]
             # order of these zeros is not determined further, so put 0
             for pair in zip(newZeros, np.zeros_like(newZeros, dtype=int)):
@@ -206,6 +220,10 @@ class HoloRootFinder:
         while idxPhi.size > 0:
             # refine grid between z values at large phi values
             k = idxPhi[0]
+            logger.debug(
+                f"Refining the line between [{zArr[k]}, {zArr[k+1]}]\
+                 as phi={phiArr[k]}"
+            )
             if abs(zArr[k] - zArr[k + 1]) < self.maxPrecision:
                 break
             refinementFactor = int(Z_REFINE * abs(phiArr[k]) / self.deltaPhi)
@@ -415,6 +433,12 @@ class HoloRootFinder:
 
         # check if current rectangle contains zeros
         if phi > TWO_PI:
+            logger.debug(
+                f"Rectangle [{zParts[1][0]}, {zParts[3][0]}] x\
+                 [{zParts[2][0]}, {zParts[0][0]}] contains\
+                 zeros with total phi={phi}"
+            )
+            logger.debug(f"Rectangle size is {deltaRe} x {deltaIm}")
             # check if desired accuracy is aquired
             if deltaRe < self.epsCplx.real and deltaIm < self.epsCplx.imag:
                 newZero = 0.5 * (
@@ -482,14 +506,12 @@ class HoloRootFinder:
         """
         x1, x2 = reRan
         y1, y2 = imRan
-        """
-        The search area as given by (reRan, imRan) is split up into 4 edges:
-        (x1,y2) -c- (x2,y2)
-           |           |
-           d           b
-           |           |
-        (x1,y1) -a- (x2,y1)
-        """
+        # The search area as given by (reRan, imRan) is split up into 4 edges:
+        # (x1,y2) -c- (x2,y2)
+        #    |           |
+        #    d           b
+        #    |           |
+        # (x1,y1) -a- (x2,y1)
         aZ, aPhi = self.genPhiArr(
             x1 + y1 * 1j, x2 + y1 * 1j, resultQueue, "horizontal"
         )
@@ -564,7 +586,10 @@ class HoloRootFinder:
         y1, y2 = y1 - 3 * self.epsCplx.imag, y2 + 4 * self.epsCplx.imag
         recNum: Final[int] = 1
         imagPts = np.linspace(y1, y2, num=recNum * CPU_COUNT + 1)
-
+        logger.info(
+            f"Calculating roots in [{reRan[0]}, {reRan[1]}]\
+             x [{imRan[0]}, {imRan[1]}]"
+        )
         MyManager.register("progress", Progress)
         with MyManager() as manager:
             manager = cast(MyManager, manager)
@@ -596,6 +621,7 @@ class HoloRootFinder:
                 )
 
             # calculate roots
+            logger.info("Using %d total jobs", len(rootJobs))
             with Pool(processes=CPU_COUNT, initializer=self.initWorker) as p:
                 try:
                     p.starmap(self.setupWorker, rootJobs, chunksize=recNum)
