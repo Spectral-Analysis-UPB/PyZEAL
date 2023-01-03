@@ -15,6 +15,8 @@ from multiprocessing import Manager, Pool
 from typing import Callable, Final, List, Optional, Tuple, cast
 
 import numpy as np
+from rich.progress import Progress, SpinnerColumn, TaskID, TimeElapsedColumn
+from scipy.optimize import newton
 from pyzeal_logging.logger import initLogger
 from pyzeal_types.root_types import (
     MyManager,
@@ -25,8 +27,6 @@ from pyzeal_types.root_types import (
     tVec,
 )
 from pyzeal_utils.filter_roots import filterCoincidingRoots
-from rich.progress import Progress, SpinnerColumn, TaskID, TimeElapsedColumn
-from scipy.optimize import newton
 
 #################
 # Logging Setup #
@@ -82,13 +82,25 @@ class HoloRootFinder:
         epsCplx: complex = 1e-4 * (1 + 1j),
         funcArgs: Tuple = (),
     ) -> None:
+        """Initialize an argument-based rootfinder.
+
+        :param func: Target function
+        :type func: Callable[..., tVec]
+        :param prevRes: Known zeroes with corresponding orders, defaults to None
+        :type prevRes: Optional[tResVec]
+        :param prevErr: Errors associated to known roots, defaults to None
+        :type prevErr: Optional[tErrVec]
+        :param epsCplx: Desired accuracy, defaults to 1e-4*(1 + 1j)
+        :type epsCplx: complex, optional
+        :param funcArgs: Additional arguments for the target function, defaults to ()
+        :type funcArgs: Tuple, optional
+        """
         self.func = func
         self.funcArgs = funcArgs
         self.epsCplx = epsCplx
         self.numPts = DEFAULT_NUM_PTS
         self.deltaPhi = DEFAULT_DELTA_PHI
         self.maxPrecision = DEFAULT_MAX_PRECISION
-
         if prevRes is None:
             self._res: List[Tuple[complex, int]] = []
             self._err: List[complex] = []
@@ -173,6 +185,7 @@ class HoloRootFinder:
         zerosOnLine = np.where(funcArr == 0)[0]
         while zerosOnLine.size > 0:
             newZeros = zArr[zerosOnLine]
+            # order of these zeros is not determined further, so put 0
             for pair in zip(newZeros, np.zeros_like(newZeros, dtype=int)):
                 resultQueue.put(pair)
             # adjust line according to 'pos'
@@ -183,7 +196,9 @@ class HoloRootFinder:
             funcArr = self.func(zArr, *self.funcArgs)
             zerosOnLine = np.where(funcArr == 0)[0]
 
+        # facFuncArr is of the form f(z_{k+1})/f(z_k)
         facFuncArr = funcArr[1:] / funcArr[:-1]
+        # compute change in argument between two points on the line
         phiArr = np.arctan2(facFuncArr.imag, facFuncArr.real)
 
         # loop over entries in phiArr larger than deltaPhi
@@ -467,7 +482,14 @@ class HoloRootFinder:
         """
         x1, x2 = reRan
         y1, y2 = imRan
-
+        """
+        The search area as given by (reRan, imRan) is split up into 4 edges:
+        (x1,y2) -c- (x2,y2)
+           |           |
+           d           b
+           |           |
+        (x1,y1) -a- (x2,y1)
+        """
         aZ, aPhi = self.genPhiArr(
             x1 + y1 * 1j, x2 + y1 * 1j, resultQueue, "horizontal"
         )
