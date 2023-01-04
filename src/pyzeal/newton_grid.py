@@ -134,6 +134,11 @@ class NewtonGridRootFinder(RootFinder):
                 resultQueue.put((r, 0))
 
     def addRoot(self, newRoot: Optional[Tuple[complex, int]]) -> None:
+        """Add a new root to the list of already found roots.
+
+        :param newRoot: New root
+        :type newRoot: Optional[Tuple[complex, int]]
+        """
         if self._roots is None:
             self._roots = set()
         if newRoot is None:
