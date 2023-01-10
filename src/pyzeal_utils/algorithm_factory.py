@@ -1,11 +1,13 @@
 """
 This module provides a static factory class which maps the algorithms available
-in the `AlgorithmType` enumeration to appropriate members of the
+in the `AlgorithmTypes` enumeration to appropriate members of the
 `FinderAlgorithm` type.
 
 Authors:\n
 - Philipp Schuette\n
 """
+
+from typing import Optional
 
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
@@ -18,21 +20,26 @@ class AlgorithmFactory:
     "Static factory class used to create instances of root finding algorithms."
     @staticmethod
     def getConcreteAlgorithm(
-        algoType: AlgorithmTypes,
+        algoType: AlgorithmTypes, *, numSamplePoints: Optional[int] = None
     ) -> FinderAlgorithm:
         """
         Construct and return an algorithm instance based on the given type of
-        algorithm `algoType`.
+        algorithm `algoType`. Additional, algorithm specific configuration
+        arguments are optional.
 
-        :param type: Type of algorithm to construct
-        :type type: AlgorithmType
+        :param algoType: type of algorithm to construct
+        :type algoType: AlgorithmType
+        :param numSamplePoints: sample point configuration for NewtonGridAlgo
+        :type numSamplePoints: int
         """
         if algoType == AlgorithmTypes.NEWTON_GRID:
+            if numSamplePoints:
+                return NewtonGridAlgorithm(numSamplePoints=numSamplePoints)
             return NewtonGridAlgorithm()
-        elif algoType == AlgorithmTypes.SIMPLE_ARGUMENT:
+        if algoType == AlgorithmTypes.SIMPLE_ARGUMENT:
             return SimpleArgumentAlgorithm()
-        elif algoType == AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON:
+        if algoType == AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON:
             return SimpleArgumentNewtonAlgorithm()
-        else:
-            # TODO: implement configuration mechanism for default algorithms
-            return None
+
+        # TODO: implement configuration mechanism for default algorithms
+        return NewtonGridAlgorithm()

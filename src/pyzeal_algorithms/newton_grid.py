@@ -8,9 +8,17 @@ algorithms which fully exploit the holomorphic nature of target functions.
 
 Authors:\n
 - Philipp Schuette\n
+- Luca Wasmuth\n
 """
 
+from itertools import product
+from warnings import filterwarnings
+import numpy as np
+from numpy.typing import NDArray
+import scipy as sp
+
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
+from pyzeal_utils.root_context import RootContext
 
 
 class NewtonGridAlgorithm(FinderAlgorithm):
@@ -19,3 +27,43 @@ class NewtonGridAlgorithm(FinderAlgorithm):
     based on starting an ordinary Newton algorithm on a grid of support points
     in the complex plane.
     """
+
+    __slots__ = ("numSamplePoints", )
+
+    def __init__(self, numSamplePoints: int = 50) -> None:
+        r"""
+        Initialize a root finding algorithm which searches for roots using the
+        Newton algorithm with starting points on an evenly spaced grid.
+
+        :param numSamplePoints: number of support points in grid rows/columns
+        :type numSamplePoints: int
+        """
+        self.numSamplePoints = numSamplePoints
+
+    def calcRoots(self, context: RootContext) -> NDArray[np.complex128]:
+        """
+        Calculate roots in a given context based on the Newton algorithm on a
+        grid of support points in the complex plane.
+
+        :param context: context in which the algorithm operates
+        :type context: RootContext
+        """
+        rePoints = np.linspace(
+            context.reRan[0], context.reRan[1], self.numSamplePoints,
+            dtype=np.complex128
+        )
+        imPoints = np.linspace(
+            context.imRan[0], context.imRan[1], self.numSamplePoints,
+            dtype=np.complex128,
+        )
+        points = [
+            x + y * 1j for (x, y) in product(rePoints, imPoints)
+        ]
+        filterwarnings("ignore", ".*some failed to converge")
+        try:
+            result: NDArray[np.complex128] = sp.optimize.newton(
+                context.f, points, context.df
+            )
+            return result
+        except RuntimeError:
+            return np.empty((0, ), dtype=np.complex128)

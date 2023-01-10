@@ -25,6 +25,6 @@ class FinderAlgorithm(ABC):
         Entry point for a generic root finding algorithm operating in a given
         context.
 
-        :param context: Context in which the algorithm operates
+        :param context: context in which the algorithm operates
         :type context: RootContext
         """

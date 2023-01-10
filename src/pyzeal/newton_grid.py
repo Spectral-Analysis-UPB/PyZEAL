@@ -18,7 +18,7 @@ import scipy as sp
 from numpy import complex128
 from numpy.typing import NDArray
 from pyzeal_logging.logger import initLogger
-from pyzeal_types.root_types import tQueue
+from pyzeal_types.parallel_types import tQueue
 
 from pyzeal.finder_interface import RootFinder
 
