@@ -12,7 +12,7 @@ import pytest
 
 from hypothesis import given, strategies, settings
 from numpy.polynomial import Polynomial
-from pyzeal.newton_grid import NewtonGridRootFinder
+from .newton_grid import NewtonGridRootFinder
 
 
 # multiprocessing is significantly easier if you don't use anonymous lambda

@@ -4,7 +4,7 @@ Timing benchmark suite for the NewtonGrid root finder strategy.
 
 from typing import List, Tuple, Callable
 import numpy as np
-from pyzeal.newton_grid import NewtonGridRootFinder
+from deprecated.newton_grid import NewtonGridRootFinder
 from functools import partial
 
 testSuite: List[

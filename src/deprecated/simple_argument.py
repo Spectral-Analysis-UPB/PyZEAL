@@ -17,7 +17,7 @@ from typing import Callable, Final, List, Optional, Tuple, cast
 import numpy as np
 from rich.progress import Progress, SpinnerColumn, TaskID, TimeElapsedColumn
 from scipy.optimize import newton
-from pyzeal_logging.logger import initLogger
+from pyzeal_logging.config import initLogger
 from pyzeal_types.root_types import (
     MyManager,
     tErrVec,
@@ -26,7 +26,7 @@ from pyzeal_types.root_types import (
     tResVec,
     tVec,
 )
-from pyzeal_utils.filter_roots import filterCoincidingRoots
+from deprecated.filter_roots import filterCoincidingRoots
 
 #################
 # Logging Setup #

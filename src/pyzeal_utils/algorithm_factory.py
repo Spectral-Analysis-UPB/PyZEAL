@@ -14,10 +14,15 @@ from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_algorithms.newton_grid import NewtonGridAlgorithm
 from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal_algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
+from pyzeal_logging.config import initLogger
 
 
 class AlgorithmFactory:
     "Static factory class used to create instances of root finding algorithms."
+
+    # initialize the module level logger
+    logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
+
     @staticmethod
     def getConcreteAlgorithm(
         algoType: AlgorithmTypes, *, numSamplePoints: Optional[int] = None
@@ -33,13 +38,25 @@ class AlgorithmFactory:
         :type numSamplePoints: int
         """
         if algoType == AlgorithmTypes.NEWTON_GRID:
+            AlgorithmFactory.logger.debug(
+                "requested usage of a NewtonGridAlgorithm..."
+            )
             if numSamplePoints:
                 return NewtonGridAlgorithm(numSamplePoints=numSamplePoints)
             return NewtonGridAlgorithm()
         if algoType == AlgorithmTypes.SIMPLE_ARGUMENT:
+            AlgorithmFactory.logger.debug(
+                "requested usage of a SimpleArgumentAlgorithm..."
+            )
             return SimpleArgumentAlgorithm()
         if algoType == AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON:
+            AlgorithmFactory.logger.debug(
+                "requested usage of a SimpleArgumentNewtonAlgorithm..."
+            )
             return SimpleArgumentNewtonAlgorithm()
 
         # TODO: implement configuration mechanism for default algorithms
+        AlgorithmFactory.logger.debug(
+            "requested usage of the default algorithm..."
+        )
         return NewtonGridAlgorithm()

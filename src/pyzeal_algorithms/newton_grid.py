@@ -13,6 +13,7 @@ Authors:\n
 
 from itertools import product
 from warnings import filterwarnings
+
 import numpy as np
 from numpy.typing import NDArray
 import scipy as sp
@@ -28,7 +29,7 @@ class NewtonGridAlgorithm(FinderAlgorithm):
     in the complex plane.
     """
 
-    __slots__ = ("numSamplePoints", )
+    __slots__ = ("numSamplePoints",)
 
     def __init__(self, numSamplePoints: int = 50) -> None:
         r"""
@@ -39,31 +40,55 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         :type numSamplePoints: int
         """
         self.numSamplePoints = numSamplePoints
+        self.logger.debug("initialized a new NewtonGridAlgorithm!")
 
-    def calcRoots(self, context: RootContext) -> NDArray[np.complex128]:
+    def calcRoots(self, context: RootContext) -> None:
         """
         Calculate roots in a given context based on the Newton algorithm on a
         grid of support points in the complex plane.
 
         :param context: context in which the algorithm operates
         :type context: RootContext
+        :return: the roots calculated by the algorithm
+        :rtype: NDArray[complex128]
         """
-        rePoints = np.linspace(
-            context.reRan[0], context.reRan[1], self.numSamplePoints,
-            dtype=np.complex128
+        self.logger.info(
+            "starting newton grid search for %s on [%f, %f] x [%f, %f]",
+            context.f.__name__,
+            context.reRan[0],
+            context.reRan[1],
+            context.imRan[0],
+            context.imRan[1],
         )
-        imPoints = np.linspace(
-            context.imRan[0], context.imRan[1], self.numSamplePoints,
+        rePoints = np.linspace(
+            context.reRan[0],
+            context.reRan[1],
+            self.numSamplePoints,
             dtype=np.complex128,
         )
-        points = [
-            x + y * 1j for (x, y) in product(rePoints, imPoints)
-        ]
+        imPoints = np.linspace(
+            context.imRan[0],
+            context.imRan[1],
+            self.numSamplePoints,
+            dtype=np.complex128,
+        )
+        points = [x + y * 1j for (x, y) in product(rePoints, imPoints)]
         filterwarnings("ignore", ".*some failed to converge")
         try:
-            result: NDArray[np.complex128] = sp.optimize.newton(
+            roots: NDArray[np.complex128] = sp.optimize.newton(
                 context.f, points, context.df
             )
-            return result
         except RuntimeError:
-            return np.empty((0, ), dtype=np.complex128)
+            return
+        for root in roots:
+            # the newton algorithm does not determine root orders - placeholder
+            # value can be anything non-positive
+            context.container.addRoot((root, 0), context.precision)
+        if context.progress and context.task:
+            context.progress.update(
+                context.task,
+                advance=(
+                    (context.reRan[1] - context.reRan[0])
+                    * (context.imRan[1] - context.imRan[0])
+                ),
+            )

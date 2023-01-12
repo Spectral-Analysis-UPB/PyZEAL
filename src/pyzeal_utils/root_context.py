@@ -10,7 +10,11 @@ Authors:\n
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
+from rich.progress import TaskID
+
 from pyzeal_types.root_types import tHoloFunc
+from pyzeal_utils.finder_progress import FinderProgressBar
+from pyzeal_utils.root_container import RootContainer
 
 
 @dataclass(frozen=True)
@@ -19,8 +23,12 @@ class RootContext:
     Container for the data context of a root finding algorithm. The container
     is read-only.
     """
+
     f: tHoloFunc
     df: Optional[tHoloFunc]
-    reRan: Tuple[float, float] = (-1., 1.)
-    imRan: Tuple[float, float] = (-1., 1.)
-    accuracy: int = 3
+    container: RootContainer
+    reRan: Tuple[float, float] = (-1.0, 1.0)
+    imRan: Tuple[float, float] = (-1.0, 1.0)
+    precision: Tuple[int, int] = 3, 3
+    progress: Optional[FinderProgressBar] = None
+    task: Optional[TaskID] = None

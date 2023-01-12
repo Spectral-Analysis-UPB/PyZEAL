@@ -9,9 +9,10 @@ Authors:\n
 """
 
 from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
+from pyzeal_logging.loggable import Loggable
 
 
-class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm):
+class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
     """
     Class representation of a root finding algorithm combining the phase
     interpretation of the argument principle used in `SimpleArgumentAlgorithm`

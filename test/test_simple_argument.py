@@ -5,7 +5,7 @@ import pytest
 
 from hypothesis import given, strategies, settings
 from numpy.polynomial import Polynomial
-from pyzeal.simple_argument import HoloRootFinder
+from deprecated.simple_argument import HoloRootFinder
 
 
 def polynomial(n, x):

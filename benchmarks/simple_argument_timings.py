@@ -5,7 +5,7 @@ Timing benchmark suite for the NewtonGrid root finder strategy.
 from typing import List, Tuple, Callable
 from functools import partial
 import numpy as np
-from pyzeal.simple_argument import HoloRootFinder
+from deprecated.simple_argument import HoloRootFinder
 
 testSuite: List[
     Tuple[

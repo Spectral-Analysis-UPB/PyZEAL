@@ -11,24 +11,26 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Protocol
+from typing import Callable, Protocol, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
 
 from pyzeal_types.root_types import tRoot, tVec
+from pyzeal_logging.loggable import Loggable
 
 
-class RootContainer(Protocol):
+class RootContainer(Loggable, Protocol):
     "Structural interface for container classes meant to hold root data."
-    def addRoot(self, root: tRoot, accuracy: int) -> None:
+
+    def addRoot(self, root: tRoot, precision: Tuple[int, int]) -> None:
         """
         Add a root to the container.
 
         :param root: the root to be added to the container
         :type root: tRoot
-        :param accuracy: the number of valid decimal places of `root`
-        :type accuracy: int
+        :param precision: the number of valid decimal places of `root`
+        :type precision: Tuple[int, int]
         """
         ...
 
@@ -65,4 +67,13 @@ class RootContainer(Protocol):
 
     def clear(self) -> None:
         "Clear all data from the container."
+        ...
+
+    def registerFilter(self, filterPredicate: Callable[[tRoot], bool]) -> None:
+        """
+        Add a new filter predicate to this container instance. The filtering
+        applies to all roots added after the filter is registered. To guarantee
+        a consistent set of roots any implementation should clear its internal
+        root buffer before/after registering a filter.
+        """
         ...

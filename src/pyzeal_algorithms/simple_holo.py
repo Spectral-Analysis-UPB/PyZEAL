@@ -11,9 +11,10 @@ Authors:\n
 """
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
+from pyzeal_logging.loggable import Loggable
 
 
-class SimpleArgumentAlgorithm(FinderAlgorithm):
+class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     """
     Class representation of a simple root finding algorithm for holomorphic
     functions based on the argument principle and the approximation of

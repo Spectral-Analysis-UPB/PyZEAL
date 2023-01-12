@@ -8,7 +8,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Optional, Set
+from typing import Callable, List, Optional, Set, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
@@ -27,19 +27,23 @@ class RoundingContainer(RootContainer):
     to preserve consistency.
     """
 
-    __slots__ = ("accuracy", "rootSet", )
+    __slots__ = ("precision", "rootSet", "filters")
 
-    def __init__(self, accuracy: int) -> None:
+    def __init__(self, precision: Tuple[int, int]) -> None:
         """
         Initialize a rounding RootContainer with a given accuracy.
 
-        :param accuracy: expected accuracy of roots to be added
-        :type accuracy: int
+        :param precision: expected accuracy of roots to be added
+        :type precision: Tuple[int, int]
         """
-        self.accuracy = accuracy
+        self.precision = precision
         self.rootSet: Set[tRoot] = set()
+        self.filters: List[Callable[[tRoot], bool]] = []
+        self.logger.info("initialized a rounding root container")
 
-    def addRoot(self, root: tRoot, accuracy: Optional[int] = None) -> None:
+    def addRoot(
+        self, root: tRoot, precision: Optional[Tuple[int, int]] = None
+    ) -> None:
         """
         Add a new root with given accuracy to the container. If the accuracy
         differs from the accuracy of roots already added then all previous
@@ -47,13 +51,29 @@ class RoundingContainer(RootContainer):
 
         :param root: the root to be added to the container
         :type root: tRoot
-        :param accuracy: the number of valid decimal places of `root`
-        :type accuracy: int
+        :param precision: the number of valid decimal places of `root`
+        :type precision: int
         """
-        if accuracy is not None and accuracy != self.accuracy:
+        for filterPredicate in self.filters:
+            if not filterPredicate(root):
+                self.logger.debug(
+                    "root %f+%fi was rejected by container filter!",
+                    root[0].real,
+                    root[0].imag,
+                )
+                return
+        if precision is not None and precision != self.precision:
             self.clear()
-            self.accuracy = accuracy
-        self.rootSet.add(RoundingContainer.roundRoot(root, self.accuracy))
+            self.logger.debug(
+                "new accuracy detected - rounding container cleared!"
+            )
+            self.precision = precision
+        self.logger.debug(
+            "attempting to add new root %f+%fi to rounding container!",
+            root[0].real,
+            root[0].imag,
+        )
+        self.rootSet.add(RoundingContainer.roundRoot(root, self.precision))
 
     def removeRoot(self, root: tRoot) -> bool:
         """
@@ -66,10 +86,20 @@ class RoundingContainer(RootContainer):
         """
         try:
             self.rootSet.remove(
-                RoundingContainer.roundRoot(root, self.accuracy)
+                RoundingContainer.roundRoot(root, self.precision)
+            )
+            self.logger.debug(
+                "removed root %f+%fi from rounding container!",
+                root[0].real,
+                root[0].imag,
             )
             return True
         except KeyError:
+            self.logger.debug(
+                "failed to remove root %f+%fi from rounding container!",
+                root[0].real,
+                root[0].imag,
+            )
             return False
 
     def getRoots(self) -> tVec:
@@ -102,16 +132,19 @@ class RoundingContainer(RootContainer):
         self.rootSet.clear()
 
     @staticmethod
-    def roundRoot(root: tRoot, accuracy: int) -> tRoot:
+    def roundRoot(root: tRoot, precision: Tuple[int, int]) -> tRoot:
         """
         Round a given root to a given number of decimal places.
 
         :param root: a root to be rounded
         :type root: tRoot
-        :param accuracy: the number of decimal places to round to
-        :type accuracy: int
+        :param precision: the number of decimal places to round to
+        :type precision: int
         :return: the rounded root (multiplicity stays constant)
         :rtype: tRoot
         """
         x, y = root[0].real, root[0].imag
-        return complex(round(x, accuracy), round(y, accuracy)), root[1]
+        return complex(round(x, precision[0]), round(y, precision[1])), root[1]
+
+    def registerFilter(self, filterPredicate: Callable[[tRoot], bool]) -> None:
+        self.filters.append(filterPredicate)
