@@ -8,13 +8,14 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Callable, List, Optional, Set, Tuple
+from typing import Dict, Set, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
-
-from pyzeal_utils.root_container import RootContainer
 from pyzeal_types.root_types import tRoot, tVec
+
+from pyzeal_utils.filter_context import FilterContext
+from pyzeal_utils.root_container import RootContainer, tRootFilter
 
 
 class RoundingContainer(RootContainer):
@@ -38,12 +39,10 @@ class RoundingContainer(RootContainer):
         """
         self.precision = precision
         self.rootSet: Set[tRoot] = set()
-        self.filters: List[Callable[[tRoot], bool]] = []
+        self.filters: Dict[str, tRootFilter] = {}
         self.logger.info("initialized a rounding root container")
 
-    def addRoot(
-        self, root: tRoot, precision: Optional[Tuple[int, int]] = None
-    ) -> None:
+    def addRoot(self, root: tRoot, context: FilterContext) -> None:
         """
         Add a new root with given accuracy to the container. If the accuracy
         differs from the accuracy of roots already added then all previous
@@ -51,23 +50,23 @@ class RoundingContainer(RootContainer):
 
         :param root: the root to be added to the container
         :type root: tRoot
-        :param precision: the number of valid decimal places of `root`
-        :type precision: int
+        :param context: the context of the new root, required for filtering
+        :type context: FilterContext
         """
-        for filterPredicate in self.filters:
-            if not filterPredicate(root):
+        for filterPredicate in self.filters.values():
+            if not filterPredicate(root, context):
                 self.logger.debug(
                     "root %f+%fi was rejected by container filter!",
                     root[0].real,
                     root[0].imag,
                 )
                 return
-        if precision is not None and precision != self.precision:
+        if context.precision != self.precision:
             self.clear()
             self.logger.debug(
                 "new accuracy detected - rounding container cleared!"
             )
-            self.precision = precision
+            self.precision = context.precision
         self.logger.debug(
             "attempting to add new root %f+%fi to rounding container!",
             root[0].real,
@@ -146,5 +145,18 @@ class RoundingContainer(RootContainer):
         x, y = root[0].real, root[0].imag
         return complex(round(x, precision[0]), round(y, precision[1])), root[1]
 
-    def registerFilter(self, filterPredicate: Callable[[tRoot], bool]) -> None:
-        self.filters.append(filterPredicate)
+    def registerFilter(self, filterPredicate: tRootFilter, key: str) -> None:
+        """
+        TODO
+        """
+        self.filters[key] = filterPredicate
+
+    def unregisterFilter(self, key: str) -> None:
+        """
+        TODO
+        """
+        try:
+            self.filters.pop(key)
+            self.logger.debug("removed filter %s", key)
+        except KeyError:
+            self.logger.info("tried to remove non-existent filter %s!", key)

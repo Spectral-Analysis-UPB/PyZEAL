@@ -15,11 +15,11 @@ from itertools import product
 from warnings import filterwarnings
 
 import numpy as np
-from numpy.typing import NDArray
 import scipy as sp
+from numpy.typing import NDArray
+from pyzeal_utils.root_context import RootContext
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
-from pyzeal_utils.root_context import RootContext
 
 
 class NewtonGridAlgorithm(FinderAlgorithm):
@@ -54,7 +54,11 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         """
         self.logger.info(
             "starting newton grid search for %s on [%f, %f] x [%f, %f]",
-            context.f.__name__,
+            (
+                context.f.__name__
+                if hasattr(context.f, "__name__")
+                else "<unknown>"
+            ),
             context.reRan[0],
             context.reRan[1],
             context.imRan[0],
@@ -83,7 +87,7 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         for root in roots:
             # the newton algorithm does not determine root orders - placeholder
             # value can be anything non-positive
-            context.container.addRoot((root, 0), context.precision)
+            context.container.addRoot((root, 0), context.toFilterContext())
         if context.progress and context.task:
             context.progress.update(
                 context.task,

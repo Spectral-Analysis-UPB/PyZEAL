@@ -11,10 +11,13 @@ Authors:\n
 """
 
 from typing import Protocol, Tuple
+
 from numpy import int32
 from numpy.typing import NDArray
-
+from pyzeal_types.filter_types import FilterTypes
 from pyzeal_types.root_types import tVec
+from pyzeal_utils.container_factory import ContainerFactory
+from pyzeal_utils.root_container import RootContainer
 
 
 class RootFinderInterface(Protocol):
@@ -65,3 +68,20 @@ class RootFinderInterface(Protocol):
         :rtype: NDArray[np.int32]
         """
         ...
+
+    @property
+    def container(self) -> RootContainer:
+        """
+        TODO
+        """
+        ...
+
+    def setRootFilter(
+        self, filterType: FilterTypes, *, threshold: int = 3
+    ) -> None:
+        """
+        TODO
+        """
+        ContainerFactory.registerPreDefinedFilter(
+            self.container, filterType, threshold=threshold
+        )

@@ -13,18 +13,18 @@ from typing import Callable, Optional, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
+from pyzeal_logging.log_levels import LogLevel
+from pyzeal_logging.loggable import Loggable
+from pyzeal_types.algorithm_types import AlgorithmTypes
+from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.root_types import tVec
+from pyzeal_utils.algorithm_factory import AlgorithmFactory
+from pyzeal_utils.container_factory import ContainerFactory
+from pyzeal_utils.finder_progress import FinderProgressBar
+from pyzeal_utils.root_context import RootContext
 from rich.progress import TaskID
 
 from pyzeal.finder_interface import RootFinderInterface
-from pyzeal_types.algorithm_types import AlgorithmTypes
-from pyzeal_types.root_types import tVec
-from pyzeal_types.container_types import ContainerTypes
-from pyzeal_utils.algorithm_factory import AlgorithmFactory
-from pyzeal_utils.container_factory import ContainerFactory
-from pyzeal_utils.root_context import RootContext
-from pyzeal_utils.finder_progress import FinderProgressBar
-from pyzeal_logging.loggable import Loggable
-from pyzeal_logging.log_levels import LogLevel
 
 
 class RootFinder(RootFinderInterface, Loggable):
@@ -41,6 +41,8 @@ class RootFinder(RootFinderInterface, Loggable):
         "numSamplePoints",
         "verbose",
         "precision",
+        "_filterFunctionIsZero",
+        "_filterZeroIsInBounds",
     )
 
     def __init__(
@@ -82,14 +84,18 @@ class RootFinder(RootFinderInterface, Loggable):
         )
         self.precision = precision
         self.verbose = verbose
+        self._filterFunctionIsZero = False
+        self._filterZeroIsInBounds = False
         self.logger.debug(
             "initialized a (nonparallel) root finder %s!", str(self)
         )
 
     def __str__(self) -> str:
-        if self.df is None:
+        if hasattr(self.f, "__name__") and hasattr(self.df, "__name__"):
+            return f"RootFinder({self.f.__name__}, {self.df.__name__})"
+        if hasattr(self.f, "__name__"):
             return f"RootFinder({self.f.__name__}, df=None)"
-        return f"RootFinder({self.f.__name__}, {self.df.__name__})"
+        return "RootFinder(<unnamed function>)"
 
     def calculateRoots(
         self,

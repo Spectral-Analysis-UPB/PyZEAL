@@ -10,9 +10,10 @@ Authors:\n
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
+from pyzeal_types.root_types import tHoloFunc
 from rich.progress import TaskID
 
-from pyzeal_types.root_types import tHoloFunc
+from pyzeal_utils.filter_context import FilterContext
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.root_container import RootContainer
 
@@ -32,3 +33,9 @@ class RootContext:
     precision: Tuple[int, int] = 3, 3
     progress: Optional[FinderProgressBar] = None
     task: Optional[TaskID] = None
+
+    def toFilterContext(self) -> FilterContext:
+        """
+        TODO
+        """
+        return FilterContext(self.f, self.reRan, self.imRan, self.precision)

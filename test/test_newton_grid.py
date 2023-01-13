@@ -1,5 +1,5 @@
 """
-Test the grid-based Newton algorithm implementation.
+Tests of the grid-based Newton algorithm implementation.
 
 Authors:\n
 - Luca Wasmuth\n
@@ -7,17 +7,19 @@ Authors:\n
 
 from datetime import timedelta
 from functools import partial
+
 import numpy as np
 import pytest
-
-from hypothesis import given, strategies, settings
+from hypothesis import given, settings, strategies
 from numpy.polynomial import Polynomial
-from .newton_grid import NewtonGridRootFinder
+from pyzeal import RootFinder
+from pyzeal_types.filter_types import FilterTypes
 
 
 # multiprocessing is significantly easier if you don't use anonymous lambda
 # functions, but as these make for more readable and modifiable test cases
 # we wrap using these functions and functools.partial
+# TODO: allow multiprocessing to work with lambdas
 def polynomial(n, x):
     """Evaluates the nth polynomial test case at x"""
     return polynomialFunctions[n][0](x)
@@ -106,32 +108,30 @@ elementaryFunctions = [
     ),
 ]
 
-# 20 is enough to pass all tests, while running faster than the default 50
+# 20 is enough to pass all tests while still running faster than the default 50
 NUM_SAMPLE_POINTS = 20
 
 
 @pytest.mark.parametrize("testID", range(len(polynomialFunctions)))
 def testNewtonGridRootFinderPolynomials(testID) -> None:
-    r"""
-    Test the Newton-Grid-Rootfinder with polynomial functions.
-    """
+    "Test the Newton-Grid-Rootfinder with polynomial functions."
     testCase = [
         partial(polynomial, testID),
         partial(polynomialD, testID),
         polynomialFunctions[testID][2],
     ]
     for numSamplePoints in [20, 50, 100]:
-        gridRF = NewtonGridRootFinder(
+        gridRF = RootFinder(
             testCase[0], testCase[1], numSamplePoints=numSamplePoints
         )
-        gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
-        print(gridRF.getRoots())
-        foundRoots = np.sort_complex(
-            np.array([root for (root, order) in gridRF.getRoots()])
-        )
+        gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))
+        gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
+        gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
+        print(gridRF.roots)
+        foundRoots = np.sort_complex(gridRF.roots)
         expectedRoots = np.sort_complex(np.array(testCase[2]))
-        # First variant fails 1 test, second fails 3 tests
-        # However, these seem to be different ones
+        # First variant fails 1 test, second fails 3 tests - however, these
+        # seem to be different ones:
         # assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
         # assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
         assert np.allclose(
@@ -150,26 +150,25 @@ def testNewtonGridRootFinderElementaryFunctions(testID) -> None:
         partial(elementaryD, testID),
         elementaryFunctions[testID][2],
     ]
-    gridRF = NewtonGridRootFinder(
+    gridRF = RootFinder(
         testCase[0], testCase[1], numSamplePoints=NUM_SAMPLE_POINTS
     )
-    gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
-    foundRoots = np.sort_complex(
-        np.array([root for (root, order) in gridRF.getRoots()])
-    )
+    gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
+    gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
+    gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))
+    foundRoots = np.sort_complex(gridRF.roots)
     expectedRoots = np.sort_complex(np.array(testCase[2]))
     assert np.allclose(
         foundRoots, expectedRoots, atol=1e-3
     ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
 
 
-def testNewtonGridRootFinderException() -> None:
+def testNewtonGridRootFinderEmptyRoots() -> None:
     r"""
     Test correct exception handling of the Newton-Grid-Rootfinder.
     """
-    gridRF = NewtonGridRootFinder(lambda x: x, lambda x: 1)
-    with pytest.raises(ValueError):
-        gridRF.getRoots()
+    gridRF = RootFinder(lambda x: x, lambda x: 1)
+    assert len(gridRF.roots) == 0
 
 
 @pytest.mark.parametrize("testID", range(len(polynomialFunctions)))
@@ -183,13 +182,13 @@ def testNewtonGridRootFinderPolynomialDerivativefree(testID) -> None:
         partial(polynomialD, testID),
         polynomialFunctions[testID][2],
     ]
-    gridRF = NewtonGridRootFinder(
+    gridRF = RootFinder(
         testCase[0], df=None, numSamplePoints=NUM_SAMPLE_POINTS
     )
-    gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
-    foundRoots = np.sort_complex(
-        np.array([root for (root, order) in gridRF.getRoots()])
-    )
+    gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
+    gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
+    gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))
+    foundRoots = np.sort_complex(gridRF.roots)
     expectedRoots = np.sort_complex(np.array(testCase[2]))
     # assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
     # assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
@@ -210,13 +209,13 @@ def testNewtonGridRootFinderElementaryDerivativefree(testID) -> None:
         partial(elementaryD, testID),
         elementaryFunctions[testID][2],
     ]
-    gridRF = NewtonGridRootFinder(
+    gridRF = RootFinder(
         testCase[0], df=None, numSamplePoints=NUM_SAMPLE_POINTS
     )
-    gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
-    foundRoots = np.sort_complex(
-        np.array([root for (root, order) in gridRF.getRoots()])
-    )
+    gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
+    gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
+    gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))
+    foundRoots = np.sort_complex(gridRF.roots)
     expectedRoots = np.sort_complex(np.array(testCase[2]))
     assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
 
@@ -228,17 +227,17 @@ def testNewtonGridRootFinderElementaryDerivativefree(testID) -> None:
 )
 @settings(deadline=(timedelta(seconds=2)), max_examples=5)
 def testNewtonGridRootFinderHypothesis(roots) -> None:
-    r"""
+    """
     Test the Newton-Grid-Rootfinder with data generated by the hypothesis
     package.
     """
     f = Polynomial.fromroots(roots)
     df = f.deriv()
-    gridRF = NewtonGridRootFinder(f, df=df, numSamplePoints=NUM_SAMPLE_POINTS)
-    gridRF.calcRoots((-10, 10), (-10, 10), precision=(3, 3))
-    foundRoots = np.sort_complex(
-        np.array([root for (root, order) in gridRF.getRoots()])
-    )
+    gridRF = RootFinder(f, df=df, numSamplePoints=NUM_SAMPLE_POINTS)
+    gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
+    gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
+    gridRF.calculateRoots((-10, 10), (-10, 10), precision=(3, 3))
+    foundRoots = np.sort_complex(gridRF.roots)
     # We only find a higher-order zero once, so we have to remove duplicates
     uniqueRoots = list(set(roots))
     expectedRoots = np.sort_complex(np.array(uniqueRoots))
@@ -250,24 +249,24 @@ def testNewtonGridRootFinderHypothesis(roots) -> None:
         pass  # This happens if allclose is called with differing sizes
 
 
-def rootsMatchClosely(r1, r2, atol) -> bool:
+def rootsMatchClosely(roots1, roots2, atol) -> bool:
     r"""
     Test, if two sets contain the same roots, up to inaccuraccy of size atol
-    :param r1: first set of roots
-    :type r1: Set[complex]
-    :param r2: second set of roots
-    :type r2: Set[complex]
+    :param roots1: first set of roots
+    :type roots1: Set[complex]
+    :param roots2: second set of roots
+    :type roots2: Set[complex]
     :return: True if the number of zeroes in r1 and r2 is the same, and they
     lie at most atol apart
     :rtype: bool
     """
-    noUnmatchedRoot: bool = True
-    for z in r1:
-        foundRootForZ: bool = False
-        for root in r2:
-            if np.abs(z - root) < atol:
-                foundRootForZ = True
-        if not foundRootForZ:
-            noUnmatchedRoot = False
+    for root1 in roots1:
+        foundEqualRoot: bool = False
+        for root2 in roots2:
+            if np.abs(root1 - root2) < atol:
+                foundEqualRoot = True
+                break
+        if not foundEqualRoot:
+            return False
 
-    return noUnmatchedRoot
+    return True

@@ -11,26 +11,27 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Callable, Protocol, Tuple
+from typing import Protocol
 
 import numpy as np
 from numpy.typing import NDArray
-
-from pyzeal_types.root_types import tRoot, tVec
 from pyzeal_logging.loggable import Loggable
+from pyzeal_types.root_types import tRoot, tVec
+
+from pyzeal_utils.filter_context import FilterContext, tRootFilter
 
 
 class RootContainer(Loggable, Protocol):
     "Structural interface for container classes meant to hold root data."
 
-    def addRoot(self, root: tRoot, precision: Tuple[int, int]) -> None:
+    def addRoot(self, root: tRoot, context: FilterContext) -> None:
         """
         Add a root to the container.
 
         :param root: the root to be added to the container
         :type root: tRoot
-        :param precision: the number of valid decimal places of `root`
-        :type precision: Tuple[int, int]
+        :param context: the number of valid decimal places of `root`
+        :type context: FilterContext
         """
         ...
 
@@ -69,11 +70,25 @@ class RootContainer(Loggable, Protocol):
         "Clear all data from the container."
         ...
 
-    def registerFilter(self, filterPredicate: Callable[[tRoot], bool]) -> None:
+    def registerFilter(self, filterPredicate: tRootFilter, key: str) -> None:
         """
         Add a new filter predicate to this container instance. The filtering
         applies to all roots added after the filter is registered. To guarantee
         a consistent set of roots any implementation should clear its internal
         root buffer before/after registering a filter.
+
+        :param filterPredicate: the predicate used to filter roots
+        :type filterPredicate: Callable[[tRoot, RootContext], bool]
+        :param key: a (unique) key under which the filter is registered
+        :type key: str
+        """
+        ...
+
+    def unregisterFilter(self, key: str) -> None:
+        """
+        Remove a previously registered filter by key.
+
+        :param key: key value for the filter to remove
+        :type key: str
         """
         ...
