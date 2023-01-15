@@ -1,0 +1,5 @@
+div.documentwrapper div.bodywrapper { margin-left: 300px;}
+div.document div.sphinxsidebar { width: 300px; }
+div.sphinxsidebarwrapper div {
+    overflow: auto;
+}
