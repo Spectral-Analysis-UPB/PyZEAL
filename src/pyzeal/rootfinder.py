@@ -9,7 +9,7 @@ Authors:\n
 """
 
 from signal import SIG_IGN, SIGINT, signal
-from typing import Callable, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
@@ -17,11 +17,12 @@ from pyzeal_logging.log_levels import LogLevel
 from pyzeal_logging.loggable import Loggable
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
-from pyzeal_types.root_types import tVec
+from pyzeal_types.root_types import tHoloFunc, tVec
 from pyzeal_utils.algorithm_factory import AlgorithmFactory
 from pyzeal_utils.container_factory import ContainerFactory
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.root_context import RootContext
+from pyzeal_utils.root_container import RootContainer
 from rich.progress import TaskID
 
 from pyzeal.finder_interface import RootFinderInterface
@@ -36,7 +37,7 @@ class RootFinder(RootFinderInterface, Loggable):
         "f",
         "df",
         "algorithm",
-        "container",
+        "_container",
         "precision",
         "numSamplePoints",
         "verbose",
@@ -47,8 +48,8 @@ class RootFinder(RootFinderInterface, Loggable):
 
     def __init__(
         self,
-        f: Callable[[complex], complex],
-        df: Optional[Callable[[complex], complex]],
+        f: tHoloFunc,
+        df: Optional[tHoloFunc],
         *,
         containerType: ContainerTypes = ContainerTypes.ROUNDING_CONTAINER,
         algorithmType: AlgorithmTypes = AlgorithmTypes.NEWTON_GRID,
@@ -79,7 +80,7 @@ class RootFinder(RootFinderInterface, Loggable):
         self.algorithm = AlgorithmFactory.getConcreteAlgorithm(
             algorithmType, numSamplePoints=numSamplePoints
         )
-        self.container = ContainerFactory.getConcreteContainer(
+        self._container = ContainerFactory.getConcreteContainer(
             containerType, precision=precision
         )
         self.precision = precision
@@ -91,10 +92,14 @@ class RootFinder(RootFinderInterface, Loggable):
         )
 
     def __str__(self) -> str:
-        if hasattr(self.f, "__name__") and hasattr(self.df, "__name__"):
-            return f"RootFinder({self.f.__name__}, {self.df.__name__})"
-        if hasattr(self.f, "__name__"):
+        if hasattr(self.f, "__name__") and self.df is None:
             return f"RootFinder({self.f.__name__}, df=None)"
+        if (
+            hasattr(self.f, "__name__")
+            and self.df is not None
+            and hasattr(self.df, "__name__")
+        ):
+            return f"RootFinder({self.f.__name__}, {self.df.__name__})"
         return "RootFinder(<unnamed function>)"
 
     def calculateRoots(
@@ -186,3 +191,14 @@ class RootFinder(RootFinderInterface, Loggable):
         super().setLevel(level)
         self.container.setLevel(level)
         self.algorithm.setLevel(level)
+
+    @property
+    def container(self) -> RootContainer:
+        """
+        TODO
+        """
+        return self._container
+
+    @container.setter
+    def container(self, value: RootContainer) -> None:
+        self._container = value

@@ -10,7 +10,8 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Protocol, Tuple
+from abc import ABC, abstractmethod
+from typing import Tuple
 
 from numpy import int32
 from numpy.typing import NDArray
@@ -20,13 +21,14 @@ from pyzeal_utils.container_factory import ContainerFactory
 from pyzeal_utils.root_container import RootContainer
 
 
-class RootFinderInterface(Protocol):
+class RootFinderInterface(ABC):
     """
     Interface for the main root finding API. After initializing a root finder
     for a given concrete problem methods for calculating roots as well as
     properties for retrieving roots and their orders are available.
     """
 
+    @abstractmethod
     def calculateRoots(
         self,
         reRan: Tuple[float, float],
@@ -45,9 +47,9 @@ class RootFinderInterface(Protocol):
         :param precision: accuracy of the search in real and imaginary parts
         :type precision: Tuple[int, int]
         """
-        ...
 
     @property
+    @abstractmethod
     def roots(self) -> tVec:
         """
         Return the roots calculated with this root finder through previous
@@ -56,9 +58,9 @@ class RootFinderInterface(Protocol):
         :return: the set of roots calculated by this finder
         :rtype: NDArray[np.complex128]
         """
-        ...
 
     @property
+    @abstractmethod
     def orders(self) -> NDArray[int32]:
         """
         Return the orders of the roots calculated with this finder. The output
@@ -67,13 +69,17 @@ class RootFinderInterface(Protocol):
         :return: the orders of the roots calculated by this finder
         :rtype: NDArray[np.int32]
         """
-        ...
 
     @property
+    @abstractmethod
     def container(self) -> RootContainer:
         """
         TODO
         """
+
+    @container.setter
+    @abstractmethod
+    def container(self, value: RootContainer) -> None:
         ...
 
     def setRootFilter(

@@ -12,7 +12,6 @@ from typing import Tuple, cast
 from pyzeal_logging.config import initLogger
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
-from pyzeal_types.root_types import tHoloFunc
 
 from pyzeal_utils.root_container import RootContainer
 from pyzeal_utils.rounding_container import RoundingContainer

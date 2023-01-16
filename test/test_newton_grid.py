@@ -167,7 +167,7 @@ def testNewtonGridRootFinderEmptyRoots() -> None:
     r"""
     Test correct exception handling of the Newton-Grid-Rootfinder.
     """
-    gridRF = RootFinder(lambda x: x, lambda x: 1)
+    gridRF = RootFinder(lambda x: x * x, lambda x: 2 * x)
     assert len(gridRF.roots) == 0
 
 
