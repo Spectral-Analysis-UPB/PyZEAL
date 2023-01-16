@@ -21,8 +21,8 @@ from pyzeal_types.root_types import tHoloFunc, tVec
 from pyzeal_utils.algorithm_factory import AlgorithmFactory
 from pyzeal_utils.container_factory import ContainerFactory
 from pyzeal_utils.finder_progress import FinderProgressBar
-from pyzeal_utils.root_context import RootContext
 from pyzeal_utils.root_container import RootContainer
+from pyzeal_utils.root_context import RootContext
 from rich.progress import TaskID
 
 from pyzeal.finder_interface import RootFinderInterface
@@ -154,7 +154,7 @@ class RootFinder(RootFinderInterface, Loggable):
             task,
         )
         # suppress command line `kill` signals during algorithm runtime
-        signal(SIGINT, SIG_IGN)
+        # signal(SIGINT, SIG_IGN)
         try:
             self.logger.info("attempting to calculate roots...")
             self.algorithm.calcRoots(context)

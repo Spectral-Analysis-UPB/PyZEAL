@@ -10,15 +10,15 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import cast, Final, Literal, Tuple, Union
+from typing import Final, Literal, Tuple, Union, cast
 
 import numpy as np
+from numpy.typing import NDArray
+from pyzeal_logging.loggable import Loggable
+from pyzeal_types.root_types import tRecGrid
+from pyzeal_utils.root_context import RootContext
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
-from pyzeal_logging.loggable import Loggable
-from pyzeal_utils.root_context import RootContext
-from pyzeal_types.root_types import tRecGrid
-
 
 ####################
 # Global Constants #
@@ -28,11 +28,12 @@ from pyzeal_types.root_types import tRecGrid
 TWO_PI: Final[float] = 5.0
 FOUR_PI: Final[float] = 8.0
 # constant determining the refinement of complex arrays for large phi values
-Z_REFINE: Final[int] = 10
+Z_REFINE: Final[int] = 100
 # default values for rootfinder arguments
 DEFAULT_NUM_PTS = 6500
 DEFAULT_DELTA_PHI = 0.01
 DEFAULT_MAX_PRECISION = 1e-10
+MAX_Z_LENGTH = 100 * DEFAULT_NUM_PTS
 
 
 class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
@@ -109,7 +110,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         zEnd: complex,
         context: RootContext,
         pos: Union[Literal["horizontal"], Literal["vertical"]],
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[NDArray[np.complex128], NDArray[np.complex128]]:
         r"""
         Calculate an array of complex argument values from the function values
         of the target function `context.func` on the complex line
@@ -133,7 +134,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         zerosOnLine = np.where(funcArr == 0)[0]
         while zerosOnLine.size > 0:
             self.logger.debug(
-                "simple argument found root on the line [%s, %s]",
+                "simple argument found %d roots on the line [%s, %s]",
+                zerosOnLine.size,
                 str(zArr[0]),
                 str(zArr[-1]),
             )
@@ -157,7 +159,10 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
 
         # loop over entries in phiArr larger than deltaPhi
         idxPhi = np.where(abs(phiArr) >= self.deltaPhi)[0]
+        # increase the refinement size periodically
+        idx = 0
         while idxPhi.size > 0:
+            idx += 1
             # refine grid between z values at large phi values
             k = idxPhi[0]
             self.logger.debug(
@@ -169,7 +174,12 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             if abs(zArr[k] - zArr[k + 1]) < self.maxPrecision:
                 self.logger.warning("maximum z-refinement depth reached!")
                 break
-            refinementFactor = int(Z_REFINE * abs(phiArr[k]) / self.deltaPhi)
+            if len(zArr) > MAX_Z_LENGTH:
+                self.logger.warning("maximum z-length reached!")
+                break
+            refinementFactor = int(
+                idx * Z_REFINE * abs(phiArr[k]) / self.deltaPhi
+            )
             zArrRefinement = np.linspace(
                 cast(complex, zArr[k]),
                 cast(complex, zArr[k + 1]),
@@ -227,11 +237,11 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         )
         self.logger.debug(
             "simple argument recursively refined with total phase=%f",
-            phi / (2. * np.pi)
+            phi / (2.0 * np.pi),
         )
 
         # check if current rectangle contains zeros
-        if phi < TWO_PI:
+        if phi <= TWO_PI:
             if context.progress is not None and context.task is not None:
                 context.progress.update(
                     context.task, advance=deltaRe * deltaIm
@@ -258,7 +268,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
                 zParts[2][0],
                 zParts[0][0],
                 phi,
-                context
+                context,
             )
             return
 
@@ -267,24 +277,16 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             zPartsNew, phiPartsNew = self.divideVertical(
                 zParts, phiParts, context
             )
-            self.calcRootsRecursion(
-                zPartsNew[0], phiPartsNew[0], context
-            )
+            self.calcRootsRecursion(zPartsNew[0], phiPartsNew[0], context)
 
-            self.calcRootsRecursion(
-                zPartsNew[1], phiPartsNew[1], context
-            )
+            self.calcRootsRecursion(zPartsNew[1], phiPartsNew[1], context)
         else:
             zPartsNew, phiPartsNew = self.divideHorizontal(
                 zParts, phiParts, context
             )
-            self.calcRootsRecursion(
-                zPartsNew[0], phiPartsNew[0], context
-            )
+            self.calcRootsRecursion(zPartsNew[0], phiPartsNew[0], context)
 
-            self.calcRootsRecursion(
-                zPartsNew[1], phiPartsNew[1], context
-            )
+            self.calcRootsRecursion(zPartsNew[1], phiPartsNew[1], context)
 
     def divideVertical(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
@@ -292,8 +294,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         r"""
         Divide a rectangle in the complex plane, given by its z-support points
         `zParts` and corresponding argument values `phiParts` of the function
-        values of `self.func` vertically in the middle. Zeros of `self.func`
-        found during the division process are put into `resultQueue`.
+        values of `context.func` vertically in the middle. Zeros found during
+        the division process are put into `context.container`.
 
         TODO
         """
@@ -368,8 +370,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         r"""
         Divide a rectangle in the complex plane, given by its z-support points
         `zParts` and corresponding argument values `phiParts` of the function
-        values of `self.func` horizontally in the middle. Zeros of `self.func`
-        found during the division process are put into `resultQueue`.
+        values of `context.f` horizontally in the middle. Zeros found during
+        the division process are put into `context.container`.
 
         TODO
         """
@@ -450,13 +452,13 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         """
         TODO
         """
-        newZero = (left.real + right.real + 1j * (bottom.imag + top.imag)) / 2.
+        newZero = (
+            left.real + right.real + 1j * (bottom.imag + top.imag)
+        ) / 2.0
         zOrder = int(np.round(phi / (2 * np.pi)))
-        context.container.addRoot(
-            (newZero, zOrder), context.toFilterContext()
-        )
+        context.container.addRoot((newZero, zOrder), context.toFilterContext())
         if context.progress is not None and context.task is not None:
             context.progress.update(
                 context.task,
-                advance=(right.real - left.real) * (top.imag - bottom.imag)
+                advance=(right.real - left.real) * (top.imag - bottom.imag),
             )

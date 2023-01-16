@@ -74,14 +74,12 @@ class RoundingContainer(RootContainer):
         )
         roundedRoot = RoundingContainer.roundRoot(root, self.precision)
         if self.logger.isEnabledFor(20) and roundedRoot in self.rootSet:
-            self.logger.info(
-                "duplicate root discarded by rounding container!"
-            )
+            self.logger.info("duplicate root discarded by rounding container!")
             return
         self.logger.info(
             "new root %f + %fi added to rounding container",
             roundedRoot[0].real,
-            roundedRoot[0].imag
+            roundedRoot[0].imag,
         )
         self.rootSet.add(roundedRoot)
 

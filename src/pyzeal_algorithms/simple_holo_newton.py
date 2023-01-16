@@ -63,7 +63,7 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
                 zParts[2][0],
                 zParts[0][0],
                 phi,
-                context
+                context,
             )
             return
 
@@ -80,29 +80,23 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
                     xStart,
                     context.df,
                     maxiter=50,
-                    tol=min(epsReal, epsImag)
+                    tol=min(epsReal, epsImag),
                 )
                 # results of scipy.optimize.newton are either numpy arrays
                 # (when started on sequences) or floats
                 if isinstance(newZero, np.ndarray):
-                    for pair in zip(
-                        newZero, np.ones_like(newZero, dtype=int)
-                    ):
+                    for pair in zip(newZero, np.ones_like(newZero, dtype=int)):
                         context.container.addRoot(
                             pair, context.toFilterContext()
                         )
                 else:
                     context.container.addRoot(
-                        (cast(complex, newZero), 1),
-                        context.toFilterContext()
+                        (cast(complex, newZero), 1), context.toFilterContext()
                     )
             except RuntimeError:
                 pass
             finally:
-                if (
-                    context.progress is not None
-                    and context.task is not None
-                ):
+                if context.progress is not None and context.task is not None:
                     context.progress.update(
                         context.task, advance=deltaRe * deltaIm
                     )
@@ -113,22 +107,14 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
             zPartsNew, phiPartsNew = self.divideVertical(
                 zParts, phiParts, context
             )
-            self.calcRootsRecursion(
-                zPartsNew[0], phiPartsNew[0], context
-            )
+            self.calcRootsRecursion(zPartsNew[0], phiPartsNew[0], context)
 
-            self.calcRootsRecursion(
-                zPartsNew[1], phiPartsNew[1], context
-            )
+            self.calcRootsRecursion(zPartsNew[1], phiPartsNew[1], context)
 
         else:
             zPartsNew, phiPartsNew = self.divideHorizontal(
                 zParts, phiParts, context
             )
-            self.calcRootsRecursion(
-                zPartsNew[0], phiPartsNew[0], context
-            )
+            self.calcRootsRecursion(zPartsNew[0], phiPartsNew[0], context)
 
-            self.calcRootsRecursion(
-                zPartsNew[1], phiPartsNew[1], context
-            )
+            self.calcRootsRecursion(zPartsNew[1], phiPartsNew[1], context)
