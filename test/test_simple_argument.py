@@ -5,7 +5,8 @@ import pytest
 
 from hypothesis import given, strategies, settings
 from numpy.polynomial import Polynomial
-from deprecated.simple_argument import HoloRootFinder
+from pyzeal import RootFinder
+from pyzeal_types import algorithm_types
 
 
 def polynomial(n, x):
@@ -125,9 +126,9 @@ elementaryFunctions = [
 
 @pytest.mark.parametrize("testID", range(len(polynomialFunctions)))
 def testSimpleArgumentPolynomials(testID) -> None:
-    hrf = HoloRootFinder(partial(polynomial, testID), epsCplx=1e-5 * (1 + 1j))
-    hrf.calcRoots((-5, 5), (-5, 5))
-    foundRoots = hrf.res
+    hrf = RootFinder(partial(polynomial, testID), algorithmType=algorithm_types.AlgorithmTypes.SIMPLE_ARGUMENT,  precision=(5,5))
+    hrf.calculateRoots((-5, 5), (-5, 5))
+    foundRoots = hrf.roots
     expectedRoots = np.sort_complex(polynomialFunctions[testID][2])
     assert np.allclose(
         foundRoots, expectedRoots, atol=1e-3
@@ -136,9 +137,9 @@ def testSimpleArgumentPolynomials(testID) -> None:
 
 @pytest.mark.parametrize("testID", range(len(elementaryFunctions)))
 def testSimpleArgumentElementary(testID) -> None:
-    hrf = HoloRootFinder(partial(elementary, testID), epsCplx=1e-5 * (1 + 1j))
-    hrf.calcRoots((-5, 5), (-5, 5))
-    foundRoots = hrf.res
+    hrf = RootFinder(partial(elementary, testID), algorithmType=algorithm_types.AlgorithmTypes.SIMPLE_ARGUMENT,  precision=(5,5))
+    hrf.calculateRoots((-5, 5), (-5, 5))
+    foundRoots = hrf.roots
     expectedRoots = np.sort_complex(elementaryFunctions[testID][2])
     assert np.allclose(
         foundRoots, expectedRoots, atol=1e-3
@@ -157,9 +158,9 @@ def testSimpleArgumentFinderHypothesis(roots) -> None:
     hypothesis package.
     """
     f = Polynomial.fromroots(roots)
-    argFinder = HoloRootFinder(f)
-    argFinder.calcRoots((-10, 10), (-10, 10), epsCplx=1e-4 * (1 + 1j))
-    foundRoots = np.sort_complex(argFinder.res)
+    argFinder = RootFinder(f, algorithmType=algorithm_types.AlgorithmTypes.SIMPLE_ARGUMENT,  precision=(5,5))
+    argFinder.calculateRoots((-10, 10), (-10, 10), epsCplx=1e-4 * (1 + 1j))
+    foundRoots = np.sort_complex(argFinder.roots)
     # We only find a higher-order zero once, so we have to remove duplicates
     uniqueRoots = list(set(roots))
     expectedRoots = np.sort_complex(np.array(uniqueRoots))
