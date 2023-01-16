@@ -138,6 +138,7 @@ def testSimpleArgumentPolynomials(testID) -> None:
         partial(polynomial, testID),
         None,
         algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+        verbose=False,
     )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
@@ -156,6 +157,7 @@ def testSimpleArgumentElementary(testID) -> None:
         partial(polynomial, testID),
         None,
         algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+        verbose=False,
     )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
@@ -180,7 +182,9 @@ def testSimpleArgumentFinderHypothesis(roots) -> None:
     hypothesis package.
     """
     f = Polynomial.fromroots(roots)
-    hrf = RootFinder(f, None, algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT)
+    hrf = RootFinder(
+        f, None, algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT, verbose=False
+    )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
     hrf.calculateRoots((-5, 5), (-5, 5), precision=(5, 5))

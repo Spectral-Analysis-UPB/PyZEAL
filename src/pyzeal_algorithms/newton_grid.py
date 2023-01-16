@@ -53,16 +53,8 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         :rtype: NDArray[complex128]
         """
         self.logger.info(
-            "starting newton grid search for %s on [%f, %f] x [%f, %f]",
-            (
-                context.f.__name__
-                if hasattr(context.f, "__name__")
-                else "<unknown>"
-            ),
-            context.reRan[0],
-            context.reRan[1],
-            context.imRan[0],
-            context.imRan[1],
+            "starting newton grid search for %s",
+            context.functionDataToString(),
         )
         rePoints = np.linspace(
             context.reRan[0],

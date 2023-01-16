@@ -8,6 +8,8 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+from typing import cast
+
 import numpy as np
 from scipy.optimize import newton
 
@@ -44,88 +46,89 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
         )
 
         # check if current rectangle contains zeros
-        if phi > TWO_PI:
-            # check if desired accuracy is aquired
-            if deltaRe < 10 ** (-context.precision[0]) and deltaIm < 10 ** (
-                -context.precision[1]
-            ):
-                newZero = 0.5 * (
-                    zParts[1][0].real
-                    + zParts[3][0].real
-                    + 1j * (zParts[2][0].imag + zParts[0][0].imag)
-                )
-                zOrder = int(np.round(phi / (2 * np.pi)))
-                context.container.addRoot(
-                    (newZero, zOrder), context.toFilterContext()
-                )
-                if context.progress is not None and context.task is not None:
-                    context.progress.update(
-                        context.task, advance=deltaRe * deltaIm
-                    )
-            elif (phi < FOUR_PI) and (deltaRe < 0.1) and (deltaIm < 0.1):
-                xStart = 0.5 * (
-                    zParts[1][0].real
-                    + zParts[3][0].real
-                    + 1j * (zParts[2][0].imag + zParts[0][0].imag)
-                )
-                try:
-                    newZero = newton(
-                        context.f,
-                        xStart,
-                        context.df,
-                        maxiter=50,
-                        tol=10
-                        ** (-max(context.precision[0], context.precision[1])),
-                    )
-                    if isinstance(newZero, np.ndarray):
-                        for pair in zip(
-                            newZero, np.ones_like(newZero, dtype=int)
-                        ):
-                            context.container.addRoot(
-                                pair, context.toFilterContext()
-                            )
-                    elif isinstance(newZero, complex):
-                        context.container.addRoot(
-                            (newZero, 1), context.toFilterContext()
-                        )
-                except RuntimeError:
-                    pass
-                finally:
-                    if (
-                        context.progress is not None
-                        and context.task is not None
-                    ):
-                        context.progress.update(
-                            context.task, advance=deltaRe * deltaIm
-                        )
-            else:
-                if deltaRe / (10 ** (-context.precision[0])) > deltaIm / (
-                    10 ** (-context.precision[1])
-                ):
-                    zPartsNew, phiPartsNew = self.divideVertical(
-                        zParts, phiParts, context
-                    )
-                    self.calcRootsRecursion(
-                        zPartsNew[0], phiPartsNew[0], context
-                    )
-
-                    self.calcRootsRecursion(
-                        zPartsNew[1], phiPartsNew[1], context
-                    )
-
-                else:
-                    zPartsNew, phiPartsNew = self.divideHorizontal(
-                        zParts, phiParts, context
-                    )
-                    self.calcRootsRecursion(
-                        zPartsNew[0], phiPartsNew[0], context
-                    )
-
-                    self.calcRootsRecursion(
-                        zPartsNew[1], phiPartsNew[1], context
-                    )
-        else:
+        if phi < TWO_PI:
             if context.progress is not None and context.task is not None:
                 context.progress.update(
                     context.task, advance=deltaRe * deltaIm
                 )
+            return
+
+        # check if desired accuracy is aquired
+        epsReal = 10 ** (-context.precision[0])
+        epsImag = 10 ** (-context.precision[1])
+        if deltaRe < epsReal and deltaIm < epsImag:
+            SimpleArgumentAlgorithm.getRootFromRectangle(
+                zParts[1][0],
+                zParts[3][0],
+                zParts[2][0],
+                zParts[0][0],
+                phi,
+                context
+            )
+            return
+
+        # check if the current box contains a simple root
+        if phi < FOUR_PI and deltaRe < 0.1 and deltaIm < 0.1:
+            xStart = 0.5 * (
+                zParts[1][0].real
+                + zParts[3][0].real
+                + 1j * (zParts[2][0].imag + zParts[0][0].imag)
+            )
+            try:
+                newZero = newton(
+                    context.f,
+                    xStart,
+                    context.df,
+                    maxiter=50,
+                    tol=min(epsReal, epsImag)
+                )
+                # results of scipy.optimize.newton are either numpy arrays
+                # (when started on sequences) or floats
+                if isinstance(newZero, np.ndarray):
+                    for pair in zip(
+                        newZero, np.ones_like(newZero, dtype=int)
+                    ):
+                        context.container.addRoot(
+                            pair, context.toFilterContext()
+                        )
+                else:
+                    context.container.addRoot(
+                        (cast(complex, newZero), 1),
+                        context.toFilterContext()
+                    )
+            except RuntimeError:
+                pass
+            finally:
+                if (
+                    context.progress is not None
+                    and context.task is not None
+                ):
+                    context.progress.update(
+                        context.task, advance=deltaRe * deltaIm
+                    )
+            return
+
+        # the current box contains a non-simple root and must be refined
+        if deltaRe / epsReal > deltaIm / epsImag:
+            zPartsNew, phiPartsNew = self.divideVertical(
+                zParts, phiParts, context
+            )
+            self.calcRootsRecursion(
+                zPartsNew[0], phiPartsNew[0], context
+            )
+
+            self.calcRootsRecursion(
+                zPartsNew[1], phiPartsNew[1], context
+            )
+
+        else:
+            zPartsNew, phiPartsNew = self.divideHorizontal(
+                zParts, phiParts, context
+            )
+            self.calcRootsRecursion(
+                zPartsNew[0], phiPartsNew[0], context
+            )
+
+            self.calcRootsRecursion(
+                zPartsNew[1], phiPartsNew[1], context
+            )

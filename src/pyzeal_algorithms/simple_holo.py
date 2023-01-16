@@ -32,7 +32,7 @@ Z_REFINE: Final[int] = 10
 # default values for rootfinder arguments
 DEFAULT_NUM_PTS = 6500
 DEFAULT_DELTA_PHI = 0.01
-DEFAULT_MAX_PRECISION = 1e-12
+DEFAULT_MAX_PRECISION = 1e-10
 
 
 class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
@@ -53,7 +53,16 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         maxPrecision: float = DEFAULT_MAX_PRECISION,
     ) -> None:
         r"""
-        TODO
+        Initialize a root finding algorithm that employs a straightforward,
+        simple adaptation of the argument principle which does not require
+        numerical quadrature.
+
+        :param numPts:
+        :type numPts: int
+        :param deltaPhi:
+        :type deltaPhi: float
+        :param maxPrecision:
+        :type maxPrecision: float
         """
         self.numPts = numPts
         self.deltaPhi = deltaPhi
@@ -62,22 +71,17 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
 
     def calcRoots(self, context: RootContext) -> None:
         r"""
-        TODO
+        Start a root calculation using a simple argument principle base root
+        finder. This routine sets up the horizontal (`aZ` and `cZ`) and
+        vertical (`bZ` and `dZ`) support points. Then it delegates the actual
+        work of recursive refinement to the routine `calcRootsRecursion`.
 
         :param context: context in which the algorithm operates
         :type context: RootContext
         """
         self.logger.info(
-            "starting simple argument search for %s on [%f, %f] x [%f, %f]",
-            (
-                context.f.__name__
-                if hasattr(context.f, "__name__")
-                else "<unknown>"
-            ),
-            context.reRan[0],
-            context.reRan[1],
-            context.imRan[0],
-            context.imRan[1],
+            "starting simple argument search for %s",
+            context.functionDataToString(),
         )
 
         x1, x2 = context.reRan
@@ -108,12 +112,21 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     ) -> Tuple[np.ndarray, np.ndarray]:
         r"""
         Calculate an array of complex argument values from the function values
-        of `self.func` on the complex line `[zStart, zEnd]`. Zeros of
-        `self.func` found during this procedure are put into `resultQueue` and
-        the complex line is adjusted by translating into direction `pos` by a
-        small offset.
+        of the target function `context.func` on the complex line
+        `[zStart, zEnd]`. Zeros of the target function found during this
+        procedure are put into `context.container` immediately and the complex
+        line is adjusted by translating into direction `pos` by a small offset.
 
-        TODO
+        :param zStart:
+        :type zStart: complex
+        :param zEnd:
+        :type zEnd: complex
+        :param context:
+        :type context: RootContext
+        :param pos:
+        :type pos: `horizontal` | `vertical`
+        :return:
+        :rtype: Tuple[NDArray[complex], NDArray[complex]]
         """
         zArr = np.linspace(zStart, zEnd, self.numPts)
         funcArr = context.f(zArr)
@@ -124,10 +137,11 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
                 str(zArr[0]),
                 str(zArr[-1]),
             )
-            newZeros = zArr[zerosOnLine]
             # order of these zeros is not determined further, so put 0
-            for pair in zip(newZeros, np.zeros_like(newZeros, dtype=int)):
-                context.container.addRoot(pair, context.toFilterContext())
+            for newRoot in zArr[zerosOnLine]:
+                context.container.addRoot(
+                    (newRoot, 0), context.toFilterContext()
+                )
             # adjust line according to 'pos'
             if pos == "vertical":
                 zArr += 2 * 10 ** (-context.precision[0])
@@ -136,10 +150,10 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             funcArr = context.f(zArr)
             zerosOnLine = np.where(funcArr == 0)[0]
 
-        # facFuncArr is of the form f(z_{k+1})/f(z_k)
-        facFuncArr = funcArr[1:] / funcArr[:-1]
+        # build the array f(z_{k+1})/f(z_k) of quotients of successive values
+        funcArr = funcArr[1:] / funcArr[:-1]
         # compute change in argument between two points on the line
-        phiArr = np.arctan2(facFuncArr.imag, facFuncArr.real)
+        phiArr = np.arctan2(funcArr.imag, funcArr.real)
 
         # loop over entries in phiArr larger than deltaPhi
         idxPhi = np.where(abs(phiArr) >= self.deltaPhi)[0]
@@ -147,12 +161,13 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             # refine grid between z values at large phi values
             k = idxPhi[0]
             self.logger.debug(
-                "Refining the line between [%s, %s] as phi=%s",
+                "Refining the line between [%s, %s] because phase change=%s",
                 str(zArr[k]),
                 str(zArr[k + 1]),
                 str(phiArr[k]),
             )
             if abs(zArr[k] - zArr[k + 1]) < self.maxPrecision:
+                self.logger.warning("maximum z-refinement depth reached!")
                 break
             refinementFactor = int(Z_REFINE * abs(phiArr[k]) / self.deltaPhi)
             zArrRefinement = np.linspace(
@@ -163,9 +178,10 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             funcArr = context.f(zArrRefinement)
             zerosOnLine = np.where(funcArr == 0)[0]
             while zerosOnLine.size > 0:
-                newZeros = zArrRefinement[zerosOnLine]
-                for pair in zip(newZeros, np.zeros_like(newZeros, dtype=int)):
-                    context.container.addRoot(pair, context.toFilterContext())
+                for newZero in zArrRefinement[zerosOnLine]:
+                    context.container.addRoot(
+                        (newZero, 0), context.toFilterContext()
+                    )
                 if pos == "vertical":
                     zArrRefinement += 2 * 10 ** (-context.precision[0])
                 else:
@@ -173,8 +189,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
                 funcArr = context.f(zArrRefinement)
                 zerosOnLine = np.where(funcArr == 0)[0]
 
-            facFuncArr = funcArr[1:] / funcArr[:-1]
-            phiArrRefinement = np.arctan2(facFuncArr.imag, facFuncArr.real)
+            funcArr = funcArr[1:] / funcArr[:-1]
+            phiArrRefinement = np.arctan2(funcArr.imag, funcArr.real)
 
             # concatenate old and new arrays
             zArr = np.concatenate(
@@ -209,66 +225,66 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             + phiParts[2].sum()
             + phiParts[3].sum()
         )
+        self.logger.debug(
+            "simple argument recursively refined with total phase=%f",
+            phi / (2. * np.pi)
+        )
 
         # check if current rectangle contains zeros
-        if phi > TWO_PI:
-            self.logger.debug(
-                "Rectangle [%s, %s] x [%s, %s] contains zeros with phase=%s",
-                str(zParts[1][0]),
-                str(zParts[3][0]),
-                str(zParts[2][0]),
-                str(zParts[0][0]),
-                str(phi),
-            )
-            self.logger.debug("Rectangle size is %f x %f", deltaRe, deltaIm)
-            # check if desired accuracy is aquired
-            if deltaRe < 10 ** (-context.precision[0]) and deltaIm < 10 ** (
-                -context.precision[1]
-            ):
-                newZero = 0.5 * (
-                    zParts[1][0].real
-                    + zParts[3][0].real
-                    + 1j * (zParts[2][0].imag + zParts[0][0].imag)
-                )
-                zOrder = int(np.round(phi / (2 * np.pi)))
-                context.container.addRoot(
-                    (newZero, zOrder), context.toFilterContext()
-                )
-                if context.progress is not None and context.task is not None:
-                    context.progress.update(
-                        context.task, advance=deltaRe * deltaIm
-                    )
-            else:
-                if deltaRe / (10 ** (-context.precision[0])) > deltaIm / (
-                    10 ** (-context.precision[0])
-                ):
-                    zPartsNew, phiPartsNew = self.divideVertical(
-                        zParts, phiParts, context
-                    )
-                    self.calcRootsRecursion(
-                        zPartsNew[0], phiPartsNew[0], context
-                    )
-
-                    self.calcRootsRecursion(
-                        zPartsNew[1], phiPartsNew[1], context
-                    )
-
-                else:
-                    zPartsNew, phiPartsNew = self.divideHorizontal(
-                        zParts, phiParts, context
-                    )
-                    self.calcRootsRecursion(
-                        zPartsNew[0], phiPartsNew[0], context
-                    )
-
-                    self.calcRootsRecursion(
-                        zPartsNew[1], phiPartsNew[1], context
-                    )
-        else:
+        if phi < TWO_PI:
             if context.progress is not None and context.task is not None:
                 context.progress.update(
                     context.task, advance=deltaRe * deltaIm
                 )
+            return
+
+        # the current rectangle does contain (at least one) zero(s)
+        self.logger.debug(
+            "Rectangle [%s, %s] x [%s, %s] contains zeros!",
+            str(zParts[1][0]),
+            str(zParts[3][0]),
+            str(zParts[2][0]),
+            str(zParts[0][0]),
+        )
+        self.logger.debug("Rectangle diameters are %f x %f", deltaRe, deltaIm)
+
+        # check if desired accuracy is aquired
+        epsReal = 10 ** (-context.precision[0])
+        epsImag = 10 ** (-context.precision[1])
+        if deltaRe < epsReal and deltaIm < epsImag:
+            SimpleArgumentAlgorithm.getRootFromRectangle(
+                zParts[1][0],
+                zParts[3][0],
+                zParts[2][0],
+                zParts[0][0],
+                phi,
+                context
+            )
+            return
+
+        # the current box contains a root and must be refined further
+        if deltaRe / epsReal > deltaIm / epsImag:
+            zPartsNew, phiPartsNew = self.divideVertical(
+                zParts, phiParts, context
+            )
+            self.calcRootsRecursion(
+                zPartsNew[0], phiPartsNew[0], context
+            )
+
+            self.calcRootsRecursion(
+                zPartsNew[1], phiPartsNew[1], context
+            )
+        else:
+            zPartsNew, phiPartsNew = self.divideHorizontal(
+                zParts, phiParts, context
+            )
+            self.calcRootsRecursion(
+                zPartsNew[0], phiPartsNew[0], context
+            )
+
+            self.calcRootsRecursion(
+                zPartsNew[1], phiPartsNew[1], context
+            )
 
     def divideVertical(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
@@ -421,3 +437,26 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             )
 
         return ((zTmp, (aZ, bZ, cZ, dZ)), (phiTmp, (aPhi, bPhi, cPhi, dPhi)))
+
+    @staticmethod
+    def getRootFromRectangle(
+        right: complex,
+        left: complex,
+        top: complex,
+        bottom: complex,
+        phi: float,
+        context: RootContext,
+    ) -> None:
+        """
+        TODO
+        """
+        newZero = (left.real + right.real + 1j * (bottom.imag + top.imag)) / 2.
+        zOrder = int(np.round(phi / (2 * np.pi)))
+        context.container.addRoot(
+            (newZero, zOrder), context.toFilterContext()
+        )
+        if context.progress is not None and context.task is not None:
+            context.progress.update(
+                context.task,
+                advance=(right.real - left.real) * (top.imag - bottom.imag)
+            )

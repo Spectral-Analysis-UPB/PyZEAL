@@ -68,11 +68,22 @@ class RoundingContainer(RootContainer):
             )
             self.precision = context.precision
         self.logger.debug(
-            "attempting to add new root %f+%fi to rounding container!",
+            "attempting to add new root %f + %fi to rounding container!",
             root[0].real,
             root[0].imag,
         )
-        self.rootSet.add(RoundingContainer.roundRoot(root, self.precision))
+        roundedRoot = RoundingContainer.roundRoot(root, self.precision)
+        if self.logger.isEnabledFor(20) and roundedRoot in self.rootSet:
+            self.logger.info(
+                "duplicate root discarded by rounding container!"
+            )
+            return
+        self.logger.info(
+            "new root %f + %fi added to rounding container",
+            roundedRoot[0].real,
+            roundedRoot[0].imag
+        )
+        self.rootSet.add(roundedRoot)
 
     def removeRoot(self, root: tRoot) -> bool:
         """

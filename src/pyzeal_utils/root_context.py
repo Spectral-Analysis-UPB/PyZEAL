@@ -39,3 +39,13 @@ class RootContext:
         TODO
         """
         return FilterContext(self.f, self.reRan, self.imRan, self.precision)
+
+    def functionDataToString(self) -> str:
+        """
+        TODO
+        """
+        return (
+            f"{getattr(self.f, '__name__', '<unnamed>')} on rectangle "
+            + f"[{self.reRan[0]}, {self.reRan[1]}] "
+            + f"x [{self.imRan[0]}, {self.imRan[1]}]"
+        )

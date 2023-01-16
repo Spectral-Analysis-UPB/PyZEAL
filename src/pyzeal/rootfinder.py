@@ -92,15 +92,15 @@ class RootFinder(RootFinderInterface, Loggable):
         )
 
     def __str__(self) -> str:
-        if hasattr(self.f, "__name__") and self.df is None:
-            return f"RootFinder({self.f.__name__}, df=None)"
-        if (
-            hasattr(self.f, "__name__")
-            and self.df is not None
-            and hasattr(self.df, "__name__")
-        ):
-            return f"RootFinder({self.f.__name__}, {self.df.__name__})"
-        return "RootFinder(<unnamed function>)"
+        if self.df is not None:
+            return (
+                f"RootFinder(f={getattr(self.f, '__name__', '<unnamed>')}, "
+                + f"df={getattr(self.df, '__name__', '<unnamed>')})"
+            )
+        return (
+            f"RootFinder(f={getattr(self.f, '__name__', '<unnamed>')}, "
+            + "df=None"
+        )
 
     def calculateRoots(
         self,
@@ -138,8 +138,10 @@ class RootFinder(RootFinderInterface, Loggable):
         # initialize the progress bar
         progress = FinderProgressBar() if self.verbose else None
         task: Optional[TaskID] = None
-        if progress:
+        if progress is not None:
             task = progress.addTask((x2 - x1) * (y2 - y1))
+            progress.start()
+            self.logger.debug("starting progress bar...")
         # construct the root finding context
         context = RootContext(
             self.f,
@@ -156,6 +158,8 @@ class RootFinder(RootFinderInterface, Loggable):
         try:
             self.logger.info("attempting to calculate roots...")
             self.algorithm.calcRoots(context)
+            if progress is not None and task is not None:
+                progress.update(task, description=("[green] search finished!"))
         except KeyboardInterrupt:
             self.logger.warning(
                 "root calculation interrupted - some roots may be missing!"
@@ -164,6 +168,8 @@ class RootFinder(RootFinderInterface, Loggable):
                 progress.stop_task(task)
                 progress.update(task, visible=False)
                 progress.refresh()
+        if progress is not None and task is not None:
+            progress.stop()
 
     @property
     def roots(self) -> tVec:
