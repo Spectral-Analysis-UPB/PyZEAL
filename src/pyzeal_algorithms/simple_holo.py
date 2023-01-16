@@ -50,7 +50,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         *,
         numPts: int = DEFAULT_NUM_PTS,
         deltaPhi: float = DEFAULT_DELTA_PHI,
-        maxPrecision: float = DEFAULT_MAX_PRECISION
+        maxPrecision: float = DEFAULT_MAX_PRECISION,
     ) -> None:
         r"""
         TODO
@@ -96,9 +96,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         )
 
         self.calcRootsRecursion(
-            (aZ, bZ, cZ, dZ),
-            (aPhi, bPhi, cPhi, dPhi),
-            context
+            (aZ, bZ, cZ, dZ), (aPhi, bPhi, cPhi, dPhi), context
         )
 
     def genPhiArr(
@@ -106,7 +104,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-        pos: Union[Literal["horizontal"], Literal["vertical"]]
+        pos: Union[Literal["horizontal"], Literal["vertical"]],
     ) -> Tuple[np.ndarray, np.ndarray]:
         r"""
         Calculate an array of complex argument values from the function values
@@ -123,7 +121,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         while zerosOnLine.size > 0:
             self.logger.debug(
                 "simple argument found root on the line [%s, %s]",
-                str(zArr[0]), str(zArr[-1])
+                str(zArr[0]),
+                str(zArr[-1]),
             )
             newZeros = zArr[zerosOnLine]
             # order of these zeros is not determined further, so put 0
@@ -148,15 +147,18 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             # refine grid between z values at large phi values
             k = idxPhi[0]
             self.logger.debug(
-                "Refining the line between [%s, %s] as phi=%s", str(zArr[k]),
-                str(zArr[k + 1]), str(phiArr[k])
+                "Refining the line between [%s, %s] as phi=%s",
+                str(zArr[k]),
+                str(zArr[k + 1]),
+                str(phiArr[k]),
             )
             if abs(zArr[k] - zArr[k + 1]) < self.maxPrecision:
                 break
             refinementFactor = int(Z_REFINE * abs(phiArr[k]) / self.deltaPhi)
             zArrRefinement = np.linspace(
-                cast(complex, zArr[k]), cast(complex, zArr[k + 1]),
-                refinementFactor
+                cast(complex, zArr[k]),
+                cast(complex, zArr[k + 1]),
+                refinementFactor,
             )
             funcArr = context.f(zArrRefinement)
             zerosOnLine = np.where(funcArr == 0)[0]
@@ -187,10 +189,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         return zArr, phiArr
 
     def calcRootsRecursion(
-        self,
-        zParts: tRecGrid,
-        phiParts: tRecGrid,
-        context: RootContext
+        self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> None:
         r"""
         Calculates zeros of `self.func` by applying the argument principle over
@@ -215,16 +214,16 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         if phi > TWO_PI:
             self.logger.debug(
                 "Rectangle [%s, %s] x [%s, %s] contains zeros with phase=%s",
-                str(zParts[1][0]), str(zParts[3][0]), str(zParts[2][0]),
-                str(zParts[0][0]), str(phi)
+                str(zParts[1][0]),
+                str(zParts[3][0]),
+                str(zParts[2][0]),
+                str(zParts[0][0]),
+                str(phi),
             )
-            self.logger.debug(
-                "Rectangle size is %f x %f", deltaRe, deltaIm
-            )
+            self.logger.debug("Rectangle size is %f x %f", deltaRe, deltaIm)
             # check if desired accuracy is aquired
-            if (
-                deltaRe < 10 ** (-context.precision[0])
-                and deltaIm < 10 ** (-context.precision[1])
+            if deltaRe < 10 ** (-context.precision[0]) and deltaIm < 10 ** (
+                -context.precision[1]
             ):
                 newZero = 0.5 * (
                     zParts[1][0].real
@@ -240,23 +239,18 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
                         context.task, advance=deltaRe * deltaIm
                     )
             else:
-                if (
-                    deltaRe / (10 ** (-context.precision[0]))
-                    > deltaIm / (10 ** (-context.precision[0]))
+                if deltaRe / (10 ** (-context.precision[0])) > deltaIm / (
+                    10 ** (-context.precision[0])
                 ):
                     zPartsNew, phiPartsNew = self.divideVertical(
                         zParts, phiParts, context
                     )
                     self.calcRootsRecursion(
-                        zPartsNew[0],
-                        phiPartsNew[0],
-                        context
+                        zPartsNew[0], phiPartsNew[0], context
                     )
 
                     self.calcRootsRecursion(
-                        zPartsNew[1],
-                        phiPartsNew[1],
-                        context
+                        zPartsNew[1], phiPartsNew[1], context
                     )
 
                 else:
@@ -264,15 +258,11 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
                         zParts, phiParts, context
                     )
                     self.calcRootsRecursion(
-                        zPartsNew[0],
-                        phiPartsNew[0],
-                        context
+                        zPartsNew[0], phiPartsNew[0], context
                     )
 
                     self.calcRootsRecursion(
-                        zPartsNew[1],
-                        phiPartsNew[1],
-                        context
+                        zPartsNew[1], phiPartsNew[1], context
                     )
         else:
             if context.progress is not None and context.task is not None:

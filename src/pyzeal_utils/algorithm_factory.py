@@ -15,6 +15,7 @@ from pyzeal_algorithms.newton_grid import NewtonGridAlgorithm
 from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal_algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
 from pyzeal_logging.config import initLogger
+from pyzeal_logging.log_levels import LogLevel
 
 
 class AlgorithmFactory:
@@ -60,3 +61,13 @@ class AlgorithmFactory:
             "requested usage of the default algorithm..."
         )
         return NewtonGridAlgorithm()
+
+    @staticmethod
+    def setLevel(level: LogLevel) -> None:
+        """
+        Set the log level.
+
+        :param level: the new log level
+        :type level: pyzeal_logging.log_levels.LogLevel
+        """
+        AlgorithmFactory.logger.setLevel(level=level.value)

@@ -9,10 +9,12 @@ Authors:\n
 
 from typing import Tuple, cast
 
+import numpy as np
+
 from pyzeal_logging.config import initLogger
+from pyzeal_logging.log_levels import LogLevel
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
-
 from pyzeal_utils.root_container import RootContainer
 from pyzeal_utils.rounding_container import RoundingContainer
 
@@ -70,7 +72,20 @@ class ContainerFactory:
         if filterType == FilterTypes.FUNCTION_VALUE_ZERO:
             container.registerFilter(
                 lambda root, context: (
-                    cast(bool, abs(context.f(root[0])) < 10 ** (-threshold))
+                    cast(
+                        bool,
+                        np.abs(
+                            context.f(
+                                np.array(
+                                    [
+                                        root[0],
+                                    ],
+                                    dtype=np.complex128,
+                                )
+                            )
+                        )
+                        < 10 ** (-threshold),
+                    )
                 ),
                 filterType.value,
             )
@@ -86,3 +101,13 @@ class ContainerFactory:
         ContainerFactory.logger.debug(
             "registered a new %s filter!", filterType.value
         )
+
+    @staticmethod
+    def setLevel(level: LogLevel) -> None:
+        """
+        Set the log level.
+
+        :param level: the new log level
+        :type level: pyzeal_logging.log_levels.LogLevel
+        """
+        ContainerFactory.logger.setLevel(level=level.value)

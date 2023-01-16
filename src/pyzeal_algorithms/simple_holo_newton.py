@@ -11,9 +11,11 @@ Authors:\n
 import numpy as np
 from scipy.optimize import newton
 
-from pyzeal_algorithms.simple_holo import (SimpleArgumentAlgorithm,
-                                           TWO_PI,
-                                           FOUR_PI)
+from pyzeal_algorithms.simple_holo import (
+    SimpleArgumentAlgorithm,
+    TWO_PI,
+    FOUR_PI,
+)
 from pyzeal_logging.loggable import Loggable
 from pyzeal_utils.root_context import RootContext
 from pyzeal_types.root_types import tRecGrid
@@ -28,10 +30,7 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
     """
 
     def calcRootsRecursion(
-        self,
-        zParts: tRecGrid,
-        phiParts: tRecGrid,
-        context: RootContext
+        self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> None:
         # calculate difference between right/left and top/bottom
         deltaRe = zParts[1][0].real - zParts[3][0].real
@@ -47,9 +46,8 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
         # check if current rectangle contains zeros
         if phi > TWO_PI:
             # check if desired accuracy is aquired
-            if (
-                deltaRe < 10 ** (-context.precision[0])
-                and deltaIm < 10 ** (-context.precision[1])
+            if deltaRe < 10 ** (-context.precision[0]) and deltaIm < 10 ** (
+                -context.precision[1]
             ):
                 newZero = 0.5 * (
                     zParts[1][0].real
@@ -76,8 +74,8 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
                         xStart,
                         context.df,
                         maxiter=50,
-                        tol=10 ** (-max(context.precision[0],
-                                        context.precision[1]))
+                        tol=10
+                        ** (-max(context.precision[0], context.precision[1])),
                     )
                     if isinstance(newZero, np.ndarray):
                         for pair in zip(
@@ -101,23 +99,18 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
                             context.task, advance=deltaRe * deltaIm
                         )
             else:
-                if (
-                    deltaRe / (10 ** (-context.precision[0]))
-                    > deltaIm / (10 ** (-context.precision[1]))
+                if deltaRe / (10 ** (-context.precision[0])) > deltaIm / (
+                    10 ** (-context.precision[1])
                 ):
                     zPartsNew, phiPartsNew = self.divideVertical(
                         zParts, phiParts, context
                     )
                     self.calcRootsRecursion(
-                        zPartsNew[0],
-                        phiPartsNew[0],
-                        context
+                        zPartsNew[0], phiPartsNew[0], context
                     )
 
                     self.calcRootsRecursion(
-                        zPartsNew[1],
-                        phiPartsNew[1],
-                        context
+                        zPartsNew[1], phiPartsNew[1], context
                     )
 
                 else:
@@ -125,15 +118,11 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
                         zParts, phiParts, context
                     )
                     self.calcRootsRecursion(
-                        zPartsNew[0],
-                        phiPartsNew[0],
-                        context
+                        zPartsNew[0], phiPartsNew[0], context
                     )
 
                     self.calcRootsRecursion(
-                        zPartsNew[1],
-                        phiPartsNew[1],
-                        context
+                        zPartsNew[1], phiPartsNew[1], context
                     )
         else:
             if context.progress is not None and context.task is not None:
