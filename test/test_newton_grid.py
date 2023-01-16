@@ -124,9 +124,9 @@ def testNewtonGridRootFinderPolynomials(testID) -> None:
         gridRF = RootFinder(
             testCase[0], testCase[1], numSamplePoints=numSamplePoints
         )
-        gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))
         gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
         gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
+        gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))
         print(gridRF.roots)
         foundRoots = np.sort_complex(gridRF.roots)
         expectedRoots = np.sort_complex(np.array(testCase[2]))
