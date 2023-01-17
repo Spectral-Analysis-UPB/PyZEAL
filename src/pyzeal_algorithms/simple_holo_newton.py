@@ -34,6 +34,9 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
     def calcRootsRecursion(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> None:
+        """
+        TODO
+        """
         # calculate difference between right/left and top/bottom
         deltaRe = zParts[1][0].real - zParts[3][0].real
         deltaIm = zParts[2][0].imag - zParts[0][0].imag

@@ -8,5 +8,5 @@ SPHINX_OPTS=""
 if [ $# != 0 ]; then
     ${BUILD} -M "$1" ${SRC_DIR} ${BUILD_DIR} ${SPHINX_OPTS}
 else
-    echo "please choose either HTML, LATEXPDF, CLEAN or DOCTEST as build target!"
+    echo "please choose a build target from [html | latexpdf | clean | doctest]!"
 fi

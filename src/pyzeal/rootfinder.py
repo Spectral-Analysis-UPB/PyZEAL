@@ -91,6 +91,7 @@ class RootFinder(RootFinderInterface, Loggable):
         )
 
     def __str__(self) -> str:
+        "Simple string representation of a `RootFinder`."
         if self.df is not None:
             return (
                 f"RootFinder(f={getattr(self.f, '__name__', '<unnamed>')}, "
@@ -192,6 +193,13 @@ class RootFinder(RootFinderInterface, Loggable):
         return self.container.getRootOrders()
 
     def setLevel(self, level: LogLevel) -> None:
+        """
+        Set the logging level of this `RootFinder` and all dependent objects
+        like containers and algorithms.
+
+        :param level: the new logging level
+        :type level: pyzeal_logging.log_levels.LogLevel
+        """
         super().setLevel(level)
         self.container.setLevel(level)
         self.algorithm.setLevel(level)

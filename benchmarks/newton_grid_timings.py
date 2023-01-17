@@ -1,5 +1,5 @@
 """
-Timing benchmark suite for the NewtonGrid root finder strategy.
+Timing benchmark suite for the newton grid based root finding algorithm.
 """
 
 from typing import List, Tuple, Callable
@@ -34,10 +34,12 @@ testSuite: List[
 
 
 def f(n, x):
+    "TODO"
     return testSuite[n][0](x)
 
 
 def df(n, x):
+    "TODO"
     return testSuite[n][1](x)
 
 
