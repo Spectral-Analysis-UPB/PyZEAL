@@ -1,6 +1,6 @@
 {
     "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinder": {
-        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinder(self) -> None:\n        r\"\"\"\n        Runs the normal version of the rootfinding algorithm for all\n        test cases\n        \"\"\"\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
+        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinder(self) -> None:\n        r\"\"\"\n        Runs the normal version of the rootfinding algorithm for all\n        test cases\n        \"\"\"\n        for tCase in range(len(testSuite)):\n            gridRF = RootFinder(\n                partial(f, tCase),\n                partial(df, tCase),\n                algorithmType=AlgorithmTypes.NEWTON_GRID,\n            )\n            gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))",
         "min_run_count": 2,
         "name": "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinder",
         "number": 0,
@@ -12,11 +12,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "cf56d5aa28ac8de970d86ffc791c1301d1dac046725c8c4dd816117eb41928cc",
+        "version": "7370b7dfa554b5d6c06b05c2e2b13c434fff89670d67c9db1e928bd20862e03b",
         "warmup_time": -1
     },
     "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinderDerivativeFree": {
-        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinderDerivativeFree(self) -> None:\n        r\"\"\"\n        Runs the derivative-free version of the algorithm\n        \"\"\"\n        for tCase in self.testSuite:\n            gridRF = NewtonGridRootFinder(tCase[0], tCase[1])\n            gridRF.calcRoots([-5, 5], [-5, 5], precision=(3, 3))",
+        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinderDerivativeFree(self) -> None:\n        r\"\"\"\n        Runs the derivative-free version of the algorithm\n        \"\"\"\n        for tCase in range(len(testSuite)):\n            gridRF = RootFinder(\n                partial(f, tCase),\n                df=None,\n                algorithmType=AlgorithmTypes.NEWTON_GRID,\n            )\n            gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))",
         "min_run_count": 2,
         "name": "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinderDerivativeFree",
         "number": 0,
@@ -28,7 +28,39 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "c6fad9228cc004fe92834c1603e341fcb853d3e691fcd2e2d277ff37e8bdb46c",
+        "version": "1c64f08c5cc701c67faaeb1474a171ef48373f308762b7f0128691fcb3d9dc8d",
+        "warmup_time": -1
+    },
+    "simple_argument_newton_timings.SimpleArgumentSuite.TimeSimpleArgument": {
+        "code": "class SimpleArgumentSuite:\n    def TimeSimpleArgument(self) -> None:\n        r\"\"\"\n        Runs the normal version of the rootfinding algorithm for all\n        test cases\n        \"\"\"\n        for tCase in range(len(testSuite)):\n            gridRF = RootFinder(\n                partial(f, tCase),\n                None,\n                algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,\n            )\n            gridRF.calculateRoots((-5, 5), (-5, 5))",
+        "min_run_count": 2,
+        "name": "simple_argument_newton_timings.SimpleArgumentSuite.TimeSimpleArgument",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "b3dc802dcbb0fdeee247020860d4c6e11a7f21565811b728c78fc49e7a415753",
+        "warmup_time": -1
+    },
+    "simple_argument_timings.SimpleArgumentSuite.TimeSimpleArgument": {
+        "code": "class SimpleArgumentSuite:\n    def TimeSimpleArgument(self) -> None:\n        r\"\"\"\n        Runs the normal version of the rootfinding algorithm for all\n        test cases\n        \"\"\"\n        for tCase in range(len(testSuite)):\n            gridRF = RootFinder(\n                partial(f, tCase),\n                None,\n                algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,\n            )\n            gridRF.calculateRoots((-5, 5), (-5, 5))",
+        "min_run_count": 2,
+        "name": "simple_argument_timings.SimpleArgumentSuite.TimeSimpleArgument",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "adff578931634f21ea21140e415c2682e830af664104d203dd936f004b0960a1",
         "warmup_time": -1
     },
     "version": 2
