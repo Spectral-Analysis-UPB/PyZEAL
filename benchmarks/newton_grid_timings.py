@@ -4,7 +4,7 @@ Timing benchmark suite for the NewtonGrid root finder strategy.
 
 from typing import List, Tuple, Callable
 import numpy as np
-from deprecated.newton_grid import NewtonGridRootFinder
+from pyzeal import RootFinder, AlgorithmTypes
 from functools import partial
 
 testSuite: List[
@@ -54,15 +54,21 @@ class NewtonGridSuite:
         test cases
         """
         for tCase in range(len(testSuite)):
-            gridRF = NewtonGridRootFinder(
-                partial(f, tCase), partial(df, tCase)
+            gridRF = RootFinder(
+                partial(f, tCase),
+                partial(df, tCase),
+                algorithmType=AlgorithmTypes.NEWTON_GRID,
             )
-            gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
+            gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))
 
     def TimeNewtonGridRootfinderDerivativeFree(self) -> None:
         r"""
         Runs the derivative-free version of the algorithm
         """
         for tCase in range(len(testSuite)):
-            gridRF = NewtonGridRootFinder(partial(f, tCase), df=None)
-            gridRF.calcRoots((-5, 5), (-5, 5), precision=(3, 3))
+            gridRF = RootFinder(
+                partial(f, tCase),
+                df=None,
+                algorithmType=AlgorithmTypes.NEWTON_GRID,
+            )
+            gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))

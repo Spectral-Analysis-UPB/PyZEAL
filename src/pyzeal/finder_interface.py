@@ -36,9 +36,9 @@ class RootFinderInterface(ABC):
         precision: Tuple[int, int],
     ) -> None:
         """
-        Entry point for starting a root finding calculation in the rectangle
-        `reRan x imRan` up to a number of `precision` significant digits in
-        real and imaginary part.
+        Abstract entry point for starting a root finding calculation in the
+        rectangle `reRan x imRan` up to a number of `precision` significant
+        digits in real and imaginary part.
 
         :param reRan: horizontal extend of the complex region to search in
         :type reRan: Tuple[int, int]

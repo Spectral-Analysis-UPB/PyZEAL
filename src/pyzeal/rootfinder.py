@@ -8,7 +8,6 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from signal import SIG_IGN, SIGINT, signal
 from typing import Optional, Tuple
 
 import numpy as np
@@ -153,8 +152,7 @@ class RootFinder(RootFinderInterface, Loggable):
             progress,
             task,
         )
-        # suppress command line `kill` signals during algorithm runtime
-        # signal(SIGINT, SIG_IGN)
+        # shut down root finding in orderly fashion upon command line signals
         try:
             self.logger.info("attempting to calculate roots...")
             self.algorithm.calcRoots(context)

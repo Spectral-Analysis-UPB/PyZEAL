@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm -rf logs/
 cd ..
 
 # remove all __pycache__ directories

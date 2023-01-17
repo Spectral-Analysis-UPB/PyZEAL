@@ -58,6 +58,6 @@ class SimpleArgumentSuite:
             gridRF = RootFinder(
                 partial(f, tCase),
                 None,
-                algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+                algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
             )
             gridRF.calculateRoots((-5, 5), (-5, 5))

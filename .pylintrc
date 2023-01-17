@@ -450,7 +450,8 @@ ignore-imports=no
 ignore-signatures=no
 
 # Minimum lines number of a similarity.
-min-similarity-lines=4
+# (we use black which justifies a larger number here due to e.g. function calls, ...)
+min-similarity-lines=15
 
 
 [CLASSES]
@@ -486,7 +487,7 @@ valid-metaclass-classmethod-first-arg=cls
 ignored-parents=
 
 # Maximum number of arguments for function / method.
-max-args=6
+max-args=7
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes=8
@@ -495,10 +496,10 @@ max-attributes=8
 max-bool-expr=5
 
 # Maximum number of branch for function / method body.
-max-branches=9
+max-branches=14
 
 # Maximum number of locals for function / method body.
-max-locals=16
+max-locals=19
 
 # Maximum number of parents for a class (see R0901).
 max-parents=7

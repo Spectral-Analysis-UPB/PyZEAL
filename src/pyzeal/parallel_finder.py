@@ -31,9 +31,8 @@ class ParallelRootFinder(RootFinderInterface, Loggable):
         precision: Tuple[int, int],
     ) -> None:
         """
-        Entry point for starting a parallel root finding calculation in the
-        rectangle `reRan x imRan` up to a number of `precision` significant
-        digits in real and imaginary part.
+        Parallel implementation of the root finding interface as defined in
+        `RootFinderInterface`.
 
         :param reRan: horizontal extend of the complex region to search in
         :type reRan: Tuple[int, int]
@@ -42,18 +41,18 @@ class ParallelRootFinder(RootFinderInterface, Loggable):
         :param precision: accuracy of the search in real and imaginary parts
         :type precision: Tuple[int, int]
         """
-        ...
+        raise NotImplementedError()
 
     @property
     def roots(self) -> tVec:
         """
-        Return the roots calculated with this root finder through previous
-        calls to `calculateRoots()`.
+        Return the roots calculated in parallel with this root finder through
+        previous calls to `calculateRoots()`.
 
         :return: the set of roots calculated by this finder
         :rtype: NDArray[np.complex128]
         """
-        ...
+        raise NotImplementedError()
 
     @property
     def orders(self) -> NDArray[int32]:
@@ -64,4 +63,4 @@ class ParallelRootFinder(RootFinderInterface, Loggable):
         :return: the orders of the roots calculated by this finder
         :rtype: NDArray[np.int32]
         """
-        ...
+        raise NotImplementedError()
