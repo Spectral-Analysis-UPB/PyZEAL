@@ -17,6 +17,7 @@ from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
 from pyzeal_utils.root_container import RootContainer
 from pyzeal_utils.rounding_container import RoundingContainer
+from pyzeal_utils.plain_container import PlainContainer
 
 
 class ContainerFactory:
@@ -44,6 +45,11 @@ class ContainerFactory:
                 "requested a new rounding container..."
             )
             return RoundingContainer(precision)
+        if containerType == ContainerTypes.PLAIN_CONTAINER:
+            ContainerFactory.logger.debug(
+                "requested a new plain container..."
+            )
+            return PlainContainer()
         # TODO: implement configuration mechanism for default container
         ContainerFactory.logger.debug("requested a new default container...")
         return RoundingContainer(precision)

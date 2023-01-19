@@ -41,14 +41,12 @@ class RootFinder(RootFinderInterface, Loggable):
         "numSamplePoints",
         "verbose",
         "precision",
-        "_filterFunctionIsZero",
-        "_filterZeroIsInBounds",
     )
 
     def __init__(
         self,
         f: tHoloFunc,
-        df: Optional[tHoloFunc],
+        df: Optional[tHoloFunc] = None,
         *,
         containerType: ContainerTypes = ContainerTypes.ROUNDING_CONTAINER,
         algorithmType: AlgorithmTypes = AlgorithmTypes.NEWTON_GRID,
@@ -57,7 +55,7 @@ class RootFinder(RootFinderInterface, Loggable):
         verbose: bool = True,
     ) -> None:
         """
-        Initialize a simple root finder.
+        Initialize a simple, non-parallel root finder.
 
         :param f: the function whose roots should be calculated
         :type f: Callable[[comlex], complex]
@@ -84,10 +82,8 @@ class RootFinder(RootFinderInterface, Loggable):
         )
         self.precision = precision
         self.verbose = verbose
-        self._filterFunctionIsZero = False
-        self._filterZeroIsInBounds = False
         self.logger.debug(
-            "initialized a (nonparallel) root finder %s!", str(self)
+            "initialized the root finder %s!", str(self)
         )
 
     def __str__(self) -> str:
@@ -123,18 +119,8 @@ class RootFinder(RootFinderInterface, Loggable):
         # if no precision was given, use default precision from constructor
         precision = self.precision if precision is None else precision
         # desymmetrize the input rectangle
-        (x1, x2), (y1, y2) = sorted(reRan), sorted(imRan)
-        x1 = x1 - 1 * 10 ** (-1 * precision[0])
-        x2 = x2 + 2 * 10 ** (-1 * precision[0])
-        y1 = y1 - 3 * 10 ** (-1 * precision[1])
-        y2 = y2 + 4 * 10 ** (-1 * precision[1])
-        self.logger.debug(
-            "desymmetrized root finding domain to [%f, %f] x [%f, %f]",
-            x1,
-            x2,
-            y1,
-            y2,
-        )
+        (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
+
         # initialize the progress bar
         progress = FinderProgressBar() if self.verbose else None
         task: Optional[TaskID] = None
@@ -142,6 +128,7 @@ class RootFinder(RootFinderInterface, Loggable):
             task = progress.addTask((x2 - x1) * (y2 - y1))
             progress.start()
             self.logger.debug("starting progress bar...")
+
         # construct the root finding context
         context = RootContext(
             self.f,
@@ -214,3 +201,26 @@ class RootFinder(RootFinderInterface, Loggable):
     @container.setter
     def container(self, value: RootContainer) -> None:
         self._container = value
+
+    def desymmetrizeDomain(
+        self,
+        reRan: Tuple[float, float],
+        imRan: Tuple[float, float],
+        precision: Tuple[int, int]
+    ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
+        """
+        TODO
+        """
+        (x1, x2), (y1, y2) = sorted(reRan), sorted(imRan)
+        x1 = x1 - 1 * 10 ** (-1 * precision[0])
+        x2 = x2 + 2 * 10 ** (-1 * precision[0])
+        y1 = y1 - 3 * 10 ** (-1 * precision[1])
+        y2 = y2 + 4 * 10 ** (-1 * precision[1])
+        self.logger.debug(
+            "desymmetrized root finding domain to [%f, %f] x [%f, %f]",
+            x1,
+            x2,
+            y1,
+            y2,
+        )
+        return (x1, x2), (y1, y2)
