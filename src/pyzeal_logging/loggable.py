@@ -3,10 +3,10 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-import logging
 from typing import Protocol
 
 from .log_levels import LogLevel
+from .logger_facade import PyZEALLogger
 from .config import initLogger
 
 
@@ -16,15 +16,15 @@ class Loggable(Protocol):
     particular changing the logging level.
     """
 
-    _logger: logging.Logger
+    _logger: PyZEALLogger
 
     @property
-    def logger(self) -> logging.Logger:
+    def logger(self) -> PyZEALLogger:
         """
         The logger instance associated with this Loggable class.
 
         :returns: the logger of this class
-        :rtype: logging.Logger
+        :rtype: PyZEALLogger
         """
         if not hasattr(self, "_logger"):
             self._logger = initLogger(

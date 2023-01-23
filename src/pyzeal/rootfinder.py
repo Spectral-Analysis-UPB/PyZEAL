@@ -17,10 +17,10 @@ from pyzeal_logging.loggable import Loggable
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.root_types import tHoloFunc, tVec
-from pyzeal_utils.algorithm_factory import AlgorithmFactory
-from pyzeal_utils.container_factory import ContainerFactory
+from pyzeal_utils.pyzeal_factories.algorithm_factory import AlgorithmFactory
+from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
 from pyzeal_utils.finder_progress import FinderProgressBar
-from pyzeal_utils.root_container import RootContainer
+from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 from pyzeal_utils.root_context import RootContext
 from rich.progress import TaskID
 
@@ -82,9 +82,7 @@ class RootFinder(RootFinderInterface, Loggable):
         )
         self.precision = precision
         self.verbose = verbose
-        self.logger.debug(
-            "initialized the root finder %s!", str(self)
-        )
+        self.logger.debug("initialized the root finder %s!", str(self))
 
     def __str__(self) -> str:
         "Simple string representation of a `RootFinder`."
@@ -156,6 +154,7 @@ class RootFinder(RootFinderInterface, Loggable):
                 progress.refresh()
         if progress is not None and task is not None:
             progress.stop()
+        self.logger.info("non-parallel root search finished!")
 
     @property
     def roots(self) -> tVec:
@@ -206,7 +205,7 @@ class RootFinder(RootFinderInterface, Loggable):
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
-        precision: Tuple[int, int]
+        precision: Tuple[int, int],
     ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
         """
         TODO

@@ -10,14 +10,16 @@ Authors:\n
 
 import logging
 import os
-
 from datetime import datetime
 from typing import Optional
+
+from pyzeal_logging.logger_facade import PyZEALLogger
+
 
 DATE: Optional[datetime] = None
 
 
-def initLogger(logName: str) -> logging.Logger:
+def initLogger(logName: str) -> PyZEALLogger:
     r"""
     Initialize a module-level logger for the module 'modName'. Default logging
     level is set to WARNING. All logs are stored in a ./logs directory in a
@@ -28,7 +30,7 @@ def initLogger(logName: str) -> logging.Logger:
     :param logName: the name of the logger, should equal the module name
     :type logName: str
     :return: the (module-level) logger
-    :rtype: logging.Logger
+    :rtype: pyzeal_logging.logging_facade.PyZEALLogger
     """
     if not os.path.exists("./logs/"):
         os.mkdir("./logs/")
@@ -48,7 +50,7 @@ def initLogger(logName: str) -> logging.Logger:
         )
         fHandler = logging.FileHandler("./logs/pyzeal_" + fileName + ".log")
         formatter = logging.Formatter(
-            "[%(asctime)s:%(msecs)03d][%(name)s]: %(message)s [%(levelname)s]",
+            "[%(asctime)s:%(msecs)03d] %(message)s [%(name)s][%(levelname)s]",
             "%H:%M:%S",
         )
         fHandler.setFormatter(formatter)

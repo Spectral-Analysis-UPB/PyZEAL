@@ -7,7 +7,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Tuple, cast
+from typing import Tuple, cast, Optional
 
 import numpy as np
 
@@ -15,9 +15,10 @@ from pyzeal_logging.config import initLogger
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
-from pyzeal_utils.root_container import RootContainer
-from pyzeal_utils.rounding_container import RoundingContainer
-from pyzeal_utils.plain_container import PlainContainer
+from pyzeal_types.parallel_types import tQueue
+from pyzeal_utils.pyzeal_containers.root_container import RootContainer
+from pyzeal_utils.pyzeal_containers.rounding_container import RoundingContainer
+from pyzeal_utils.pyzeal_containers.plain_container import PlainContainer
 
 
 class ContainerFactory:
@@ -28,7 +29,10 @@ class ContainerFactory:
 
     @staticmethod
     def getConcreteContainer(
-        containerType: ContainerTypes, *, precision: Tuple[int, int] = (3, 3)
+        containerType: ContainerTypes,
+        *,
+        precision: Tuple[int, int] = (3, 3),
+        queue: Optional[tQueue] = None,
     ) -> RootContainer:
         """
         Initialize and return a root container instance based on the given type
@@ -39,6 +43,8 @@ class ContainerFactory:
         :type containerType: ContainerTypes
         :param precision: the accuracy of the given container
         :type precision: Tuple[int, int]
+        :param queue: an existing queue instance as base for a plain container
+        :type queue: pyzeal_types.parallel_types.tQueue
         """
         if containerType == ContainerTypes.ROUNDING_CONTAINER:
             ContainerFactory.logger.debug(
@@ -46,10 +52,8 @@ class ContainerFactory:
             )
             return RoundingContainer(precision)
         if containerType == ContainerTypes.PLAIN_CONTAINER:
-            ContainerFactory.logger.debug(
-                "requested a new plain container..."
-            )
-            return PlainContainer()
+            ContainerFactory.logger.debug("requested a new plain container...")
+            return PlainContainer(queue)
         # TODO: implement configuration mechanism for default container
         ContainerFactory.logger.debug("requested a new default container...")
         return RoundingContainer(precision)

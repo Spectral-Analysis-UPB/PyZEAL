@@ -8,6 +8,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+from logging import INFO
 from typing import Dict, Set, Tuple
 
 import numpy as np
@@ -15,7 +16,10 @@ from numpy.typing import NDArray
 from pyzeal_types.root_types import tRoot, tVec
 
 from pyzeal_utils.filter_context import FilterContext
-from pyzeal_utils.root_container import RootContainer, tRootFilter
+from pyzeal_utils.pyzeal_containers.root_container import (
+    RootContainer,
+    tRootFilter,
+)
 
 
 class RoundingContainer(RootContainer):
@@ -73,7 +77,7 @@ class RoundingContainer(RootContainer):
             root[0].imag,
         )
         roundedRoot = RoundingContainer.roundRoot(root, self.precision)
-        if self.logger.isEnabledFor(20) and roundedRoot in self.rootSet:
+        if self.logger.isEnabledFor(INFO) and roundedRoot in self.rootSet:
             self.logger.info("duplicate root discarded by rounding container!")
             return
         self.logger.info(

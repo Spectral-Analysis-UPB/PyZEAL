@@ -15,7 +15,7 @@ from rich.progress import TaskID
 
 from pyzeal_utils.filter_context import FilterContext
 from pyzeal_utils.finder_progress import FinderProgressBar
-from pyzeal_utils.root_container import RootContainer
+from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 
 
 @dataclass(frozen=True)

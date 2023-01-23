@@ -31,8 +31,8 @@ class tQueue(Protocol):
 
 
 # multiprocessing managers used to share access to progress bars
-class MyManager(BaseManager):
+class FinderProgressManager(BaseManager):
     r"""
     Multiprocessing.BaseManager containing a rich.progress.Progress instance.
     """
-    FinderProgress: Callable[..., FinderProgressBar]
+    finderProgress: Callable[..., FinderProgressBar]

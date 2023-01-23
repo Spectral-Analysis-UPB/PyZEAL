@@ -17,8 +17,8 @@ from numpy import int32
 from numpy.typing import NDArray
 from pyzeal_types.filter_types import FilterTypes
 from pyzeal_types.root_types import tVec
-from pyzeal_utils.container_factory import ContainerFactory
-from pyzeal_utils.root_container import RootContainer
+from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
+from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 
 
 class RootFinderInterface(ABC):

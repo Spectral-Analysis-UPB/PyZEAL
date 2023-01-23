@@ -10,17 +10,22 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from multiprocessing.managers import BaseManager
-from os import getpid
-from typing import cast, Optional, Tuple
+from multiprocessing import Manager, Pool
+from os import cpu_count, getpid
+from signal import signal, SIG_IGN, SIGINT
+from typing import cast, List, Optional, Tuple
+
+from numpy import linspace
 
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.root_types import tHoloFunc
-from pyzeal_types.parallel_types import MyManager, tQueue
+from pyzeal_types.parallel_types import FinderProgressManager, tQueue
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.root_context import RootContext
-from pyzeal_utils.container_factory import ContainerFactory
+from pyzeal_utils.filter_context import FilterContext
+from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
+from pyzeal_logging.logger_facade import PyZEALLogger
 from rich.progress import TaskID
 
 from .rootfinder import RootFinder
@@ -67,7 +72,7 @@ class ParallelRootFinder(RootFinder):
             algorithmType=algorithmType,
             precision=precision,
             numSamplePoints=numSamplePoints,
-            verbose=verbose
+            verbose=verbose,
         )
 
     def __str__(self) -> str:
@@ -106,61 +111,111 @@ class ParallelRootFinder(RootFinder):
         # desymmetrize the input rectangle
         (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
 
-        # initialize the progress bar
-        BaseManager.register("FinderProgress", FinderProgressBar)
-        with BaseManager() as manager:
-            manager = cast(MyManager, manager)
-            progress = manager.FinderProgress() if self.verbose else None
+        # initialize a shared progress bar
+        FinderProgressManager.register("finderProgress", FinderProgressBar)
+        with FinderProgressManager() as manager:
+            progress = manager.finderProgress() if self.verbose else None
             task: Optional[TaskID] = None
             if progress is not None:
                 task = progress.addTask((x2 - x1) * (y2 - y1))
                 progress.start()
                 self.logger.debug("starting progress bar...")
 
-            # construct the root finding context
-            context = RootContext(
-                self.f,
-                self.df,
-                ContainerFactory.getConcreteContainer(
-                    ContainerTypes.PLAIN_CONTAINER
-                ),
+            # construct a list of root contexts, several for each child process
+            rootQueue: tQueue = cast(tQueue, Manager().Queue())
+            contexts = self.createRootJobs(
+                cpu_count() or 1,
                 (x1, x2),
                 (y1, y2),
+                rootQueue,
                 precision,
                 progress,
                 task,
             )
 
-            # TODO: start several root searches in parallel
-            # TODO: collect root finding results from queue into self.container
-
-
-            # shut down root finding orderly upon command line signals
-            try:
-                self.logger.info("attempting to calculate roots...")
-                self.algorithm.calcRoots(context)
-                if progress is not None and task is not None:
-                    progress.update(
-                        task, description=("[green] search finished!")
+            with Pool(initializer=lambda: signal(SIGINT, SIG_IGN)) as pool:
+                # shut down root finding orderly upon command line signals
+                try:
+                    self.logger.info("attempting to calculate roots...")
+                    pool.starmap(
+                        self.rootWorker,
+                        [(context, self.logger) for context in contexts],
+                        chunksize=cpu_count() or 1,
                     )
-            except KeyboardInterrupt:
-                self.logger.warning(
-                    "root calculation interrupted - some roots may be missing!"
-                )
-                if progress and task:
-                    progress.stop_task(task)
-                    progress.update(task, visible=False)
-                    progress.refresh()
-            if progress is not None and task is not None:
-                progress.stop()
+                    if progress is not None and task is not None:
+                        progress.update(
+                            task, description=("[green] search finished!")
+                        )
+                    self.logger.debug("all child processes returned normally!")
+                except KeyboardInterrupt:
+                    self.logger.warning(
+                        "root calculation interrupted \
+                        - some roots may be missing!"
+                    )
+                    if progress and task:
+                        progress.stop_task(task)
+                        progress.update(task, visible=False)
+                        progress.refresh()
+                if progress is not None and task is not None:
+                    progress.stop()
 
-    def worker(self, context: RootContext, queue: tQueue) -> None:
+            # add found roots to the current instance's container
+            self.logger.debug("transferring roots from queue to container!")
+            while not rootQueue.empty():
+                self.container.addRoot(
+                    rootQueue.get(),
+                    FilterContext(self.f, (x1, x2), (y1, y2), precision),
+                )
+            self.logger.info("parallel root search finished!")
+
+    def createRootJobs(
+        self,
+        numProcesses: int,
+        reRan: Tuple[float, float],
+        imRan: Tuple[float, float],
+        rootQueue: tQueue,
+        precision: Tuple[int, int],
+        progress: Optional[FinderProgressBar],
+        task: Optional[TaskID],
+    ) -> List[RootContext]:
         """
+        Convenience method that constructs a list of RootContext objects on
+        which child processes operate by applying a concrete RootAlgorithm.
+
         TODO
         """
-        self.logger.info(f"started root calculation in {getpid}!")
+        self.logger.debug(
+            "initializing context jobs for %d child processes...", numProcesses
+        )
+        realPts = linspace(reRan[0], reRan[1], numProcesses + 1)
+        imagPts = linspace(imRan[0], imRan[1], numProcesses + 1)
+        plainContainer = ContainerFactory.getConcreteContainer(
+            ContainerTypes.PLAIN_CONTAINER, queue=rootQueue
+        )
+        contexts: List[RootContext] = []
+        for i in range(len(realPts) - 1):
+            for j in range(len(imagPts) - 1):
+                contexts.append(
+                    RootContext(
+                        self.f,
+                        self.df,
+                        plainContainer,
+                        (realPts[i], realPts[i + 1]),
+                        (imagPts[j], imagPts[j + 1]),
+                        precision,
+                        progress,
+                        task,
+                    )
+                )
+        return contexts
+
+    def rootWorker(self, context: RootContext, logger: PyZEALLogger) -> None:
+        """
+        Worker function that executes a root finding algorithm in a child
+        process.
+
+        TODO
+        """
+        self.logger.info("starting root job in pid=%d!", getpid())
         self.algorithm.calcRoots(context)
-        for root, order in zip(
-            context.container.getRoots(), context.container.getRootOrders()
-        ):
-            queue.put((root, order))
+        self.logger.info("finished root job in pid=%d!", getpid())

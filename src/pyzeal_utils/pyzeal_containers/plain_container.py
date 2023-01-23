@@ -10,7 +10,7 @@ Authors:\n
 """
 
 from multiprocessing import Manager
-from typing import cast, List
+from typing import cast, List, Optional
 
 import numpy as np
 from numpy.typing import NDArray
@@ -18,7 +18,10 @@ from pyzeal_types.root_types import tRoot, tVec
 from pyzeal_types.parallel_types import tQueue
 
 from pyzeal_utils.filter_context import FilterContext
-from pyzeal_utils.root_container import RootContainer, tRootFilter
+from pyzeal_utils.pyzeal_containers.root_container import (
+    RootContainer,
+    tRootFilter,
+)
 
 
 class PlainContainer(RootContainer):
@@ -26,13 +29,13 @@ class PlainContainer(RootContainer):
     TODO
     """
 
-    __slots__ = ("rootBuffer", )
+    __slots__ = ("rootBuffer",)
 
-    def __init__(self) -> None:
+    def __init__(self, queue: Optional[tQueue]) -> None:
         """
         Initialize a new PlainContainer.
         """
-        self.rootBuffer = cast(tQueue, Manager().Queue())
+        self.rootBuffer = cast(tQueue, queue or Manager().Queue())
         self.logger.info("initialized a plain root container")
 
     def addRoot(self, root: tRoot, context: FilterContext) -> None:
