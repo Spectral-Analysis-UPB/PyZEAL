@@ -16,8 +16,10 @@ from numpy.typing import NDArray
 
 from pyzeal_types.root_types import tRoot, tVec
 from pyzeal_utils.filter_context import FilterContext
-from pyzeal_utils.pyzeal_containers.root_container import (RootContainer,
-                                                           tRootFilter)
+from pyzeal_utils.pyzeal_containers.root_container import (
+    RootContainer,
+    tRootFilter,
+)
 
 
 class RoundingContainer(RootContainer):

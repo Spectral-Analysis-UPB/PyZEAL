@@ -17,8 +17,9 @@ from pyzeal_logging.config import initLogger
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.settings_types import SettingsServicesTypes
-from pyzeal_utils.pyzeal_factories.settings_factory import \
-    SettingsServiceFactory
+from pyzeal_utils.pyzeal_factories.settings_factory import (
+    SettingsServiceFactory,
+)
 
 
 class AlgorithmFactory:

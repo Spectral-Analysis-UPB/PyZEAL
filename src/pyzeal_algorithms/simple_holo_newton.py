@@ -13,8 +13,11 @@ from typing import cast
 import numpy as np
 from scipy.optimize import newton
 
-from pyzeal_algorithms.simple_holo import (FOUR_PI, TWO_PI,
-                                           SimpleArgumentAlgorithm)
+from pyzeal_algorithms.simple_holo import (
+    FOUR_PI,
+    TWO_PI,
+    SimpleArgumentAlgorithm,
+)
 from pyzeal_logging.loggable import Loggable
 from pyzeal_types.root_types import tRecGrid
 from pyzeal_utils.root_context import RootContext

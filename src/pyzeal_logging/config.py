@@ -15,8 +15,9 @@ from typing import Optional
 
 from pyzeal_logging.logger_facade import PyZEALLogger
 from pyzeal_types.settings_types import SettingsServicesTypes
-from pyzeal_utils.pyzeal_factories.settings_factory import \
-    SettingsServiceFactory
+from pyzeal_utils.pyzeal_factories.settings_factory import (
+    SettingsServiceFactory,
+)
 
 DATE: Optional[datetime] = None
 

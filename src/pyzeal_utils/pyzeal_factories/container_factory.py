@@ -20,8 +20,9 @@ from pyzeal_types.settings_types import SettingsServicesTypes
 from pyzeal_utils.pyzeal_containers.plain_container import PlainContainer
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 from pyzeal_utils.pyzeal_containers.rounding_container import RoundingContainer
-from pyzeal_utils.pyzeal_factories.settings_factory import \
-    SettingsServiceFactory
+from pyzeal_utils.pyzeal_factories.settings_factory import (
+    SettingsServiceFactory,
+)
 
 
 class ContainerFactory:
