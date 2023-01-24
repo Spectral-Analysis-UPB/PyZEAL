@@ -16,6 +16,7 @@ from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal_algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
 from pyzeal_logging.config import initLogger
 from pyzeal_logging.log_levels import LogLevel
+from pyzeal_settings.settings_service import SettingsService
 
 
 class AlgorithmFactory:
@@ -26,7 +27,9 @@ class AlgorithmFactory:
 
     @staticmethod
     def getConcreteAlgorithm(
-        algoType: AlgorithmTypes, *, numSamplePoints: Optional[int] = None
+        algoType: AlgorithmTypes = AlgorithmTypes.DEFAULT,
+        *,
+        numSamplePoints: Optional[int] = None,
     ) -> FinderAlgorithm:
         """
         Construct and return an algorithm instance based on the given type of
@@ -56,11 +59,13 @@ class AlgorithmFactory:
             )
             return SimpleArgumentNewtonAlgorithm()
 
-        # TODO: implement configuration mechanism for default algorithms
+        # return the current default algorithm
         AlgorithmFactory.logger.debug(
             "requested usage of the default algorithm..."
         )
-        return NewtonGridAlgorithm()
+        return AlgorithmFactory.getConcreteAlgorithm(
+            SettingsService().defaultAlgorithm, numSamplePoints=numSamplePoints
+        )
 
     @staticmethod
     def setLevel(level: LogLevel) -> None:

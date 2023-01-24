@@ -1,0 +1,5 @@
+{
+   "defaultContainer": "RoundingContainer",
+   "defaultAlgorithm": "SimpleArgument",
+   "logLevel": "WARNING"
+}

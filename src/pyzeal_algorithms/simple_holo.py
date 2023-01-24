@@ -4,7 +4,8 @@ This module defines a root finding algorithm based on a simple, straight
 forward approach to the argument principle. The simplicity comes from the fact
 that we avoid numeric quadrature by approximating integration of the
 logarithmic derivative via changes in the complex argument of the target
-function.
+function. Due to the possibility of overlooking large changes in the complex
+argument this algorithm is not completely reliable, see [Henrici].
 
 Authors:\n
 - Philipp Schuette\n

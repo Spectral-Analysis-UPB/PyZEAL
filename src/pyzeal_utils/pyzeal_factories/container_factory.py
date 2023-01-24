@@ -19,6 +19,7 @@ from pyzeal_types.parallel_types import tQueue
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 from pyzeal_utils.pyzeal_containers.rounding_container import RoundingContainer
 from pyzeal_utils.pyzeal_containers.plain_container import PlainContainer
+from pyzeal_settings.settings_service import SettingsService
 
 
 class ContainerFactory:
@@ -29,7 +30,7 @@ class ContainerFactory:
 
     @staticmethod
     def getConcreteContainer(
-        containerType: ContainerTypes,
+        containerType: ContainerTypes = ContainerTypes.DEFAULT,
         *,
         precision: Tuple[int, int] = (3, 3),
         queue: Optional[tQueue] = None,
@@ -54,9 +55,14 @@ class ContainerFactory:
         if containerType == ContainerTypes.PLAIN_CONTAINER:
             ContainerFactory.logger.debug("requested a new plain container...")
             return PlainContainer(queue)
-        # TODO: implement configuration mechanism for default container
+
+        # return the current default container
         ContainerFactory.logger.debug("requested a new default container...")
-        return RoundingContainer(precision)
+        return ContainerFactory.getConcreteContainer(
+            SettingsService().defaultContainer,
+            precision=precision,
+            queue=queue,
+        )
 
     @staticmethod
     def registerPreDefinedFilter(

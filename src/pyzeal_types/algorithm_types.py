@@ -11,6 +11,7 @@ from enum import Enum
 
 class AlgorithmTypes(Enum):
     "Enumeration containing named constants identifying available algorithms."
-    NEWTON_GRID = 0
-    SIMPLE_ARGUMENT = 1
-    SIMPLE_ARGUMENT_NEWTON = 2
+    NEWTON_GRID = "NewtonGrid"
+    SIMPLE_ARGUMENT = "SimpleArgument"
+    SIMPLE_ARGUMENT_NEWTON = "SimpleArgumentNewton"
+    DEFAULT = "DefaultAlgorithm"

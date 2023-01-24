@@ -14,6 +14,7 @@ from datetime import datetime
 from typing import Optional
 
 from pyzeal_logging.logger_facade import PyZEALLogger
+from pyzeal_settings.settings_service import SettingsService
 
 
 DATE: Optional[datetime] = None
@@ -40,7 +41,7 @@ def initLogger(logName: str) -> PyZEALLogger:
         DATE = datetime.now()
 
     logger = logging.getLogger(logName)
-    logger.setLevel(logging.WARNING)
+    logger.setLevel(SettingsService().logLevel.value)
 
     if not logger.hasHandlers():
         fileName = (

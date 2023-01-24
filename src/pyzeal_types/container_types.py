@@ -11,5 +11,6 @@ from enum import Enum
 
 class ContainerTypes(Enum):
     "Enumeration containing named constants identifying available containers."
-    ROUNDING_CONTAINER = 0
-    PLAIN_CONTAINER = 1
+    ROUNDING_CONTAINER = "RoundingContainer"
+    PLAIN_CONTAINER = "PlainContainer"
+    DEFAULT = "DefaultContainer"

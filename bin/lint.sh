@@ -43,6 +43,13 @@ docstr-coverage -p test/
 docstr-coverage -p benchmarks/
 echo ""
 
+echo "|--------------------------|"
+echo "|[validating json schemata]|"
+echo "|--------------------------|"
+check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json \
+    src/pyzeal_settings/default_settings.json
+echo ""
+
 if [[ "$1" == "--tests" ]]
 then
     echo "|--------------------------|"

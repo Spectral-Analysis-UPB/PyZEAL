@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "defaultContainer": {
+            "enum": ["RoundingContainer"]
+        },
+        "defaultAlgorithm": {
+            "enum": ["NewtonGrid", "SimpleArgument", "SimpleArgumentNewton"]
+        },
+        "logLevel": {
+            "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        }
+    },
+    "additionalProperties": false,
+    "required": ["defaultContainer", "defaultAlgorithm", "logLevel"]
+}
