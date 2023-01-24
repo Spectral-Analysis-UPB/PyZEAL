@@ -7,8 +7,8 @@ from pyzeal_types.container_types import ContainerTypes
 from pyzeal_utils.pyzeal_factories.algorithm_factory import AlgorithmFactory
 from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
 
-from .rootfinder import RootFinder
 from .parallel_finder import ParallelRootFinder
+from .rootfinder import RootFinder
 
 __all__ = [
     "RootFinder",

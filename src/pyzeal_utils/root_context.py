@@ -10,9 +10,9 @@ Authors:\n
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
-from pyzeal_types.root_types import tHoloFunc
 from rich.progress import TaskID
 
+from pyzeal_types.root_types import tHoloFunc
 from pyzeal_utils.filter_context import FilterContext
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer

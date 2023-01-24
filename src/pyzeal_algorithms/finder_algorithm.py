@@ -9,8 +9,8 @@ Authors:\n
 
 from abc import ABC, abstractmethod
 
-from pyzeal_utils.root_context import RootContext
 from pyzeal_logging.loggable import Loggable
+from pyzeal_utils.root_context import RootContext
 
 
 class FinderAlgorithm(ABC, Loggable):

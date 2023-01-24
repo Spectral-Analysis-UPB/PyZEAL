@@ -10,7 +10,6 @@ from typing import Callable, List, Tuple, Union
 import numpy as np
 from numpy.typing import NDArray
 
-
 # general purpose types used throughout
 tScal = Union[float, complex]
 tVec = NDArray[np.complex128]

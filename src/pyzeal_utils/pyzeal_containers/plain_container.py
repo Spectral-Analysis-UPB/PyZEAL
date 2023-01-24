@@ -10,18 +10,16 @@ Authors:\n
 """
 
 from multiprocessing import Manager
-from typing import cast, List, Optional
+from typing import List, Optional, cast
 
 import numpy as np
 from numpy.typing import NDArray
-from pyzeal_types.root_types import tRoot, tVec
-from pyzeal_types.parallel_types import tQueue
 
+from pyzeal_types.parallel_types import tQueue
+from pyzeal_types.root_types import tRoot, tVec
 from pyzeal_utils.filter_context import FilterContext
-from pyzeal_utils.pyzeal_containers.root_container import (
-    RootContainer,
-    tRootFilter,
-)
+from pyzeal_utils.pyzeal_containers.root_container import (RootContainer,
+                                                           tRootFilter)
 
 
 class PlainContainer(RootContainer):

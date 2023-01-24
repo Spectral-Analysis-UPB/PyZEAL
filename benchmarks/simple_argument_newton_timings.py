@@ -4,11 +4,12 @@ variant which calls an ordinary Newton algorithm as soon as sufficient
 refinement has been reached.
 """
 
-from typing import List, Tuple, Callable
 from functools import partial
+from typing import Callable, List, Tuple
+
 import numpy as np
 
-from pyzeal import RootFinder, AlgorithmTypes
+from pyzeal import AlgorithmTypes, RootFinder
 
 testSuite: List[
     Tuple[

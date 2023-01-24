@@ -12,19 +12,19 @@ from typing import Optional, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
+from rich.progress import TaskID
+
+from pyzeal.finder_interface import RootFinderInterface
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_logging.loggable import Loggable
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.root_types import tHoloFunc, tVec
-from pyzeal_utils.pyzeal_factories.algorithm_factory import AlgorithmFactory
-from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
+from pyzeal_utils.pyzeal_factories.algorithm_factory import AlgorithmFactory
+from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
 from pyzeal_utils.root_context import RootContext
-from rich.progress import TaskID
-
-from pyzeal.finder_interface import RootFinderInterface
 
 
 class RootFinder(RootFinderInterface, Loggable):

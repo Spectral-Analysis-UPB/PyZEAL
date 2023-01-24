@@ -17,9 +17,9 @@ from warnings import filterwarnings
 import numpy as np
 import scipy as sp
 from numpy.typing import NDArray
-from pyzeal_utils.root_context import RootContext
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
+from pyzeal_utils.root_context import RootContext
 
 
 class NewtonGridAlgorithm(FinderAlgorithm):

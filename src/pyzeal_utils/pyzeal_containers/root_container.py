@@ -15,9 +15,9 @@ from typing import Protocol
 
 import numpy as np
 from numpy.typing import NDArray
+
 from pyzeal_logging.loggable import Loggable
 from pyzeal_types.root_types import tRoot, tVec
-
 from pyzeal_utils.filter_context import FilterContext, tRootFilter
 
 

@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 from hypothesis import given, settings, strategies
 from numpy.polynomial import Polynomial
+
 from pyzeal import RootFinder
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_types.algorithm_types import AlgorithmTypes

@@ -3,11 +3,12 @@ Timing benchmark suite for the simple argument (no numerical quadrature) based
 root finding algorithm.
 """
 
-from typing import List, Tuple, Callable
 from functools import partial
+from typing import Callable, List, Tuple
+
 import numpy as np
 
-from pyzeal import RootFinder, AlgorithmTypes
+from pyzeal import AlgorithmTypes, RootFinder
 
 testSuite: List[
     Tuple[

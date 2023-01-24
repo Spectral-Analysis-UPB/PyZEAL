@@ -5,9 +5,9 @@ Authors:\n
 
 from typing import Protocol
 
+from .config import initLogger
 from .log_levels import LogLevel
 from .logger_facade import PyZEALLogger
-from .config import initLogger
 
 
 class Loggable(Protocol):

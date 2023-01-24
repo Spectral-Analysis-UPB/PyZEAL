@@ -9,14 +9,16 @@ Authors:\n
 
 from typing import Optional
 
-from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_algorithms.newton_grid import NewtonGridAlgorithm
 from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal_algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
 from pyzeal_logging.config import initLogger
 from pyzeal_logging.log_levels import LogLevel
-from pyzeal_settings.settings_service import SettingsService
+from pyzeal_types.algorithm_types import AlgorithmTypes
+from pyzeal_types.settings_types import SettingsServicesTypes
+from pyzeal_utils.pyzeal_factories.settings_factory import \
+    SettingsServiceFactory
 
 
 class AlgorithmFactory:
@@ -64,7 +66,10 @@ class AlgorithmFactory:
             "requested usage of the default algorithm..."
         )
         return AlgorithmFactory.getConcreteAlgorithm(
-            SettingsService().defaultAlgorithm, numSamplePoints=numSamplePoints
+            SettingsServiceFactory.getConcreteSettings(
+                SettingsServicesTypes.DEFAULT
+            ).defaultAlgorithm,
+            numSamplePoints=numSamplePoints,
         )
 
     @staticmethod

@@ -7,7 +7,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Tuple, cast, Optional
+from typing import Optional, Tuple, cast
 
 import numpy as np
 
@@ -16,10 +16,12 @@ from pyzeal_logging.log_levels import LogLevel
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
 from pyzeal_types.parallel_types import tQueue
+from pyzeal_types.settings_types import SettingsServicesTypes
+from pyzeal_utils.pyzeal_containers.plain_container import PlainContainer
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 from pyzeal_utils.pyzeal_containers.rounding_container import RoundingContainer
-from pyzeal_utils.pyzeal_containers.plain_container import PlainContainer
-from pyzeal_settings.settings_service import SettingsService
+from pyzeal_utils.pyzeal_factories.settings_factory import \
+    SettingsServiceFactory
 
 
 class ContainerFactory:
@@ -59,7 +61,9 @@ class ContainerFactory:
         # return the current default container
         ContainerFactory.logger.debug("requested a new default container...")
         return ContainerFactory.getConcreteContainer(
-            SettingsService().defaultContainer,
+            SettingsServiceFactory.getConcreteSettings(
+                SettingsServicesTypes.DEFAULT
+            ).defaultContainer,
             precision=precision,
             queue=queue,
         )

@@ -15,11 +15,11 @@ from typing import Final, Literal, Tuple, Union, cast
 
 import numpy as np
 from numpy.typing import NDArray
+
+from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_logging.loggable import Loggable
 from pyzeal_types.root_types import tRecGrid
 from pyzeal_utils.root_context import RootContext
-
-from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 
 ####################
 # Global Constants #

@@ -2,10 +2,12 @@
 Timing benchmark suite for the newton grid based root finding algorithm.
 """
 
-from typing import List, Tuple, Callable
-import numpy as np
-from pyzeal import RootFinder, AlgorithmTypes
 from functools import partial
+from typing import Callable, List, Tuple
+
+import numpy as np
+
+from pyzeal import AlgorithmTypes, RootFinder
 
 testSuite: List[
     Tuple[

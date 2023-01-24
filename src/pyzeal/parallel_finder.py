@@ -12,21 +12,21 @@ Authors:\n
 
 from multiprocessing import Manager, Pool
 from os import cpu_count, getpid
-from signal import signal, SIG_IGN, SIGINT
-from typing import cast, List, Optional, Tuple
+from signal import SIG_IGN, SIGINT, signal
+from typing import List, Optional, Tuple, cast
 
 from numpy import linspace
+from rich.progress import TaskID
 
+from pyzeal_logging.logger_facade import PyZEALLogger
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
-from pyzeal_types.root_types import tHoloFunc
 from pyzeal_types.parallel_types import FinderProgressManager, tQueue
-from pyzeal_utils.finder_progress import FinderProgressBar
-from pyzeal_utils.root_context import RootContext
+from pyzeal_types.root_types import tHoloFunc
 from pyzeal_utils.filter_context import FilterContext
+from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
-from pyzeal_logging.logger_facade import PyZEALLogger
-from rich.progress import TaskID
+from pyzeal_utils.root_context import RootContext
 
 from .rootfinder import RootFinder
 

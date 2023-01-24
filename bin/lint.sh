@@ -5,18 +5,24 @@ echo "starting formatting, linting, type checking [and tests]..."
 echo "--- use '--tests' to also run tests ---"
 echo ""
 
-echo "|------------------------------------------------------------|"
-echo "|[running black formatting on sources, tests, and benchmarks]|"
-echo "|------------------------------------------------------------|"
+echo "|-----------------------------------------------------------|"
+echo "|[running black and isort on sources, tests, and benchmarks]|"
+echo "|-----------------------------------------------------------|"
 black src/
 black test/
 black benchmarks/
+isort src/
+isort test/
+isort benchmarks/
 echo ""
 
 echo "|--------------------------------------------------|"
 echo "|[running flake8 on sources, tests, and benchmarks]|"
 echo "|--------------------------------------------------|"
-flake8 src/ && flake8 test/ && flake8 benchmarks/ && echo "no linting errors with flake8!"
+flake8 src/ \
+    && flake8 test/ \
+    && flake8 benchmarks/ \
+    && echo "no linting errors with flake8!"
 echo ""
 
 echo "|---------------------------|"

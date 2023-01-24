@@ -12,6 +12,7 @@ import numpy as np
 import pytest
 from hypothesis import given, settings, strategies
 from numpy.polynomial import Polynomial
+
 from pyzeal import RootFinder
 from pyzeal_types.filter_types import FilterTypes
 
