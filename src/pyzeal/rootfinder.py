@@ -17,6 +17,7 @@ from rich.progress import TaskID
 from pyzeal.finder_interface import RootFinderInterface
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_logging.loggable import Loggable
+from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.root_types import tHoloFunc, tVec
@@ -52,7 +53,7 @@ class RootFinder(RootFinderInterface, Loggable):
         algorithmType: AlgorithmTypes = AlgorithmTypes.NEWTON_GRID,
         precision: Tuple[int, int] = (3, 3),
         numSamplePoints: Optional[int] = None,
-        verbose: bool = True,
+        verbose: Optional[bool] = None,
     ) -> None:
         """
         Initialize a simple, non-parallel root finder.
@@ -70,7 +71,7 @@ class RootFinder(RootFinderInterface, Loggable):
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
         :type numSamplePoints: Optional[int]
         :param verbose: flag that toggles the command line progress bar
-        :type verbose: bool
+        :type verbose: Optional[bool]
         """
         self.f = f
         self.df = df
@@ -81,7 +82,7 @@ class RootFinder(RootFinderInterface, Loggable):
             containerType, precision=precision
         )
         self.precision = precision
-        self.verbose = verbose
+        self.verbose = verbose if verbose else JSONSettingsService().verbose
         self.logger.debug("initialized the root finder %s!", str(self))
 
     def __str__(self) -> str:

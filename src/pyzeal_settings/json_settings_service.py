@@ -24,14 +24,14 @@ class JSONSettingsService(SettingsService):
     access to settings must happen through a service like this one.
     """
 
-    slots = ("_container", "_algorithm", "_level")
+    slots = ("_container", "_algorithm", "_level", "_verbose")
 
     def __init__(self) -> None:
         """
         Create an instance of a new `SettingsSerive`. The basis for its
         properties are the currently persisted (user or default) settings.
         """
-        currentSettings: Dict[str, str] = {}
+        currentSettings: Dict[str, Union[str, bool]] = {}
         # first load default settings (must always exist)...
         JSONSettingsService.loadSettingsFromFile(
             join(dirname(__file__), "default_settings.json"), currentSettings
@@ -67,6 +67,10 @@ class JSONSettingsService(SettingsService):
             raise InvalidSettingException(
                 "invalid setting for default logging level!"
             )
+        # set default verbosity
+        verbosity = currentSettings.get("verbose", None)
+        if verbosity is not None:
+            self._verbose = bool(verbosity)
 
     def __str__(self) -> str:
         """
@@ -80,7 +84,8 @@ class JSONSettingsService(SettingsService):
             "Currently active settings configuration:\n"
             + f"-> default container:   {self.defaultContainer.value}\n"
             + f"-> default algorithm:   {self.defaultAlgorithm.value}\n"
-            + f"-> default log level:   {self.logLevel.name}"
+            + f"-> default log level:   {self.logLevel.name}\n"
+            + f"-> default verbosity:   {self.verbose}"
         )
 
     @property
@@ -128,19 +133,35 @@ class JSONSettingsService(SettingsService):
         self._level = value
         JSONSettingsService.createOrUpdateSetting("logLevel", value)
 
+    @property
+    def verbose(self) -> bool:
+        """
+        TODO
+        """
+        return self._verbose
+
+    @verbose.setter
+    def verbose(self, value: bool) -> None:
+        """
+        TODO
+        """
+        self._verbose = value
+        JSONSettingsService.createOrUpdateSetting("verbose", value)
+
     @staticmethod
     def createOrUpdateSetting(
         setting: Union[
             Literal["defaultContainer"],
             Literal["defaultAlgorithm"],
             Literal["logLevel"],
+            Literal["verbose"],
         ],
-        value: Union[ContainerTypes, AlgorithmTypes, LogLevel],
+        value: Union[ContainerTypes, AlgorithmTypes, LogLevel, bool],
     ) -> None:
         """
         TODO
         """
-        currentSettings: Dict[str, str] = {}
+        currentSettings: Dict[str, Union[str, bool]] = {}
         try:
             with open(
                 join(dirname(__file__), "custom_settings.json"),
@@ -172,6 +193,13 @@ class JSONSettingsService(SettingsService):
                 raise InvalidSettingException(
                     "setting invalid value for default algorithm!"
                 )
+        elif setting == "verbose":
+            if isinstance(value, bool):
+                currentSettings["verbose"] = value
+            else:
+                raise InvalidSettingException(
+                    "setting invalid value for default verbosity!"
+                )
         else:
             raise InvalidSettingException("trying to set invalid setting key!")
 
@@ -183,7 +211,9 @@ class JSONSettingsService(SettingsService):
             dump(currentSettings, custom, indent=4)
 
     @staticmethod
-    def loadSettingsFromFile(filename: str, settings: Dict[str, str]) -> None:
+    def loadSettingsFromFile(
+        filename: str, settings: Dict[str, Union[str, bool]]
+    ) -> None:
         """
         TODO
         """

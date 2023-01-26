@@ -10,6 +10,9 @@
         },
         "logLevel": {
             "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        },
+        "verbose": {
+            "type": "boolean"
         }
     },
     "additionalProperties": false,

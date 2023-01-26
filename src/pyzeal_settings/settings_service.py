@@ -60,3 +60,17 @@ class SettingsService(Protocol):
         TODO
         """
         ...
+
+    @property
+    def verbose(self) -> bool:
+        """
+        TODO
+        """
+        ...
+
+    @verbose.setter
+    def verbose(self, value: bool) -> None:
+        """
+        TODO
+        """
+        ...

@@ -75,3 +75,8 @@ class PyZEALParser(ArgumentParser):
             choices=["debug", "info", "warning", "error", "critical"],
             help="change current default log level",
         )
+        changeParser.add_argument(
+            "--verbose",
+            choices=["true", "false"],
+            help="change current default verbosity level",
+        )

@@ -45,7 +45,7 @@ class ParallelRootFinder(RootFinder):
         algorithmType: AlgorithmTypes = AlgorithmTypes.NEWTON_GRID,
         precision: Tuple[int, int] = (3, 3),
         numSamplePoints: Optional[int] = None,
-        verbose: bool = True,
+        verbose: Optional[bool] = None,
     ) -> None:
         """
         Initialize a parallel (multiprocessing) root finder.
@@ -63,7 +63,7 @@ class ParallelRootFinder(RootFinder):
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
         :type numSamplePoints: Optional[int]
         :param verbose: flag that toggles the command line progress bar
-        :type verbose: bool
+        :type verbose: Optional[bool]
         """
         super().__init__(
             f=f,

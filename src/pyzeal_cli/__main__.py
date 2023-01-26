@@ -41,6 +41,8 @@ def mainPyZEAL() -> None:
         changeAlgorithmSetting(args.algorithm, settingsService)
     if getattr(args, "log_level", None) is not None:
         changeLogLevelSetting(args.log_level, settingsService)
+    if getattr(args, "verbose", None) is not None:
+        changeVerbositySetting(args.verbose, settingsService)
 
     # a valid subcommand was selected but no meaningful options were provided
     if len(argv) == 2:
@@ -110,4 +112,26 @@ def changeLogLevelSetting(logLevel: str, service: SettingsService) -> None:
             + oldLevel.name
             + " --> "
             + newLevel.name
+        )
+
+
+def changeVerbositySetting(verbose: str, service: SettingsService) -> None:
+    """
+    TODO
+    """
+    oldVerbosity = service.verbose
+    newVerbosity: Optional[bool] = None
+    if verbose == "true":
+        newVerbosity = True
+    elif verbose == "false":
+        newVerbosity = False
+    if newVerbosity is None:
+        raise SystemExit(2)
+    if newVerbosity != oldVerbosity:
+        service.verbose = newVerbosity
+        print(
+            "changed default verbosity:   "
+            + str(oldVerbosity)
+            + " --> "
+            + str(newVerbosity)
         )
