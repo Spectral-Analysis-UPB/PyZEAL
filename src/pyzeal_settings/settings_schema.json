@@ -13,5 +13,5 @@
         }
     },
     "additionalProperties": false,
-    "required": ["defaultContainer", "defaultAlgorithm", "logLevel"]
+    "required": []
 }

@@ -7,15 +7,15 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Optional
 from sys import argv
+from typing import Optional
 
 from pyzeal_cli.cli_parser import PyZEALParser
+from pyzeal_logging.log_levels import LogLevel
 from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_settings.settings_service import SettingsService
-from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.algorithm_types import AlgorithmTypes
-from pyzeal_logging.log_levels import LogLevel
+from pyzeal_types.container_types import ContainerTypes
 
 
 def mainPyZEAL() -> None:

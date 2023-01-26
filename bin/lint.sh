@@ -54,6 +54,11 @@ echo "|[validating json schemata]|"
 echo "|--------------------------|"
 check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json \
     src/pyzeal_settings/default_settings.json
+if [[ -e src/pyzeal_settings/custom_settings.json ]]
+then
+    check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json \
+        src/pyzeal_settings/custom_settings.json
+fi
 echo ""
 
 if [[ "$1" == "--tests" ]]
