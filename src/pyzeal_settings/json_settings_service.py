@@ -1,5 +1,6 @@
 """
-TODO
+This module provides a straight-forward implementation of the `SettingsSerivce`
+based on a `json` serialization backend.
 
 Authors:\n
 - Philipp Schuette\n
@@ -19,7 +20,8 @@ from pyzeal_types.container_types import ContainerTypes
 class JSONSettingsService(SettingsService):
     """
     This class provides a layer of abstraction for storage and retrieval of
-    PyZEAL related settings using JSON for persistence.
+    PyZEAL related settings using JSON for persistence. Any read and/or write
+    access to settings must happen through a service like this one.
     """
 
     slots = ("_container", "_algorithm", "_level")
@@ -65,6 +67,21 @@ class JSONSettingsService(SettingsService):
             raise InvalidSettingException(
                 "invalid setting for default logging level!"
             )
+
+    def __str__(self) -> str:
+        """
+        A printable string representation of the currently active settings
+        configuration.
+
+        :return: string representation of current setting
+        :rtype: str
+        """
+        return (
+            "Currently active settings configuration:\n"
+            + f"-> default container:   {self.defaultContainer.value}\n"
+            + f"-> default algorithm:   {self.defaultAlgorithm.value}\n"
+            + f"-> default log level:   {self.logLevel.name}"
+        )
 
     @property
     def defaultContainer(self) -> ContainerTypes:
@@ -163,7 +180,7 @@ class JSONSettingsService(SettingsService):
             "w",
             encoding="utf-8",
         ) as custom:
-            dump(currentSettings, custom)
+            dump(currentSettings, custom, indent=4)
 
     @staticmethod
     def loadSettingsFromFile(filename: str, settings: Dict[str, str]) -> None:
