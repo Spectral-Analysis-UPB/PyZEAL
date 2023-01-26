@@ -24,10 +24,9 @@ class FinderAlgorithm(ABC, Loggable):
     def calcRoots(self, context: RootContext) -> None:
         """
         Entry point for a generic root finding algorithm operating in a given
-        context.
+        context. Found roots are expected to be inserted into
+        `context.container` upon the algorithms completion.
 
         :param context: context in which the algorithm operates
         :type context: RootContext
-        :return: roots calculated by the algorithm in the given context
-        :rtype: NDArray[complex128]
         """

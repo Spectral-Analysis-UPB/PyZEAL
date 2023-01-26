@@ -16,9 +16,9 @@ from warnings import filterwarnings
 
 import numpy as np
 import scipy as sp
-from numpy.typing import NDArray
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
+from pyzeal_types.root_types import tVec
 from pyzeal_utils.root_context import RootContext
 
 
@@ -49,8 +49,6 @@ class NewtonGridAlgorithm(FinderAlgorithm):
 
         :param context: context in which the algorithm operates
         :type context: RootContext
-        :return: the roots calculated by the algorithm
-        :rtype: NDArray[complex128]
         """
         self.logger.info(
             "starting newton grid search for %s",
@@ -71,9 +69,7 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         points = [x + y * 1j for (x, y) in product(rePoints, imPoints)]
         filterwarnings("ignore", ".*some failed to converge")
         try:
-            roots: NDArray[np.complex128] = sp.optimize.newton(
-                context.f, points, context.df
-            )
+            roots: tVec = sp.optimize.newton(context.f, points, context.df)
         except RuntimeError:
             return
         for root in roots:

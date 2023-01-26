@@ -14,11 +14,10 @@ Authors:\n
 from typing import Final, Literal, Tuple, Union, cast
 
 import numpy as np
-from numpy.typing import NDArray
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_logging.loggable import Loggable
-from pyzeal_types.root_types import tRecGrid
+from pyzeal_types.root_types import tRecGrid, tVec
 from pyzeal_utils.root_context import RootContext
 
 ####################
@@ -111,7 +110,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         zEnd: complex,
         context: RootContext,
         pos: Union[Literal["horizontal"], Literal["vertical"]],
-    ) -> Tuple[NDArray[np.complex128], NDArray[np.complex128]]:
+    ) -> Tuple[tVec, tVec]:
         r"""
         Calculate an array of complex argument values from the function values
         of the target function `context.func` on the complex line
