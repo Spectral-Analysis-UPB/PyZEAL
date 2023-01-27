@@ -65,6 +65,14 @@ class ParallelRootFinder(RootFinder):
         :param verbose: flag that toggles the command line progress bar
         :type verbose: Optional[bool]
         """
+        if numSamplePoints is not None:
+            numProcesses = cpu_count()
+            if numProcesses is None:
+                numProcesses = 1
+            # numSamplePoints is used by the rootfinding algorithm
+            # on each sub-grid the search area is split up into,
+            # so it needs to be adjusted accordingly
+            numSamplePoints = int(numSamplePoints / numProcesses)
         super().__init__(
             f=f,
             df=df,
@@ -133,7 +141,7 @@ class ParallelRootFinder(RootFinder):
                 task,
             )
 
-            with Pool(initializer=lambda: signal(SIGINT, SIG_IGN)) as pool:
+            with Pool(initializer=ParallelRootFinder.suppressSig) as pool:
                 # shut down root finding orderly upon command line signals
                 try:
                     self.logger.info("attempting to calculate roots...")
@@ -219,3 +227,8 @@ class ParallelRootFinder(RootFinder):
         self.logger.info("starting root job in pid=%d!", getpid())
         self.algorithm.calcRoots(context)
         self.logger.info("finished root job in pid=%d!", getpid())
+
+    @staticmethod
+    def suppressSig() -> None:
+        "Initialization routine setting workers to ignore `ctrl+c`."
+        signal(SIGINT, SIG_IGN)

@@ -7,6 +7,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+from functools import partial
 from typing import Optional, Tuple, cast
 
 import numpy as np
@@ -30,6 +31,21 @@ class ContainerFactory:
 
     # initialize the module level logger
     logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
+
+    @staticmethod
+    def _func_value_zero(threshold, root, context):
+        return cast(
+            bool,
+            np.abs(context.f(np.array([root[0]], dtype=np.complex128)))
+            < 10 ** (-threshold),
+        )
+
+    @staticmethod
+    def _zero_in_bounds(root, context):
+        return (
+            context.reRan[0] <= root[0].real <= context.reRan[1]
+            and context.imRan[0] <= root[0].imag <= context.imRan[1]
+        )
 
     @staticmethod
     def getConcreteContainer(
@@ -92,30 +108,12 @@ class ContainerFactory:
         """
         if filterType == FilterTypes.FUNCTION_VALUE_ZERO:
             container.registerFilter(
-                lambda root, context: (
-                    cast(
-                        bool,
-                        np.abs(
-                            context.f(
-                                np.array(
-                                    [
-                                        root[0],
-                                    ],
-                                    dtype=np.complex128,
-                                )
-                            )
-                        )
-                        < 10 ** (-threshold),
-                    )
-                ),
+                partial(ContainerFactory._func_value_zero, threshold),
                 filterType.value,
             )
         elif filterType == FilterTypes.ZERO_IN_BOUNDS:
             container.registerFilter(
-                lambda root, context: (
-                    context.reRan[0] <= root[0].real <= context.reRan[1]
-                    and context.imRan[0] <= root[0].imag <= context.imRan[1]
-                ),
+                ContainerFactory._zero_in_bounds,
                 filterType.value,
             )
 
