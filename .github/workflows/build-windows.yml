@@ -30,14 +30,14 @@ jobs:
         pyzeal
     - name: Lint with flake8 and pylint
       run: |
-        flake8 --count src
-        pylint --fail-under=8 src
-    - name: Test with pytest
-      run: |
-        pytest test
+        flake8 --count src tests
+        pylint --fail-under=8 src tests
     - name: Type checking with mypy
       run: |
-        mypy src
+        mypy src tests
     - name: Check docstring coverage
       run: |
-        docstr-coverage -m -f -F 80.0 src
+        docstr-coverage -m -f -F 80.0 src tests
+    - name: Test with pytest
+      run: |
+        pytest tests
