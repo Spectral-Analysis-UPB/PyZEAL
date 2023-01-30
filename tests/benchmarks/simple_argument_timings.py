@@ -2,7 +2,9 @@
 Timing benchmark suite for the simple argument (no numerical quadrature) based
 root finding algorithm.
 """
-from .testing_fixtures import simpleArgumentRootFinder
+
+from .resources.testing_fixtures import simpleArgumentRootFinder
+from .resources.testing_resources import IM_RAN, RE_RAN
 
 benchmarkFunctions = [
     "x^2-1",
@@ -22,10 +24,10 @@ class SimpleArgumentSuite:
     """
 
     def TimeSimpleArgument(self) -> None:
-        r"""
+        """
         Runs the normal version of the rootfinding algorithm for all
         test cases
         """
         for caseName in benchmarkFunctions:
             hrf = simpleArgumentRootFinder(caseName)
-            hrf.calculateRoots((-5, 5), (-5, 5))
+            hrf.calculateRoots(RE_RAN, IM_RAN, (3, 3))

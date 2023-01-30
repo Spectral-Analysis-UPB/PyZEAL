@@ -9,19 +9,16 @@ echo "|-----------------------------------------------------------|"
 echo "|[running black and isort on sources, tests, and benchmarks]|"
 echo "|-----------------------------------------------------------|"
 black src/
-black test/
-black benchmarks/
+black tests/
 isort src/
-isort test/
-isort benchmarks/
+isort tests/
 echo ""
 
 echo "|--------------------------------------------------|"
 echo "|[running flake8 on sources, tests, and benchmarks]|"
 echo "|--------------------------------------------------|"
 flake8 src/ \
-    && flake8 test/ \
-    && flake8 benchmarks/ \
+    && flake8 tests/ \
     && echo "no linting errors with flake8!"
 echo ""
 
@@ -36,8 +33,7 @@ echo "|[running mypy on sources, tests, and benchmarks]|"
 echo "|------------------------------------------------|"
 export MYPYPATH=src \
     && mypy src/ --namespace-packages --explicit-package-bases \
-    && mypy test/ \
-    && mypy benchmarks/ \
+    && mypy tests/ \
     && echo "type hints look good!"
 echo ""
 
@@ -45,8 +41,7 @@ echo "|--------------------------------------------------------------|"
 echo "|[running docstring coverage on sources, tests, and benchmarks]|"
 echo "|--------------------------------------------------------------|"
 docstr-coverage -p src/
-docstr-coverage -p test/
-docstr-coverage -p benchmarks/
+docstr-coverage -p tests/
 echo ""
 
 echo "|--------------------------|"
@@ -66,6 +61,6 @@ then
     echo "|--------------------------|"
     echo "|[running tests with pytest|"
     echo "|--------------------------|"
-    pytest test/
+    pytest tests/
     echo ""
 fi

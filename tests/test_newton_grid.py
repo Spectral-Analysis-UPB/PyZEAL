@@ -18,9 +18,13 @@ from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
 
-from .testing_fixtures import newtonGridFinder
-from .testing_resources import IM_RAN, RE_RAN, testFunctions
-from .testing_utils import rootsMatchClosely
+from .benchmarks.resources.testing_fixtures import newtonGridFinder
+from .benchmarks.resources.testing_resources import (
+    IM_RAN,
+    RE_RAN,
+    testFunctions,
+)
+from .benchmarks.resources.testing_utils import rootsMatchClosely
 
 # 20 is enough to pass all tests while still running faster than the default 50
 NUM_SAMPLE_POINTS = 20

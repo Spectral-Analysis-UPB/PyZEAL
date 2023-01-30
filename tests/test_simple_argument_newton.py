@@ -14,25 +14,33 @@ from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
 
-from .testing_fixtures import simpleArgumentRootFinder
-from .testing_resources import IM_RAN, RE_RAN, testFunctions
-from .testing_utils import rootsMatchClosely
+from .benchmarks.resources.testing_fixtures import (
+    simpleArgumentNewtonRootFinder,
+)
+from .benchmarks.resources.testing_resources import (
+    IM_RAN,
+    RE_RAN,
+    testFunctions,
+)
+from .benchmarks.resources.testing_utils import rootsMatchClosely
 
 KNOWN_FAILURES = [
     "log and sin composition",  # see issue #12
-    "x^100",  # very high root order requires too much z-refinement
+    "x^100",  # roots of very high orders require too much z-refinement
     "1e6 * x^100",
 ]
 
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgument(testName, parallel) -> None:
-    "TODO"
+def testSimpleArgumentNewton(testName, parallel) -> None:
+    """
+    TODO
+    """
     if testName in KNOWN_FAILURES:
         assert True
         return
-    hrf = simpleArgumentRootFinder(testName, parallel=parallel)
+    hrf = simpleArgumentNewtonRootFinder(testName, parallel=parallel)
     hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
@@ -47,11 +55,13 @@ def testSimpleArgument(testName, parallel) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=2)), max_examples=5)
-def testSimpleArgumentFinderHypothesis(roots) -> None:
+def testSimpleArgumentNewtonHypothesis(roots) -> None:
     """
     Test the root finder algorithm based on a simple partial integration of the
-    classical argument principle on polynomials whose roots are generated
-    automatically using the hypothesis package.
+    classical argument principle combined with a Newton algorithm upon
+    sufficient refinement of the subdivision into rectangles. The testfunctions
+    are polynomials whose roots are generated automatically using the
+    hypothesis package.
 
     TODO
     """
@@ -59,7 +69,7 @@ def testSimpleArgumentFinderHypothesis(roots) -> None:
     hrf = RootFinder(
         f,
         None,
-        algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+        algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
         containerType=ContainerTypes.ROUNDING_CONTAINER,
         verbose=False,
     )

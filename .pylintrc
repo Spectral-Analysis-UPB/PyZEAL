@@ -254,7 +254,8 @@ good-names=i, j, k, n, s,
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
 good-names-rgxs=t.,
-                _.
+                _.,
+                Time*
 
 # Include a hint for the correct naming format with invalid-name.
 include-naming-hint=no
