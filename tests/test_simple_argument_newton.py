@@ -10,6 +10,7 @@ from hypothesis import given, settings, strategies
 from numpy.polynomial import Polynomial
 
 from pyzeal import RootFinder
+from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
@@ -24,6 +25,9 @@ from .benchmarks.resources.testing_resources import (
 )
 from .benchmarks.resources.testing_utils import rootsMatchClosely
 
+# disable progress bar by default for tests
+JSONSettingsService().verbose = False
+# some test functions do not work due to algorithmic limitations
 KNOWN_FAILURES = [
     "log and sin composition",  # see issue #12
     "x^100",  # roots of very high orders require too much z-refinement
@@ -38,8 +42,7 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
     TODO
     """
     if testName in KNOWN_FAILURES:
-        assert True
-        return
+        pytest.skip()
     hrf = simpleArgumentNewtonRootFinder(testName, parallel=parallel)
     hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
     foundRoots = hrf.roots

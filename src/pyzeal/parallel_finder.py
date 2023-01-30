@@ -66,7 +66,7 @@ class ParallelRootFinder(RootFinder):
         """
         # every algorithm invocation uses numSamplePoints on its subgrid!
         numSamplePoints = (
-            int(numSamplePoints / (cpu_count() or 1))
+            int(numSamplePoints / (cpu_count() or 1)) + 1
             if numSamplePoints
             else None
         )
