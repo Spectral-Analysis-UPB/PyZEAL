@@ -3,10 +3,13 @@ name: black-lint
 on: [push, pull_request]
 
 jobs:
-  lint:
+  black-reformat:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: psf/black@stable
         with:
           src: "./src"
+      - name: Check json schemata
+        run: |
+          check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json src/pyzeal_settings/default_settings.json

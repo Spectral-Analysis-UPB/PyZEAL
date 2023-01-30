@@ -18,7 +18,6 @@ from typing import List, Optional, Tuple, cast
 from numpy import linspace
 from rich.progress import TaskID
 
-from pyzeal_logging.logger_facade import PyZEALLogger
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.parallel_types import FinderProgressManager, tQueue
@@ -65,14 +64,12 @@ class ParallelRootFinder(RootFinder):
         :param verbose: flag that toggles the command line progress bar
         :type verbose: Optional[bool]
         """
-        if numSamplePoints is not None:
-            numProcesses = cpu_count()
-            if numProcesses is None:
-                numProcesses = 1
-            # numSamplePoints is used by the rootfinding algorithm
-            # on each sub-grid the search area is split up into,
-            # so it needs to be adjusted accordingly
-            numSamplePoints = int(numSamplePoints / numProcesses)
+        # every algorithm invocation uses numSamplePoints on its subgrid!
+        numSamplePoints = (
+            int(numSamplePoints / (cpu_count() or 1))
+            if numSamplePoints
+            else None
+        )
         super().__init__(
             f=f,
             df=df,
@@ -142,12 +139,12 @@ class ParallelRootFinder(RootFinder):
             )
 
             with Pool(initializer=ParallelRootFinder.suppressSig) as pool:
-                # shut down root finding orderly upon command line signals
+                # shut down root search orderly upon command line signals
                 try:
                     self.logger.info("attempting to calculate roots...")
                     pool.starmap(
                         self.rootWorker,
-                        [(context, self.logger) for context in contexts],
+                        [(context,) for context in contexts],
                         chunksize=cpu_count() or 1,
                     )
                     if progress is not None and task is not None:
@@ -217,7 +214,7 @@ class ParallelRootFinder(RootFinder):
                 )
         return contexts
 
-    def rootWorker(self, context: RootContext, logger: PyZEALLogger) -> None:
+    def rootWorker(self, context: RootContext) -> None:
         """
         Worker function that executes a root finding algorithm in a child
         process.
