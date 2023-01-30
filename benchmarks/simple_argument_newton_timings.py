@@ -11,7 +11,7 @@ benchmarkFunctions = [
     "x^4-1",
     "x^5-4x+2",
     "sin(x)",
-    "exp(x)"
+    "exp(x)",
 ]
 
 
@@ -29,4 +29,4 @@ class SimpleArgumentSuite:
         """
         for caseName in benchmarkFunctions:
             hrf = simpleArgumentNewtonRootFinder(caseName)
-            hrf.calculateRoots((-5, 5), (-5, 5), (3,3))
+            hrf.calculateRoots((-5, 5), (-5, 5), (3, 3))

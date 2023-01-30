@@ -9,8 +9,9 @@ benchmarkFunctions = [
     "x^4-1",
     "x^5-4x+2",
     "sin(x)",
-    "exp(x)"
+    "exp(x)",
 ]
+
 
 class NewtonGridSuite:
     """
@@ -33,5 +34,7 @@ class NewtonGridSuite:
         Runs the derivative-free version of the algorithm
         """
         for caseName in benchmarkFunctions:
-            gridRF = newtonGridFinder(caseName, numSamplePoints=50, derivativeFree=True)
+            gridRF = newtonGridFinder(
+                caseName, numSamplePoints=50, derivativeFree=True
+            )
             gridRF.calculateRoots((-5, 5), (-5, 5), precision=(3, 3))

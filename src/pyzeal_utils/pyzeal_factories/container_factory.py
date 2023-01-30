@@ -8,7 +8,7 @@ Authors:\n
 """
 
 from functools import partial
-from typing import Optional, Tuple, cast
+from typing import Callable, Optional, Tuple, cast
 
 import numpy as np
 
@@ -17,7 +17,9 @@ from pyzeal_logging.log_levels import LogLevel
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
 from pyzeal_types.parallel_types import tQueue
+from pyzeal_types.root_types import tRoot
 from pyzeal_types.settings_types import SettingsServicesTypes
+from pyzeal_utils.filter_context import FilterContext
 from pyzeal_utils.pyzeal_containers.plain_container import PlainContainer
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 from pyzeal_utils.pyzeal_containers.rounding_container import RoundingContainer
@@ -33,7 +35,10 @@ class ContainerFactory:
     logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
 
     @staticmethod
-    def _func_value_zero(threshold, root, context):
+    def _func_value_zero(threshold: int, root: tRoot, context: FilterContext):
+        """
+        TODO
+        """
         return cast(
             bool,
             np.abs(context.f(np.array([root[0]], dtype=np.complex128)))
@@ -41,7 +46,10 @@ class ContainerFactory:
         )
 
     @staticmethod
-    def _zero_in_bounds(root, context):
+    def _zero_in_bounds(root: tRoot, context: FilterContext):
+        """
+        TODO
+        """
         return (
             context.reRan[0] <= root[0].real <= context.reRan[1]
             and context.imRan[0] <= root[0].imag <= context.imRan[1]
@@ -106,17 +114,13 @@ class ContainerFactory:
         :return: the enhanced container
         :rtype: RootContainer
         """
+        predicate: Callable[[tRoot, FilterContext], bool]
         if filterType == FilterTypes.FUNCTION_VALUE_ZERO:
-            container.registerFilter(
-                partial(ContainerFactory._func_value_zero, threshold),
-                filterType.value,
-            )
+            predicate = partial(ContainerFactory._func_value_zero, threshold)
         elif filterType == FilterTypes.ZERO_IN_BOUNDS:
-            container.registerFilter(
-                ContainerFactory._zero_in_bounds,
-                filterType.value,
-            )
+            predicate = ContainerFactory._zero_in_bounds
 
+        container.registerFilter(predicate, filterType.value)
         ContainerFactory.logger.debug(
             "registered a new %s filter!", filterType.value
         )

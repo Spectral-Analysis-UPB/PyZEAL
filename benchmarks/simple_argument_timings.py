@@ -10,7 +10,7 @@ benchmarkFunctions = [
     "x^4-1",
     "x^5-4x+2",
     "sin(x)",
-    "exp(x)"
+    "exp(x)",
 ]
 
 

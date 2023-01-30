@@ -7,7 +7,9 @@ from pyzeal_types.filter_types import FilterTypes
 from .testing_resources import testFunctions
 
 
-def newtonGridFinder(testName: str, numSamplePoints=20, parallel=False, derivativeFree=False):
+def newtonGridFinder(
+    testName: str, numSamplePoints=20, parallel=False, derivativeFree=False
+):
     f = testFunctions[testName][0]
     df = testFunctions[testName][1] if not derivativeFree else None
     if parallel:
@@ -31,7 +33,9 @@ def newtonGridFinder(testName: str, numSamplePoints=20, parallel=False, derivati
     return gridRF
 
 
-def simpleArgumentRootFinder(testName: str, lvl: LogLevel=LogLevel.INFO, parallel=False):
+def simpleArgumentRootFinder(
+    testName: str, lvl: LogLevel = LogLevel.INFO, parallel=False
+):
     if parallel:
         hrf = ParallelRootFinder(
             testFunctions[testName][0],
@@ -53,7 +57,7 @@ def simpleArgumentRootFinder(testName: str, lvl: LogLevel=LogLevel.INFO, paralle
 
 
 def simpleArgumentNewtonRootFinder(
-    testName: str, lvl: LogLevel=LogLevel.INFO, parallel=False
+    testName: str, lvl: LogLevel = LogLevel.INFO, parallel=False
 ):
     if parallel:
         hrf = ParallelRootFinder(

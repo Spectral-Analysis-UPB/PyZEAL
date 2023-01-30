@@ -1,5 +1,8 @@
-from pyzeal import ParallelRootFinder, RootFinder
-from pyzeal_logging.log_levels import LogLevel
+"""
+TODO
+"""
+
+from pyzeal import ParallelRootFinder, RootFinder, RootFinderInterface
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
@@ -7,9 +10,18 @@ from pyzeal_types.filter_types import FilterTypes
 from .testing_resources import testFunctions
 
 
-def newtonGridFinder(testName: str, numSamplePoints=20, parallel=False, derivativeFree=False):
+def newtonGridFinder(
+    testName: str,
+    numSamplePoints: int = 20,
+    parallel: bool = False,
+    derivativeFree: bool = False,
+) -> RootFinderInterface:
+    """
+    TODO
+    """
     f = testFunctions[testName][0]
     df = testFunctions[testName][1] if not derivativeFree else None
+    gridRF: RootFinderInterface
     if parallel:
         gridRF = ParallelRootFinder(
             f,
@@ -31,45 +43,53 @@ def newtonGridFinder(testName: str, numSamplePoints=20, parallel=False, derivati
     return gridRF
 
 
-def simpleArgumentRootFinder(testName: str, lvl: LogLevel=LogLevel.INFO, parallel=False):
+def simpleArgumentRootFinder(
+    testName: str, parallel: bool = False
+) -> RootFinderInterface:
+    """
+    TODO
+    """
+    holoRF: RootFinderInterface
     if parallel:
-        hrf = ParallelRootFinder(
+        holoRF = ParallelRootFinder(
             testFunctions[testName][0],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
             verbose=False,
         )
     else:
-        hrf = RootFinder(
+        holoRF = RootFinder(
             testFunctions[testName][0],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
             verbose=False,
         )
-    hrf.setLevel(level=lvl)
-    hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
-    hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    return hrf
+    holoRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
+    holoRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
+    return holoRF
 
 
 def simpleArgumentNewtonRootFinder(
-    testName: str, lvl: LogLevel=LogLevel.INFO, parallel=False
-):
+    testName: str, parallel: bool = False
+) -> RootFinderInterface:
+    """
+    TODO
+    """
+    holoNewtonRF: RootFinderInterface
     if parallel:
-        hrf = ParallelRootFinder(
+        holoNewtonRF = ParallelRootFinder(
             testFunctions[testName][0],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
             verbose=False,
         )
     else:
-        hrf = RootFinder(
+        holoNewtonRF = RootFinder(
             testFunctions[testName][0],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
             verbose=False,
         )
-    hrf.setLevel(level=lvl)
-    hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
-    hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    return hrf
+    holoNewtonRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
+    holoNewtonRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
+    return holoNewtonRF
