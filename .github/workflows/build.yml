@@ -39,6 +39,10 @@ jobs:
     - name: Check docstring coverage
       run: |
         docstr-coverage -m -f -F 85.0 src tests
+    - name: Check json schemata
+      run: |
+        check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json src/pyzeal_settings/default_settings.json
+      if: ${{ matrix.os }} == 'ubuntu-latest'
     - name: Test with pytest
       run: |
         pytest tests

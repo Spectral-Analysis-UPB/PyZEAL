@@ -42,7 +42,6 @@ def testNewtonGridRootFinder(testName, parallel) -> None:
     TODO
     """
     if testName in KNOWN_FAILURES:
-        assert True
         return
     for numSamplePoints in [20, 100]:
         gridRF = newtonGridFinder(testName, numSamplePoints, parallel=parallel)

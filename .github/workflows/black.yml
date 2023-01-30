@@ -10,6 +10,3 @@ jobs:
       - uses: psf/black@stable
         with:
           src: "./src"
-      - name: Check json schemata
-        run: |
-          check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json src/pyzeal_settings/default_settings.json
