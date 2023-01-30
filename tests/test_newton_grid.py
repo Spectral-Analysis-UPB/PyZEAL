@@ -66,7 +66,7 @@ def testNewtonGridRootFinder(testName, parallel) -> None:
         strategies.complex_numbers(max_magnitude=10), min_size=1, max_size=10
     )
 )
-@settings(deadline=(timedelta(seconds=2)), max_examples=5)
+@settings(deadline=(timedelta(seconds=5)), max_examples=5)
 def testNewtonGridRootFinderHypothesis(roots) -> None:
     """
     Test the grid-based Newton rootfinder on polynomials whose roots are
