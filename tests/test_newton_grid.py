@@ -38,11 +38,13 @@ KNOWN_FAILURES = ["x^4-1", "log and sin composition", "x^100", "1e6 * x^100"]
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testNewtonGridRootFinder(testName, parallel) -> None:
-    """
-    Test the Newton-Grid-Rootfinder with polynomial and elementary functions.
+def testNewtonGridRootFinder(testName : str, parallel : bool) -> None:
+    """Test the Newton-Grid-Rootfinder with the function given by `testName`
 
-    TODO
+    :param testName: Name of the test case
+    :type testName: str
+    :param parallel: If roots should be searched in parallel
+    :type parallel: bool
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
@@ -68,11 +70,11 @@ def testNewtonGridRootFinder(testName, parallel) -> None:
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
 def testNewtonGridRootFinderHypothesis(roots) -> None:
-    """
-    Test the grid-based Newton rootfinder on polynomials whose roots are
+    """Test the grid-based Newton rootfinder on polynomials whose roots are
     generated automatically using the hypothesis package.
 
-    TODO
+    :param roots: Roots of a polynomial
+    :type roots: List[complex]
     """
     f = Polynomial.fromroots(roots)
     df = f.deriv()

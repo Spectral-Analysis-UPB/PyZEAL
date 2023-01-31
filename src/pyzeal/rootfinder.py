@@ -194,7 +194,7 @@ class RootFinder(RootFinderInterface, Loggable):
     @property
     def container(self) -> RootContainer:
         """
-        TODO
+        Return the container attached to this rootfinder
         """
         return self._container
 
@@ -208,8 +208,17 @@ class RootFinder(RootFinderInterface, Loggable):
         imRan: Tuple[float, float],
         precision: Tuple[int, int],
     ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
-        """
-        TODO
+        """Desymmetrize the domain given by reRan and imRan to improve
+        numerical stability
+
+        :param reRan: Search range for the real part
+        :type reRan: Tuple[float, float]
+        :param imRan: Search range for the imaginary part
+        :type imRan: Tuple[float, float]
+        :param precision: Accuracy in real and imaginary part
+        :type precision: Tuple[int, int]
+        :return: New bounds for real and imaginary parts
+        :rtype: Tuple[Tuple[float, float], Tuple[float, float]]
         """
         (x1, x2), (y1, y2) = sorted(reRan), sorted(imRan)
         x1 = x1 - 1 * 10 ** (-1 * precision[0])

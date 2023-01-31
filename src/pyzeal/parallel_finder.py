@@ -183,11 +183,26 @@ class ParallelRootFinder(RootFinder):
         progress: Optional[FinderProgressBar],
         task: Optional[TaskID],
     ) -> List[RootContext]:
-        """
-        Convenience method that constructs a list of RootContext objects on
+        """Convenience method that constructs a list of RootContext objects on
         which child processes operate by applying a concrete RootAlgorithm.
 
-        TODO
+        :param numProcesses: The number of processes, which determines the
+            amount of contexts that are returned
+        :type numProcesses: int
+        :param reRan: Search range for the real part
+        :type reRan: Tuple[float, float]
+        :param imRan: Search range for the imaginary part
+        :type imRan: Tuple[float, float]
+        :param rootQueue: Queue in which new roots are added
+        :type rootQueue: tQueue
+        :param precision: accuracy of search in real and imaginary parts
+        :type precision: Tuple[int, int]
+        :param progress: Progress bar handle
+        :type progress: Optional[FinderProgressBar]
+        :param task: TaskID for the progress bar
+        :type task: Optional[TaskID]
+        :return: List of RootContexts on which child processes can operate
+        :rtype: List[RootContext]
         """
         self.logger.debug(
             "initializing context jobs for %d child processes...", numProcesses
@@ -215,11 +230,11 @@ class ParallelRootFinder(RootFinder):
         return contexts
 
     def rootWorker(self, context: RootContext) -> None:
-        """
-        Worker function that executes a root finding algorithm in a child
+        """Worker function that executes a root finding algorithm in a child
         process.
-
-        TODO
+        
+        :param context: Context object on which roots are searched
+        :type context: RootContext
         """
         self.logger.info("starting root job in pid=%d!", getpid())
         self.algorithm.calcRoots(context)

@@ -35,14 +35,18 @@ class RootContext:
     task: Optional[TaskID] = None
 
     def toFilterContext(self) -> FilterContext:
-        """
-        TODO
+        """Get a `FilterContext` object with the same parameters as this `RootContext`
+
+        :return: `FilterContext` object with the same parameters as this `RootContext`
+        :rtype: FilterContext
         """
         return FilterContext(self.f, self.reRan, self.imRan, self.precision)
 
     def functionDataToString(self) -> str:
-        """
-        TODO
+        """Return a string describing the data stored by this object
+
+        :return: Object data
+        :rtype: str
         """
         return (
             f"{getattr(self.f, '__name__', '<unnamed>')} on rectangle "

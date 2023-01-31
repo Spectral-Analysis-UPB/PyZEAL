@@ -1,5 +1,6 @@
 """
-TODO
+This module contains tests of the SIMPLE_ARGUMENT_NEWTON implementation
+of the root finding algorithm interface.
 """
 
 from datetime import timedelta
@@ -38,8 +39,12 @@ KNOWN_FAILURES = [
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
 def testSimpleArgumentNewton(testName, parallel) -> None:
-    """
-    TODO
+    """Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by `testName`
+
+    :param testName: Name of the test case
+    :type testName: str
+    :param parallel: If roots should be searched in parallel
+    :type parallel: bool
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
@@ -59,14 +64,14 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
 def testSimpleArgumentNewtonHypothesis(roots) -> None:
-    """
-    Test the root finder algorithm based on a simple partial integration of the
+    """Test the root finder algorithm based on a simple partial integration of the
     classical argument principle combined with a Newton algorithm upon
     sufficient refinement of the subdivision into rectangles. The testfunctions
     are polynomials whose roots are generated automatically using the
     hypothesis package.
 
-    TODO
+    :param roots: Roots of a polynomial
+    :type roots: List[complex]
     """
     f = Polynomial.fromroots(roots)
     hrf = RootFinder(

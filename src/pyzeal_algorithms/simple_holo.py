@@ -217,13 +217,17 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     def calcRootsRecursion(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> None:
-        r"""
-        Calculates zeros of `self.func` by applying the argument principle over
+        """Calculates zeros of `self.func` by applying the argument principle over
         a rectangle and recursively dividing this rectangle into smaller ones.
         Zeros found are put into `resultQueue`. The finished calculation gets
         reported to the progress bar `progress` under the task id `task`.
 
-        TODO
+        :param zParts: Rectangle describing the search area
+        :type zParts: tRecGrid
+        :param phiParts: Change in argument along the rectangle
+        :type phiParts: tRecGrid
+        :param context: RootContext object containing the rest of the information
+        :type context: RootContext
         """
         # calculate difference between right/left and top/bottom
         deltaRe = zParts[1][0].real - zParts[3][0].real
@@ -291,13 +295,19 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     def divideVertical(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> Tuple[Tuple[tRecGrid, tRecGrid], Tuple[tRecGrid, tRecGrid]]:
-        r"""
-        Divide a rectangle in the complex plane, given by its z-support points
+        """Divide a rectangle in the complex plane, given by its z-support points
         `zParts` and corresponding argument values `phiParts` of the function
         values of `context.func` vertically in the middle. Zeros found during
         the division process are put into `context.container`.
 
-        TODO
+        :param zParts: Rectangle to divide
+        :type zParts: tRecGrid
+        :param phiParts: Change in argument along the rectangle
+        :type phiParts: tRecGrid
+        :param context: RootContext containing the rest of the information
+        :type context: RootContext
+        :return: Two new grids
+        :rtype: Tuple[Tuple[tRecGrid, tRecGrid], Tuple[tRecGrid, tRecGrid]]
         """
         reMiddle = 0.5 * (zParts[1][0].real + zParts[3][0].real)
         mIdxLow = np.where(zParts[0].real <= reMiddle)[0][-1]
@@ -367,13 +377,19 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     def divideHorizontal(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> Tuple[Tuple[tRecGrid, tRecGrid], Tuple[tRecGrid, tRecGrid]]:
-        r"""
-        Divide a rectangle in the complex plane, given by its z-support points
+        """Divide a rectangle in the complex plane, given by its z-support points
         `zParts` and corresponding argument values `phiParts` of the function
         values of `context.f` horizontally in the middle. Zeros found during
         the division process are put into `context.container`.
 
-        TODO
+        :param zParts: Rectangle to divide
+        :type zParts: tRecGrid
+        :param phiParts: Change in argument along the rectangle
+        :type phiParts: tRecGrid
+        :param context: RootContext containing the rest of the information
+        :type context: RootContext
+        :return: Two new grids
+        :rtype: Tuple[Tuple[tRecGrid, tRecGrid], Tuple[tRecGrid, tRecGrid]]
         """
         imagMiddle = 0.5 * (zParts[2][0].imag + zParts[0][0].imag)
         mIdxR = np.where(zParts[1].imag <= imagMiddle)[0][-1]
@@ -449,8 +465,21 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         phi: float,
         context: RootContext,
     ) -> None:
-        """
-        TODO
+        """Compute the location of a root in a sufficiently small rectangle
+        and update the progress bar
+
+        :param right: _description_
+        :type right: complex
+        :param left: _description_
+        :type left: complex
+        :param top: _description_
+        :type top: complex
+        :param bottom: _description_
+        :type bottom: complex
+        :param phi: _description_
+        :type phi: float
+        :param context: _description_
+        :type context: RootContext
         """
         newZero = (
             left.real + right.real + 1j * (bottom.imag + top.imag)

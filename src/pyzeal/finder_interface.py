@@ -75,7 +75,7 @@ class RootFinderInterface(ABC):
     @abstractmethod
     def container(self) -> RootContainer:
         """
-        TODO
+        Return the container attached to the finder.
         """
 
     @container.setter
@@ -87,7 +87,8 @@ class RootFinderInterface(ABC):
         self, filterType: FilterTypes, *, threshold: int = 3
     ) -> None:
         """
-        TODO
+        Add a filter of type `filterType` to the set of filters which
+        found roots are checked against.
         """
         ContainerFactory.registerPreDefinedFilter(
             self.container, filterType, threshold=threshold
