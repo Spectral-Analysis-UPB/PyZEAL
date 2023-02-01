@@ -209,7 +209,7 @@ class RootFinder(RootFinderInterface, Loggable):
         precision: Tuple[int, int],
     ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
         """Desymmetrize the domain given by reRan and imRan to improve
-        numerical stability
+        numerical stability. This is automatically called by `calculateRoots`.
 
         :param reRan: Search range for the real part
         :type reRan: Tuple[float, float]
