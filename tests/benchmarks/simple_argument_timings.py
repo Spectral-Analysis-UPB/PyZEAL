@@ -4,6 +4,7 @@ root finding algorithm.
 """
 
 from .resources.testing_fixtures import simpleArgumentRootFinder
+from pyzeal_settings.json_settings_service import JSONSettingsService
 from .resources.testing_resources import IM_RAN, RE_RAN
 
 benchmarkFunctions = [
@@ -14,7 +15,8 @@ benchmarkFunctions = [
     "sin(x)",
     "exp(x)",
 ]
-
+# disable progress bar
+JSONSettingsService.verbose = False
 
 class SimpleArgumentSuite:
     """

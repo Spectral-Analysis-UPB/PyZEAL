@@ -6,6 +6,7 @@ Authors:\n
 """
 
 from .resources.testing_fixtures import newtonGridFinder
+from pyzeal_settings.json_settings_service import JSONSettingsService
 from .resources.testing_resources import IM_RAN, RE_RAN
 
 benchmarkFunctions = [
@@ -16,7 +17,8 @@ benchmarkFunctions = [
     "sin(x)",
     "exp(x)",
 ]
-
+# disable progress bar
+JSONSettingsService.verbose = False
 
 class NewtonGridSuite:
     """
