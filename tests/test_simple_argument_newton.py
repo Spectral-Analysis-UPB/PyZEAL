@@ -39,7 +39,8 @@ KNOWN_FAILURES = [
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
 def testSimpleArgumentNewton(testName, parallel) -> None:
-    """Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by `testName`
+    """Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by
+    `testName`
 
     :param testName: Name of the test case
     :type testName: str
@@ -64,8 +65,8 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
 def testSimpleArgumentNewtonHypothesis(roots) -> None:
-    """Test the root finder algorithm based on a simple partial integration of the
-    classical argument principle combined with a Newton algorithm upon
+    """Test the root finder algorithm based on a simple partial integration of
+    the classical argument principle combined with a Newton algorithm upon
     sufficient refinement of the subdivision into rectangles. The testfunctions
     are polynomials whose roots are generated automatically using the
     hypothesis package.

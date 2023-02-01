@@ -35,11 +35,14 @@ class ContainerFactory:
     logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
 
     @staticmethod
-    def _func_value_zero(threshold: int, root: tRoot, context: FilterContext) -> bool:
-        """Filter predicate to determine if a possible root has a function value
-        sufficiently close to zero
+    def _func_value_zero(
+        threshold: int, root: tRoot, context: FilterContext
+    ) -> bool:
+        """Filter predicate to determine if a possible root has a function
+        value sufficiently close to zero
 
-        :param threshold: A function is considered zero if its absolute value is below 10^-(threshold)
+        :param threshold: A function is considered zero if its absolute value
+            is below 10^-(threshold)
         :type threshold: int
         :param root: Root candidate
         :type root: tRoot

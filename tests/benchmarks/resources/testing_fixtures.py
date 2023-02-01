@@ -20,11 +20,14 @@ def newtonGridFinder(
 
     :param testName: Test case name
     :type testName: str
-    :param numSamplePoints: `numSamplePoints` passed to the RootFinder, defaults to 20
+    :param numSamplePoints: `numSamplePoints` passed to the RootFinder,
+        defaults to 20
     :type numSamplePoints: int, optional
-    :param parallel: Set to `True` if the RootFinder should search in parallel, defaults to False
+    :param parallel: Set to `True` if the RootFinder should search in
+        parallel, defaults to False
     :type parallel: bool, optional
-    :param derivativeFree: Set to `True` if the RootFinder should operate without the derivative, defaults to False
+    :param derivativeFree: Set to `True` if the RootFinder should operate
+        without the derivative, defaults to False
     :type derivativeFree: bool, optional
     :return: Initialized RootFinder
     :rtype: RootFinderInterface
@@ -60,7 +63,8 @@ def simpleArgumentRootFinder(
 
     :param testName: Test case name
     :type testName: str
-    :param parallel: Set to `True` if the RootFinder should search in parallel, defaults to False
+    :param parallel: Set to `True` if the RootFinder should search in parallel,
+        defaults to False
     :type parallel: bool, optional
     :return: Initialized RootFinder
     :rtype: RootFinderInterface
@@ -92,7 +96,8 @@ def simpleArgumentNewtonRootFinder(
 
     :param testName: Test case name
     :type testName: str
-    :param parallel: Set to `True` if the RootFinder should search in parallel, defaults to False
+    :param parallel: Set to `True` if the RootFinder should search in parallel,
+        defaults to False
     :type parallel: bool, optional
     :return: Initialized RootFinder
     :rtype: RootFinderInterface
@@ -101,6 +106,7 @@ def simpleArgumentNewtonRootFinder(
     if parallel:
         holoNewtonRF = ParallelRootFinder(
             testFunctions[testName][0],
+            df=testFunctions[testName][1],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
             verbose=False,
@@ -108,6 +114,7 @@ def simpleArgumentNewtonRootFinder(
     else:
         holoNewtonRF = RootFinder(
             testFunctions[testName][0],
+            df=testFunctions[testName][1],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
             verbose=False,

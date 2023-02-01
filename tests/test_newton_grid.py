@@ -38,7 +38,7 @@ KNOWN_FAILURES = ["x^4-1", "log and sin composition", "x^100", "1e6 * x^100"]
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testNewtonGridRootFinder(testName : str, parallel : bool) -> None:
+def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     """Test the Newton-Grid-Rootfinder with the function given by `testName`
 
     :param testName: Name of the test case

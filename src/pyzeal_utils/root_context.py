@@ -35,9 +35,11 @@ class RootContext:
     task: Optional[TaskID] = None
 
     def toFilterContext(self) -> FilterContext:
-        """Get a `FilterContext` object with the same parameters as this `RootContext`
+        """Get a `FilterContext` object with the same parameters as this
+        `RootContext`
 
-        :return: `FilterContext` object with the same parameters as this `RootContext`
+        :return: `FilterContext` object with the same parameters as this
+            `RootContext`
         :rtype: FilterContext
         """
         return FilterContext(self.f, self.reRan, self.imRan, self.precision)

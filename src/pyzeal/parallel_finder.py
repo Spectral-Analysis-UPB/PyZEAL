@@ -232,7 +232,7 @@ class ParallelRootFinder(RootFinder):
     def rootWorker(self, context: RootContext) -> None:
         """Worker function that executes a root finding algorithm in a child
         process.
-        
+
         :param context: Context object on which roots are searched
         :type context: RootContext
         """

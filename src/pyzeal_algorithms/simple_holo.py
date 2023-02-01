@@ -217,16 +217,17 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     def calcRootsRecursion(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> None:
-        """Calculates zeros of `self.func` by applying the argument principle over
-        a rectangle and recursively dividing this rectangle into smaller ones.
-        Zeros found are put into `resultQueue`. The finished calculation gets
-        reported to the progress bar `progress` under the task id `task`.
+        """Calculates zeros of `self.func` by applying the argument principle
+        over a rectangle and recursively dividing this rectangle into smaller
+        ones. Zeros found are put into `resultQueue`. The finished calculation
+        gets reported to the progress bar `progress` under the task id `task`.
 
         :param zParts: Rectangle describing the search area
         :type zParts: tRecGrid
         :param phiParts: Change in argument along the rectangle
         :type phiParts: tRecGrid
-        :param context: RootContext object containing the rest of the information
+        :param context: RootContext object containing the rest of the
+            information
         :type context: RootContext
         """
         # calculate difference between right/left and top/bottom
@@ -295,10 +296,10 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     def divideVertical(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> Tuple[Tuple[tRecGrid, tRecGrid], Tuple[tRecGrid, tRecGrid]]:
-        """Divide a rectangle in the complex plane, given by its z-support points
-        `zParts` and corresponding argument values `phiParts` of the function
-        values of `context.func` vertically in the middle. Zeros found during
-        the division process are put into `context.container`.
+        """Divide a rectangle in the complex plane, given by its z-support
+        points `zParts` and corresponding argument values `phiParts` of the
+        function values of `context.func` vertically in the middle. Zeros
+        found during the division process are put into `context.container`.
 
         :param zParts: Rectangle to divide
         :type zParts: tRecGrid
@@ -377,10 +378,10 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     def divideHorizontal(
         self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
     ) -> Tuple[Tuple[tRecGrid, tRecGrid], Tuple[tRecGrid, tRecGrid]]:
-        """Divide a rectangle in the complex plane, given by its z-support points
-        `zParts` and corresponding argument values `phiParts` of the function
-        values of `context.f` horizontally in the middle. Zeros found during
-        the division process are put into `context.container`.
+        """Divide a rectangle in the complex plane, given by its z-support
+        points `zParts` and corresponding argument values `phiParts` of the
+        function values of `context.f` horizontally in the middle. Zeros found
+        during the division process are put into `context.container`.
 
         :param zParts: Rectangle to divide
         :type zParts: tRecGrid

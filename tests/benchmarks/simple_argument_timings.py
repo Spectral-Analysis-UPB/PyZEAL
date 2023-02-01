@@ -3,8 +3,9 @@ Timing benchmark suite for the simple argument (no numerical quadrature) based
 root finding algorithm.
 """
 
-from .resources.testing_fixtures import simpleArgumentRootFinder
 from pyzeal_settings.json_settings_service import JSONSettingsService
+
+from .resources.testing_fixtures import simpleArgumentRootFinder
 from .resources.testing_resources import IM_RAN, RE_RAN
 
 benchmarkFunctions = [
@@ -16,7 +17,8 @@ benchmarkFunctions = [
     "exp(x)",
 ]
 # disable progress bar
-JSONSettingsService.verbose = False
+JSONSettingsService().verbose = False
+
 
 class SimpleArgumentSuite:
     """

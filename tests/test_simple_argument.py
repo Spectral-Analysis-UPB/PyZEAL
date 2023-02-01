@@ -36,8 +36,9 @@ KNOWN_FAILURES = [
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgument(testName : str, parallel : bool) -> None:
-    """Test the SIMPLE_ARGUMENT RootFinder with the test case given by `testName`
+def testSimpleArgument(testName: str, parallel: bool) -> None:
+    """Test the SIMPLE_ARGUMENT RootFinder with the test case given by
+    `testName`
 
     :param testName: Name of the test case
     :type testName: str
@@ -62,8 +63,8 @@ def testSimpleArgument(testName : str, parallel : bool) -> None:
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
 def testSimpleArgumentFinderHypothesis(roots) -> None:
-    """Test the root finder algorithm based on a simple partial integration of the
-    classical argument principle on polynomials whose roots are generated
+    """Test the root finder algorithm based on a simple partial integration of
+    the classical argument principle on polynomials whose roots are generated
     automatically using the hypothesis package.
 
     :param roots: List of roots of a polynomial

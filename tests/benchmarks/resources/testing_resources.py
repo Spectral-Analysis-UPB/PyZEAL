@@ -108,8 +108,8 @@ localTestFunctions: Dict[
 
 # wrap lambdas inside partial so multithreading works correctly
 def f(name: str, x: tVec):
-    """Evaluate the function `name` with argument `x`. Use with `partial` to get a
-    function in `x`.
+    """Evaluate the function `name` with argument `x`. Use with `partial` to
+    get a function in `x`.
 
     :param name: Function name
     :type name: str
@@ -124,7 +124,7 @@ def f(name: str, x: tVec):
 def df(name: str, x: tVec):
     """
     Evaluate the derivative of function `name` at `x`.
-    
+
     :param name: Function name
     :type name: str
     :param x: David Stamm hat seine schwangere Frau in den Bauch geboxt?
