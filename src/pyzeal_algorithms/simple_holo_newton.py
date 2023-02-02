@@ -8,7 +8,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import cast
+from typing import Tuple, cast
 
 import numpy as np
 from scipy.optimize import newton
@@ -19,7 +19,6 @@ from pyzeal_algorithms.simple_holo import (
     SimpleArgumentAlgorithm,
 )
 from pyzeal_logging.loggable import Loggable
-from pyzeal_types.root_types import tRecGrid
 from pyzeal_utils.root_context import RootContext
 
 
@@ -32,56 +31,40 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
     """
 
     def calcRootsRecursion(
-        self, zParts: tRecGrid, phiParts: tRecGrid, context: RootContext
+        self,
+        reRan: Tuple[float, float],
+        imRan: Tuple[float, float],
+        context: RootContext,
     ) -> None:
         """
         TODO
         """
         # calculate difference between right/left and top/bottom
-        deltaRe = zParts[1][0].real - zParts[3][0].real
-        deltaIm = zParts[2][0].imag - zParts[0][0].imag
+        x1, x2 = reRan
+        y1, y2 = imRan
+        deltaRe = x2 - x1
+        deltaIm = y2 - y1
         # check if the given rectangle contains at least one zero
-        phi = (
-            phiParts[0].sum()
-            + phiParts[1].sum()
-            + phiParts[2].sum()
-            + phiParts[3].sum()
+        phi = self.estimator.calcMoment(
+            0, reRan=reRan, imRan=imRan, context=context
         )
-
-        # check if current rectangle contains zeros
-        if phi < TWO_PI:
-            if context.progress is not None and context.task is not None:
-                context.progress.update(
-                    context.task, advance=deltaRe * deltaIm
-                )
-            return
-
         # check if desired accuracy is aquired
         epsReal = 10 ** (-context.precision[0])
         epsImag = 10 ** (-context.precision[1])
-        if deltaRe < epsReal and deltaIm < epsImag:
+        if phi > TWO_PI and deltaRe < epsReal and deltaIm < epsImag:
             SimpleArgumentAlgorithm.getRootFromRectangle(
-                zParts[1][0],
-                zParts[3][0],
-                zParts[2][0],
-                zParts[0][0],
-                phi,
-                context,
+                x2, x1, y2, y1, phi, context
             )
             return
 
         # check if the current box contains a simple root
-        if phi < FOUR_PI and deltaRe < 0.1 and deltaIm < 0.1:
-            xStart = 0.5 * (
-                zParts[1][0].real
-                + zParts[3][0].real
-                + 1j * (zParts[2][0].imag + zParts[0][0].imag)
-            )
+        if TWO_PI < phi < FOUR_PI and deltaRe < 0.1 and deltaIm < 0.1:
             try:
                 newZero = newton(
-                    context.f,
-                    xStart,
-                    context.df,
+                    func=context.f,
+                    x0=x1 + 0.5 * (y1 + y2) * 1j,
+                    x1=x2 + 0.5 * (y1 + y2) * 1j,
+                    fprime=context.df,
                     maxiter=50,
                     tol=min(epsReal, epsImag),
                 )
@@ -105,19 +88,4 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
                     )
             return
 
-        # the current box contains a non-simple root and must be refined
-        if deltaRe / epsReal > deltaIm / epsImag:
-            zPartsNew, phiPartsNew = self.divideVertical(
-                zParts, phiParts, context
-            )
-            self.calcRootsRecursion(zPartsNew[0], phiPartsNew[0], context)
-
-            self.calcRootsRecursion(zPartsNew[1], phiPartsNew[1], context)
-
-        else:
-            zPartsNew, phiPartsNew = self.divideHorizontal(
-                zParts, phiParts, context
-            )
-            self.calcRootsRecursion(zPartsNew[0], phiPartsNew[0], context)
-
-            self.calcRootsRecursion(zPartsNew[1], phiPartsNew[1], context)
+        self.decideRefinement((x1, x2), (y1, y2), phi, context)

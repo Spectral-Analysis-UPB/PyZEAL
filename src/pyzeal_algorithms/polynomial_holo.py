@@ -30,4 +30,9 @@ class AssociatedPolynomialAlgorithm(FinderAlgorithm, Loggable):
         :param context: context in which the algorithm operates
         :type context: RootContext
         """
+        if context.df is None:
+            raise ValueError(
+                "holomorphic Newton polynomial algorithm needs the derivative!"
+            )
+
         raise NotImplementedError()
