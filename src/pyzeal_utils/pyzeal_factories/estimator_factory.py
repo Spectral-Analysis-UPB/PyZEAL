@@ -54,7 +54,7 @@ class EstimatorFactory:
         )
         # TODO: implement default estimator in settings
         return EstimatorFactory.getConcreteEstimator(
-            EstimatorTypes.QUADRATURE_ESTIMATOR,
+            EstimatorTypes.SUMMATION_ESTIMATOR,
             numPts=numPts,
             deltaPhi=deltaPhi,
             maxPrecision=maxPrecision,

@@ -5,6 +5,7 @@ TODO
 from pyzeal import ParallelRootFinder, RootFinder, RootFinderInterface
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.filter_types import FilterTypes
 
 from .testing_resources import testFunctions
@@ -44,7 +45,9 @@ def newtonGridFinder(
 
 
 def simpleArgumentRootFinder(
-    testName: str, parallel: bool = False
+    testName: str,
+    parallel: bool = False,
+    estimatorType: EstimatorTypes = EstimatorTypes.SUMMATION_ESTIMATOR,
 ) -> RootFinderInterface:
     """
     TODO
@@ -55,6 +58,7 @@ def simpleArgumentRootFinder(
             testFunctions[testName][0],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+            estimatorType=estimatorType,
             verbose=False,
         )
     else:
@@ -62,6 +66,7 @@ def simpleArgumentRootFinder(
             testFunctions[testName][0],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+            estimatorType=estimatorType,
             verbose=False,
         )
     holoRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
@@ -70,7 +75,9 @@ def simpleArgumentRootFinder(
 
 
 def simpleArgumentNewtonRootFinder(
-    testName: str, parallel: bool = False
+    testName: str,
+    parallel: bool = False,
+    estimatorType: EstimatorTypes = EstimatorTypes.SUMMATION_ESTIMATOR,
 ) -> RootFinderInterface:
     """
     TODO
@@ -81,6 +88,7 @@ def simpleArgumentNewtonRootFinder(
             testFunctions[testName][0],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
+            estimatorType=estimatorType,
             verbose=False,
         )
     else:
@@ -88,6 +96,7 @@ def simpleArgumentNewtonRootFinder(
             testFunctions[testName][0],
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
+            estimatorType=estimatorType,
             verbose=False,
         )
     holoNewtonRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
