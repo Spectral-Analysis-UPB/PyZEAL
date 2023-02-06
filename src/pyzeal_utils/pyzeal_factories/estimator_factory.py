@@ -47,11 +47,16 @@ class EstimatorFactory:
             EstimatorFactory.logger.debug(
                 "requested a new quadrature based argument estimator..."
             )
-            # TODO
-            return QuadratureEstimator()
+            return QuadratureEstimator(cache=cache)
 
         EstimatorFactory.logger.debug(
             "requested a new default argument estimator..."
         )
-        # TODO
-        raise NotImplementedError("no default estimator in settings yet!")
+        # TODO: implement default estimator in settings
+        return EstimatorFactory.getConcreteEstimator(
+            EstimatorTypes.QUADRATURE_ESTIMATOR,
+            numPts=numPts,
+            deltaPhi=deltaPhi,
+            maxPrecision=maxPrecision,
+            cache=cache,
+        )

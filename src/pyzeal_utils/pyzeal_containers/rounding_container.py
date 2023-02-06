@@ -44,7 +44,7 @@ class RoundingContainer(RootContainer):
         self.precision = precision
         self.rootSet: Set[tRoot] = set()
         self.filters: Dict[str, tRootFilter] = {}
-        self.logger.info("initialized a rounding root container")
+        self.logger.info("initialized a new rounding root container")
 
     def addRoot(self, root: tRoot, context: FilterContext) -> None:
         """

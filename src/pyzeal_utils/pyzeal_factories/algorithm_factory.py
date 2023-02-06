@@ -16,6 +16,7 @@ from pyzeal_algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
 from pyzeal_logging.config import initLogger
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_types.algorithm_types import AlgorithmTypes
+from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.settings_types import SettingsServicesTypes
 from pyzeal_utils.pyzeal_factories.settings_factory import (
     SettingsServiceFactory,
@@ -32,6 +33,7 @@ class AlgorithmFactory:
     def getConcreteAlgorithm(
         algoType: AlgorithmTypes = AlgorithmTypes.DEFAULT,
         *,
+        estimatorType: EstimatorTypes = EstimatorTypes.DEFAULT,
         numSamplePoints: Optional[int] = None,
     ) -> FinderAlgorithm:
         """
@@ -41,6 +43,8 @@ class AlgorithmFactory:
 
         :param algoType: type of algorithm to construct
         :type algoType: AlgorithmType
+        :param estimatorType: type of argument estimator to use
+        :type estimatorType: EstimatorTypes
         :param numSamplePoints: sample point configuration for NewtonGridAlgo
         :type numSamplePoints: int
         """
@@ -55,12 +59,12 @@ class AlgorithmFactory:
             AlgorithmFactory.logger.debug(
                 "requested usage of a SimpleArgumentAlgorithm..."
             )
-            return SimpleArgumentAlgorithm()
+            return SimpleArgumentAlgorithm(estimatorType=estimatorType)
         if algoType == AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON:
             AlgorithmFactory.logger.debug(
                 "requested usage of a SimpleArgumentNewtonAlgorithm..."
             )
-            return SimpleArgumentNewtonAlgorithm()
+            return SimpleArgumentNewtonAlgorithm(estimatorType=estimatorType)
 
         # return the current default algorithm
         AlgorithmFactory.logger.debug(

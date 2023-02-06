@@ -5,6 +5,7 @@ Authors:\n
 - Philipp Schuette
 """
 
+from logging import DEBUG
 from typing import Dict, Optional, Tuple
 
 from pyzeal_logging.loggable import Loggable
@@ -65,7 +66,7 @@ class EstimatorCache(Loggable):
             str(value),
             str((zStart, zEnd)),
         )
-        if self.logger.isEnabledFor(10):
+        if self.logger.isEnabledFor(DEBUG):
             self.cacheHits += 1 if value else 0
             self.cacheMisses += 1 if not value else 0
         return value
@@ -87,3 +88,11 @@ class EstimatorCache(Loggable):
             str(value),
             str((zStart, zEnd)),
         )
+
+    def reset(self) -> None:
+        """
+        TODO
+        """
+        self._cache.clear()
+        self.cacheHits = 0
+        self.cacheMisses = 0

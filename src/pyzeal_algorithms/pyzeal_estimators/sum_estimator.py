@@ -31,7 +31,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
     TODO
     """
 
-    __slots__ = ("numPts", "deltaPhi", "maxPrecision")
+    __slots__ = ("numPts", "deltaPhi", "maxPrecision", "_cache")
 
     def __init__(
         self,
@@ -47,7 +47,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         self.numPts = numPts
         self.deltaPhi = deltaPhi
         self.maxPrecision = maxPrecision
-        self.cache = cache
+        self._cache = cache
         self.logger.info("initialized new phase summation based estimator...")
 
     def calcMoment(
@@ -58,10 +58,12 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         context: RootContext,
     ) -> float:
         """
-        Calculate the zeroth moment by summing incremental changes in the
-        phase of the function values. This coincides exactly with the integral
-        of the logarithmic derivative as long as the incremental changes stay
-        below a certain threshold.
+        Calculate the zeroth moment of the logarithmic derivative of the
+        target function `context.f` along the boundary of the rectangle
+        specified by `reRan` x `imRan`. The integral calculation is realized by
+        summation of the complex phase of the target function.
+
+        Moment orders greater than zero are not implemented.
 
         TODO
         """
@@ -69,54 +71,32 @@ class SummationEstimator(ArgumentEstimator, Loggable):
             raise NotImplementedError(
                 "argument estimation via phase summation only works for n=0!"
             )
+        return super().calcMoment(order, reRan, imRan, context)
 
-        x1, x2 = reRan
-        y1, y2 = imRan
-        self.logger.debug(
-            "estimating argument for rectangle [%f, %f] x [%f, %f]!",
-            x1,
-            x2,
-            y1,
-            y2,
-        )
-        phi: float = 0
+    @property
+    def cache(self) -> EstimatorCache:
+        """
+        TODO
+        """
+        return self._cache
 
-        # check if the requested argument change resides in cache
-        if entry := self.cache.retrieve(x1 + y1 * 1j, x2 + y1 * 1j):
-            phi += entry
-        else:
-            deltaPhi = self.genPhiArr(
-                x1 + y1 * 1j, x2 + y1 * 1j, context, "horizontal"
-            ).sum()
-            # store the missing entry in the cache
-            self.cache.store(x1 + y1 * 1j, x2 + y1 * 1j, deltaPhi)
-            phi += deltaPhi
-        if entry := self.cache.retrieve(x2 + y1 * 1j, x2 + y2 * 1j):
-            phi += entry
-        else:
-            deltaPhi = self.genPhiArr(
-                x2 + y1 * 1j, x2 + y2 * 1j, context, "vertical"
-            ).sum()
-            self.cache.store(x2 + y1 * 1j, x2 + y2 * 1j, deltaPhi)
-            phi += deltaPhi
-        if entry := self.cache.retrieve(x2 + y2 * 1j, x1 + y2 * 1j):
-            phi += entry
-        else:
-            deltaPhi = self.genPhiArr(
-                x2 + y2 * 1j, x1 + y2 * 1j, context, "horizontal"
-            ).sum()
-            self.cache.store(x2 + y2 * 1j, x1 + y2 * 1j, deltaPhi)
-            phi += deltaPhi
-        if entry := self.cache.retrieve(x1 + y2 * 1j, x1 + y1 * 1j):
-            phi += entry
-        else:
-            deltaPhi = self.genPhiArr(
-                x1 + y2 * 1j, x1 + y1 * 1j, context, "vertical"
-            ).sum()
-            self.cache.store(x1 + y2 * 1j, x1 + y1 * 1j, deltaPhi)
-            phi += deltaPhi
+    def calcMomentAlongLine(
+        self,
+        order: int,
+        zStart: complex,
+        zEnd: complex,
+        context: RootContext,
+        pos: Union[Literal["horizontal"], Literal["vertical"]],
+    ) -> float:
+        r"""
+        Calculate the total complex argument along a line in the complex plane
+        by summing incremental changes in the phase of the function values.
+        This coincides exactly with the integral of the logarithmic derivative
+        as long as the increments remain below the threshold of :math:`\pi`.
 
-        self.logger.debug("estimated argument is %f", phi / (2.0 * np.pi))
+        TODO
+        """
+        phi: float = self.genPhiArr(zStart, zEnd, context, pos).sum()
         return phi
 
     def genPhiArr(
@@ -132,6 +112,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         `[zStart, zEnd]`. Zeros of the target function found during this
         procedure are put into `context.container` immediately and the complex
         line is adjusted by translating into direction `pos` by a small offset.
+        The number of support points on the line is adjusted dynamically.
 
         :param zStart:
         :type zStart: complex

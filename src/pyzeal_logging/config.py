@@ -57,7 +57,7 @@ def initLogger(logName: str) -> PyZEALLogger:
         )
         fHandler = logging.FileHandler("./logs/pyzeal_" + fileName + ".log")
         formatter = logging.Formatter(
-            "[%(asctime)s:%(msecs)03d] %(message)s [%(name)s][%(levelname)s]",
+            "[%(asctime)s:%(msecs)03d][%(name)s] %(message)s [%(levelname)s]",
             "%H:%M:%S",
         )
         fHandler.setFormatter(formatter)

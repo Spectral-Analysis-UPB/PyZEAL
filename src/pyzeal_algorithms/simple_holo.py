@@ -47,6 +47,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
 
     def __init__(
         self,
+        estimatorType: EstimatorTypes,
         *,
         numPts: int = DEFAULT_NUM_PTS,
         deltaPhi: float = DEFAULT_DELTA_PHI,
@@ -65,9 +66,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         :type maxPrecision: float
         """
         self.cache = EstimatorCache()
-        # TODO: should use EstimatorTypes.DEFAULT here!
         self.estimator = EstimatorFactory.getConcreteEstimator(
-            estimatorType=EstimatorTypes.SUMMATION_ESTIMATOR,
+            estimatorType=estimatorType,
             numPts=numPts,
             deltaPhi=deltaPhi,
             maxPrecision=maxPrecision,
@@ -91,6 +91,9 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             "starting simple argument search for %s",
             context.functionDataToString(),
         )
+        # reset cache
+        self.logger.info("resetting argument estimator cache...")
+        self.cache.reset()
 
         phi = self.estimator.calcMoment(
             0, context.reRan, context.imRan, context

@@ -60,6 +60,9 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
         # check if the current box contains a simple root
         if TWO_PI < phi < FOUR_PI and deltaRe < 0.1 and deltaIm < 0.1:
             try:
+                self.logger.debug(
+                    "starting Newton algorithm from %f+%fj", x1, (y1 + y2) / 2
+                )
                 newZero = newton(
                     func=context.f,
                     x0=x1 + 0.5 * (y1 + y2) * 1j,

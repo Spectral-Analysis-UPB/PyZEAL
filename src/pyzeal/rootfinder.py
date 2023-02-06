@@ -20,6 +20,7 @@ from pyzeal_logging.loggable import Loggable
 from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.root_types import tHoloFunc, tVec
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
@@ -51,6 +52,7 @@ class RootFinder(RootFinderInterface, Loggable):
         *,
         containerType: ContainerTypes = ContainerTypes.DEFAULT,
         algorithmType: AlgorithmTypes = AlgorithmTypes.DEFAULT,
+        estimatorType: EstimatorTypes = EstimatorTypes.DEFAULT,
         precision: Tuple[int, int] = (3, 3),
         numSamplePoints: Optional[int] = None,
         verbose: Optional[bool] = None,
@@ -66,6 +68,8 @@ class RootFinder(RootFinderInterface, Loggable):
         :type containerType: ContainerTypes
         :param algorithmType: the type of algorithm used for root finding
         :type algorithmType: AlgorithmTypes
+        :param estimatorType: the type of argument estimator used
+        :type estimatorType: EstimatorTypes
         :param precision: the accuracy at which roots are considered exact
         :type precision: Tuple[int, int]
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
@@ -76,14 +80,16 @@ class RootFinder(RootFinderInterface, Loggable):
         self.f = f
         self.df = df
         self.algorithm = AlgorithmFactory.getConcreteAlgorithm(
-            algorithmType, numSamplePoints=numSamplePoints
+            algorithmType,
+            estimatorType=estimatorType,
+            numSamplePoints=numSamplePoints,
         )
         self._container = ContainerFactory.getConcreteContainer(
             containerType, precision=precision
         )
         self.precision = precision
         self.verbose = verbose if verbose else JSONSettingsService().verbose
-        self.logger.debug("initialized the root finder %s!", str(self))
+        self.logger.debug("initialized the new root finder %s!", str(self))
 
     def __str__(self) -> str:
         "Simple string representation of a `RootFinder`."
