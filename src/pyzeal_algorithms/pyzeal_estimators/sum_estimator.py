@@ -5,7 +5,7 @@ Authors:\n
 - Philipp Schuette
 """
 
-from typing import Final, Literal, Tuple, Union, cast
+from typing import Dict, Final, Literal, Tuple, Union, cast
 
 import numpy as np
 
@@ -48,30 +48,23 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         self.deltaPhi = deltaPhi
         self.maxPrecision = maxPrecision
         self._cache = cache
+        # initialize additional internal caches to avoid function re-evals
+        self.cacheHorizontal: Dict[
+            float,
+            Dict[
+                Tuple[float, Union[Literal["left"], Literal["right"]]],
+                Tuple[tVec, tVec],
+            ],
+        ] = {}
+        self.cacheVertical: Dict[
+            float,
+            Dict[
+                Tuple[float, Union[Literal["bottom"], Literal["top"]]],
+                Tuple[tVec, tVec],
+            ],
+        ] = {}
+
         self.logger.info("initialized new phase summation based estimator...")
-
-    def calcMoment(
-        self,
-        order: int,
-        reRan: Tuple[float, float],
-        imRan: Tuple[float, float],
-        context: RootContext,
-    ) -> float:
-        """
-        Calculate the zeroth moment of the logarithmic derivative of the
-        target function `context.f` along the boundary of the rectangle
-        specified by `reRan` x `imRan`. The integral calculation is realized by
-        summation of the complex phase of the target function.
-
-        Moment orders greater than zero are not implemented.
-
-        TODO
-        """
-        if order != 0:
-            raise NotImplementedError(
-                "argument estimation via phase summation only works for n=0!"
-            )
-        return super().calcMoment(order, reRan, imRan, context)
 
     @property
     def cache(self) -> EstimatorCache:
@@ -86,7 +79,6 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-        pos: Union[Literal["horizontal"], Literal["vertical"]],
     ) -> float:
         r"""
         Calculate the total complex argument along a line in the complex plane
@@ -96,7 +88,147 @@ class SummationEstimator(ArgumentEstimator, Loggable):
 
         TODO
         """
-        phi: float = self.genPhiArr(zStart, zEnd, context, pos).sum()
+        if order != 0:
+            raise NotImplementedError(
+                "argument estimation via phase summation only works for n=0!"
+            )
+
+        # look for required function values in the internal caches
+        # handle the case of horizontal line first
+        x1, y1 = zStart.real, zStart.imag
+        x2, y2 = zEnd.real, zEnd.imag
+        value: Tuple[tVec, tVec]
+        newValue: Tuple[tVec, tVec]
+        if y1 == y2:
+            if (
+                y1 in self.cacheHorizontal
+                and (x1, "left") in self.cacheHorizontal[y1]
+            ):
+                self.logger.debug(
+                    "horizontal line in internal cache detected - dividing!"
+                )
+                value = self.cacheHorizontal[y1][(x1, "left")]
+                middleIdx = (
+                    np.where(value[0].real <= x2)[0]
+                    if x1 < x2
+                    else np.where(value[0].real >= x2)[0]
+                )
+                newValue = (
+                    (
+                        value[0][: middleIdx[-1] + 1],
+                        value[1][: middleIdx[-1] + 1],
+                    )
+                    if middleIdx.size > 0
+                    else self.genPhiArr(zStart, zEnd, context)
+                )
+            elif (
+                y1 in self.cacheHorizontal
+                and (x2, "right") in self.cacheHorizontal[y1]
+            ):
+                self.logger.debug(
+                    "horizontal line in internal cache detected - dividing!"
+                )
+                value = self.cacheHorizontal[y1][(x2, "right")]
+                middleIdx = (
+                    np.where(x1 <= value[0].real)[0]
+                    if x1 < x2
+                    else np.where(x1 >= value[0].real)[0]
+                )
+                newValue = (
+                    (
+                        value[0][middleIdx[0] :],
+                        value[1][middleIdx[0] :],
+                    )
+                    if middleIdx.size > 0
+                    else self.genPhiArr(zStart, zEnd, context)
+                )
+            else:
+                self.logger.debug("internal cache miss on horizontal line!")
+                newValue = self.genPhiArr(zStart, zEnd, context)
+
+            if y1 not in self.cacheHorizontal:
+                self.cacheHorizontal[y1] = {}
+            self.cacheHorizontal[y1][(x1, "left")] = newValue
+            self.cacheHorizontal[y1][(x2, "right")] = newValue
+            self.cacheHorizontal[y1][(x1, "right")] = (
+                newValue[0][::-1],
+                newValue[1][::-1],
+            )
+            self.cacheHorizontal[y1][(x2, "left")] = (
+                newValue[0][::-1],
+                newValue[1][::-1],
+            )
+        elif x1 == x2:
+            if (
+                x1 in self.cacheVertical
+                and (y1, "bottom") in self.cacheVertical[x1]
+            ):
+                self.logger.debug(
+                    "vertical line in internal cache detected - dividing!"
+                )
+                value = self.cacheVertical[x1][(y1, "bottom")]
+                middleIdx = (
+                    np.where(value[0].imag <= y2)[0]
+                    if y1 < y2
+                    else np.where(value[0].imag >= y2)[0]
+                )
+                newValue = (
+                    (
+                        value[0][: middleIdx[-1] + 1],
+                        value[1][: middleIdx[-1] + 1],
+                    )
+                    if middleIdx.size > 0
+                    else self.genPhiArr(zStart, zEnd, context)
+                )
+            elif (
+                x1 in self.cacheVertical
+                and (y2, "top") in self.cacheVertical[x1]
+            ):
+                self.logger.debug(
+                    "vertical line in internal cache detected - dividing!"
+                )
+                value = self.cacheVertical[x1][(y2, "top")]
+                middleIdx = (
+                    np.where(y1 <= value[0].imag)[0]
+                    if y1 < y2
+                    else np.where(y1 >= value[0].imag)[0]
+                )
+                newValue = (
+                    (
+                        value[0][middleIdx[0] :],
+                        value[1][middleIdx[0] :],
+                    )
+                    if middleIdx.size > 0
+                    else self.genPhiArr(zStart, zEnd, context)
+                )
+            else:
+                self.logger.debug("internal cache miss on vertical line!")
+                newValue = self.genPhiArr(zStart, zEnd, context)
+
+            if newValue[0].size < 10:
+                self.logger.info(
+                    "very small array in internal cache - must recalculate!"
+                )
+                newValue = self.genPhiArr(zStart, zEnd, context)
+
+            if x1 not in self.cacheVertical:
+                self.cacheVertical[x1] = {}
+            self.cacheVertical[x1][(y1, "bottom")] = newValue
+            self.cacheVertical[x1][(y2, "top")] = newValue
+            self.cacheVertical[x1][(y1, "top")] = (
+                newValue[0][::-1],
+                newValue[1][::-1],
+            )
+            self.cacheVertical[x1][(y2, "bottom")] = (
+                newValue[0][::-1],
+                newValue[1][::-1],
+            )
+        else:
+            raise ValueError(
+                f"{zStart} and {zEnd} must define an axis-parallel line!"
+            )
+
+        phi: float = newValue[1].sum()
         return phi
 
     def genPhiArr(
@@ -104,11 +236,10 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-        pos: Union[Literal["horizontal"], Literal["vertical"]],
-    ) -> tVec:
+    ) -> Tuple[tVec, tVec]:
         """
         Calculate an array of complex argument values from the function values
-        of the target function `context.func` on the complex line
+        of the target function `context.f` on the complex line
         `[zStart, zEnd]`. Zeros of the target function found during this
         procedure are put into `context.container` immediately and the complex
         line is adjusted by translating into direction `pos` by a small offset.
@@ -120,11 +251,10 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         :type zEnd: complex
         :param context:
         :type context: RootContext
-        :param pos:
-        :type pos: `horizontal` | `vertical`
         :return:
-        :rtype: NDArray[complex]
+        :rtype: Tuple[NDArray[complex], NDArray[complex]]
         """
+        pos = "horizontal" if zStart.imag == zEnd.imag else "vertical"
         zArr = np.linspace(zStart, zEnd, self.numPts)
         funcArr = context.f(zArr)
         zerosOnLine = np.where(funcArr == 0)[0]
@@ -208,4 +338,4 @@ class SummationEstimator(ArgumentEstimator, Loggable):
             )
             idxPhi = np.where(abs(phiArr) >= self.deltaPhi)[0]
 
-        return phiArr
+        return zArr, phiArr

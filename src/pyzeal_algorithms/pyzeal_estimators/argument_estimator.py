@@ -6,7 +6,7 @@ Authors:\n
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Literal, Tuple, Union
+from typing import List, Tuple
 
 import numpy as np
 
@@ -48,24 +48,18 @@ class ArgumentEstimator(ABC, Loggable):
         phi: float = 0
 
         # check if the requested complex line already resides in cache
-        arguments: List[
-            Tuple[
-                complex,
-                complex,
-                Union[Literal["horizontal"], Literal["vertical"]],
-            ]
-        ] = [
-            (x1 + y1 * 1j, x2 + y1 * 1j, "horizontal"),
-            (x2 + y1 * 1j, x2 + y2 * 1j, "vertical"),
-            (x2 + y2 * 1j, x1 + y2 * 1j, "horizontal"),
-            (x1 + y2 * 1j, x1 + y1 * 1j, "vertical"),
+        arguments: List[Tuple[complex, complex]] = [
+            (x1 + y1 * 1j, x2 + y1 * 1j),
+            (x2 + y1 * 1j, x2 + y2 * 1j),
+            (x2 + y2 * 1j, x1 + y2 * 1j),
+            (x1 + y2 * 1j, x1 + y1 * 1j),
         ]
-        for zStart, zEnd, orientation in arguments:
+        for zStart, zEnd in arguments:
             if entry := self.cache.retrieve(zStart, zEnd):
                 phi += entry
             else:
                 deltaPhi = self.calcMomentAlongLine(
-                    order, zStart, zEnd, context, orientation
+                    order, zStart, zEnd, context
                 )
                 # store the missing entry in the cache
                 self.cache.store(zStart, zEnd, deltaPhi)
@@ -81,7 +75,6 @@ class ArgumentEstimator(ABC, Loggable):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-        pos: Union[Literal["horizontal"], Literal["vertical"]],
     ) -> float:
         """
         TODO

@@ -5,8 +5,6 @@ Authors:\n
 - Philipp Schuette
 """
 
-from typing import Literal, Union
-
 import numpy as np
 from scipy.integrate import quad
 
@@ -36,7 +34,6 @@ class QuadratureEstimator(ArgumentEstimator):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-        pos: Union[Literal["horizontal"], Literal["vertical"]],
     ) -> float:
         """
         TODO
