@@ -63,6 +63,7 @@ class ArgumentEstimator(ABC, Loggable):
                 )
                 # store the missing entry in the cache
                 self.cache.store(zStart, zEnd, deltaPhi)
+                self.cache.store(zEnd, zStart, -deltaPhi)
                 phi += deltaPhi
 
         self.logger.debug("estimated argument is %f", phi / (2.0 * np.pi))
