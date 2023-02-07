@@ -10,7 +10,6 @@ Authors:\n
 
 from typing import Tuple, cast
 
-import numpy as np
 from scipy.optimize import newton
 
 from pyzeal_algorithms.simple_holo import (
@@ -63,24 +62,27 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
                 self.logger.debug(
                     "starting Newton algorithm from %f+%fj", x1, (y1 + y2) / 2
                 )
-                newZero = newton(
+                newRoot = newton(
                     func=context.f,
                     x0=x1 + 0.5 * (y1 + y2) * 1j,
                     x1=x2 + 0.5 * (y1 + y2) * 1j,
-                    fprime=context.df,
+                    fprime=None,
                     maxiter=50,
                     tol=min(epsReal, epsImag),
                 )
-                # results of scipy.optimize.newton are either numpy arrays
-                # (when started on sequences) or floats
-                if isinstance(newZero, np.ndarray):
-                    for pair in zip(newZero, np.ones_like(newZero, dtype=int)):
-                        context.container.addRoot(
-                            pair, context.toFilterContext()
-                        )
-                else:
+                context.container.addRoot(
+                    (cast(complex, newRoot), 1), context.toFilterContext()
+                )
+                if context.df is not None:
+                    newRoot = newton(
+                        func=context.f,
+                        x0=(x1 + x2 + 1j * (y1 + y2)) * 0.5,
+                        fprime=context.df,
+                        maxiter=50,
+                        tol=min(epsReal, epsImag),
+                    )
                     context.container.addRoot(
-                        (cast(complex, newZero), 1), context.toFilterContext()
+                        (cast(complex, newRoot), 1), context.toFilterContext()
                     )
             except RuntimeError:
                 pass
