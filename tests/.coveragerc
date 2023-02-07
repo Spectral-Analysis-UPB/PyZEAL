@@ -1,8 +1,0 @@
-[report]
-exclude_lines =
-    if __name__ == .__main__.:
-    pragma: no cover
-    def __repr__
-
-[run]
-source = ../src/
