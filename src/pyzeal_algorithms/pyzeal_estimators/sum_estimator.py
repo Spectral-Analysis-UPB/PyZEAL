@@ -57,10 +57,8 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         self.maxPrecision = maxPrecision
         self._cache = cache
         # initialize additional internal caches to avoid function re-evals
-        self.cacheHorP: tCache = {}  # horizontal line, positive orientation
-        self.cacheHorN: tCache = {}  # horizontal line, negative orientation
-        self.cacheVerP: tCache = {}  # vertical line, positive orientation
-        self.cacheVerN: tCache = {}  # vertical line, negative orientation
+        self.cacheHorizontal: tCache = {}
+        self.cacheVertical: tCache = {}
 
         self.logger.info("initialized new phase summation based estimator...")
 
@@ -94,60 +92,54 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         # look for required function values in the internal caches
         x1, y1 = zStart.real, zStart.imag
         x2, y2 = zEnd.real, zEnd.imag
-        newValue: Tuple[tVec, tVec]
+        phi: float
         # handle the case of horizontal line first
         if y1 == y2:
-            newValue = self.retrieveCachedHorizontal(x1, x2, y1, context)
+            phi = self.retrieveCachedHorizontal(x1, x2, y1, context)
         elif x1 == x2:
-            newValue = self.retrieveCachedVertical(y1, y2, x1, context)
+            phi = self.retrieveCachedVertical(y1, y2, x1, context)
         else:
             raise ValueError(
                 f"{zStart} and {zEnd} must define an axis-parallel line!"
             )
 
-        phi: float = newValue[1].sum()
         return phi
 
     def retrieveCachedHorizontal(
         self, x1: float, x2: float, y: float, context: RootContext
-    ) -> Tuple[tVec, tVec]:
+    ) -> float:
         """
         TODO
         """
-        cache = self.cacheHorP if x1 < x2 else self.cacheHorN
+        cache = self.cacheHorizontal
+        # the internal caches only contain positively oriented lines
+        sign = 1 if x1 < x2 else -1
+        x1, x2 = sorted((x1, x2))
         if y in cache:
             if (x1, "start") in cache[y]:
                 self.logger.debug(
                     "horizontal line start in internal cache found - dividing!"
                 )
                 value = cache[y][(x1, "start")]
-                middleIdx = (
-                    np.where(value[0].real <= x2)[0]
-                    if x1 < x2
-                    else np.where(value[0].real >= x2)[0]
-                )
+                middleIdx = np.where(value[0].real <= x2)[0][-1]
                 newValue = (
-                    value[0][: middleIdx[-1] + 1],
-                    value[1][: middleIdx[-1] + 1],
+                    value[0][: middleIdx + 1],
+                    value[1][: middleIdx + 1],
                 )
                 self.storeCache(y, x1, x2, cache, newValue)
-                return newValue
+                return cast(float, sign * newValue[1].sum())
             if (x2, "end") in cache[y]:
                 self.logger.debug(
                     "horizontal line end in internal cache found - dividing!"
                 )
                 value = cache[y][(x2, "end")]
-                middleIdx = (
-                    np.where(x1 <= value[0].real)[0]
-                    if x1 < x2
-                    else np.where(x1 >= value[0].real)[0]
-                )
+                middleIdx = np.where(x1 <= value[0].real)[0][0]
                 newValue = (
-                    value[0][middleIdx[0] :],
-                    value[1][middleIdx[0] :],
+                    value[0][middleIdx:],
+                    value[1][middleIdx:],
                 )
                 self.storeCache(y, x1, x2, cache, newValue)
-                return newValue
+                return cast(float, sign * newValue[1].sum())
 
         self.logger.debug("internal cache miss on horizontal line!")
         newValue = self.genPhiArr(x1 + 1j * y, x2 + 1j * y, context)
@@ -155,48 +147,42 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         if y not in cache:
             cache[y] = {}
         self.storeCache(y, x1, x2, cache, newValue)
-        return newValue
+        return cast(float, sign * newValue[1].sum())
 
     def retrieveCachedVertical(
         self, y1: float, y2: float, x: float, context: RootContext
-    ) -> Tuple[tVec, tVec]:
+    ) -> float:
         """
         TODO
         """
-        cache = self.cacheVerP if y1 < y2 else self.cacheVerN
+        cache = self.cacheVertical
+        sign = 1 if y1 < y2 else -1
+        y1, y2 = sorted((y1, y2))
         if x in cache:
             if (y1, "start") in cache[x]:
                 self.logger.debug(
                     "vertical line start in internal cache found - dividing!"
                 )
                 value = cache[x][(y1, "start")]
-                middleIdx = (
-                    np.where(value[0].imag <= y2)[0]
-                    if y1 < y2
-                    else np.where(value[0].imag >= y2)[0]
-                )
+                middleIdx = np.where(value[0].imag <= y2)[0][-1]
                 newValue = (
-                    value[0][: middleIdx[-1] + 1],
-                    value[1][: middleIdx[-1] + 1],
+                    value[0][: middleIdx + 1],
+                    value[1][: middleIdx + 1],
                 )
                 self.storeCache(x, y1, y2, cache, newValue)
-                return newValue
+                return cast(float, sign * newValue[1].sum())
             if (y2, "end") in cache[x]:
                 self.logger.debug(
                     "vertical line end in internal cache found - dividing!"
                 )
                 value = cache[x][(y2, "end")]
-                middleIdx = (
-                    np.where(y1 <= value[0].imag)[0]
-                    if y1 < y2
-                    else np.where(y1 >= value[0].imag)[0]
-                )
+                middleIdx = np.where(y1 <= value[0].imag)[0][0]
                 newValue = (
-                    value[0][middleIdx[0] :],
-                    value[1][middleIdx[0] :],
+                    value[0][middleIdx:],
+                    value[1][middleIdx:],
                 )
                 self.storeCache(x, y1, y2, cache, newValue)
-                return newValue
+                return cast(float, sign * newValue[1].sum())
 
         self.logger.debug("internal cache miss on vertical line!")
         newValue = self.genPhiArr(x + 1j * y1, x + 1j * y2, context)
@@ -204,7 +190,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         if x not in cache:
             cache[x] = {}
         self.storeCache(x, y1, y2, cache, newValue)
-        return newValue
+        return cast(float, sign * newValue[1].sum())
 
     def genPhiArr(
         self,
