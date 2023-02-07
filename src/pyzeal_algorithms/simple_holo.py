@@ -102,8 +102,12 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         self.logger.debug(
             "cache hits/misses: %d/%d (= %.03f)",
             self.cache.cacheHits,
-            self.cache.cacheMisses,
-            round(self.cache.cacheHits / (self.cache.cacheMisses or 1), 3),
+            self.cache.cacheMisses + self.cache.cacheHits,
+            round(
+                self.cache.cacheHits
+                / (self.cache.cacheMisses + self.cache.cacheMisses or 1),
+                3,
+            ),
         )
 
     def decideRefinement(
