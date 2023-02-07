@@ -53,9 +53,12 @@ def simpleArgumentRootFinder(
     TODO
     """
     holoRF: RootFinderInterface
+    f = testFunctions[testName][0]
+    df = testFunctions[testName][1]
     if parallel:
         holoRF = ParallelRootFinder(
-            testFunctions[testName][0],
+            f,
+            df,
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
             estimatorType=estimatorType,
@@ -63,7 +66,8 @@ def simpleArgumentRootFinder(
         )
     else:
         holoRF = RootFinder(
-            testFunctions[testName][0],
+            f,
+            df,
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
             estimatorType=estimatorType,
@@ -83,9 +87,12 @@ def simpleArgumentNewtonRootFinder(
     TODO
     """
     holoNewtonRF: RootFinderInterface
+    f = testFunctions[testName][0]
+    df = testFunctions[testName][1]
     if parallel:
         holoNewtonRF = ParallelRootFinder(
-            testFunctions[testName][0],
+            f,
+            df,
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
             estimatorType=estimatorType,
@@ -93,7 +100,8 @@ def simpleArgumentNewtonRootFinder(
         )
     else:
         holoNewtonRF = RootFinder(
-            testFunctions[testName][0],
+            f,
+            df,
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
             estimatorType=estimatorType,

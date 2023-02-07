@@ -23,7 +23,7 @@ class EstimatorFactory:
 
     @staticmethod
     def getConcreteEstimator(
-        estimatorType: EstimatorTypes = EstimatorTypes.DEFAULT,
+        estimatorType: EstimatorTypes,
         *,
         numPts: int,
         deltaPhi: float,
