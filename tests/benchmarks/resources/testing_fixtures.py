@@ -5,6 +5,7 @@ Provide rootfinder setup methods with common settings for testing purposes.
 from pyzeal import ParallelRootFinder, RootFinder, RootFinderInterface
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.filter_types import FilterTypes
 
 from .testing_resources import testFunctions
@@ -57,7 +58,9 @@ def newtonGridFinder(
 
 
 def simpleArgumentRootFinder(
-    testName: str, parallel: bool = False
+    testName: str,
+    parallel: bool = False,
+    estimatorType: EstimatorTypes = EstimatorTypes.SUMMATION_ESTIMATOR,
 ) -> RootFinderInterface:
     """Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
 
@@ -70,18 +73,24 @@ def simpleArgumentRootFinder(
     :rtype: RootFinderInterface
     """
     holoRF: RootFinderInterface
+    f = testFunctions[testName][0]
+    df = testFunctions[testName][1]
     if parallel:
         holoRF = ParallelRootFinder(
-            testFunctions[testName][0],
+            f,
+            df,
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+            estimatorType=estimatorType,
             verbose=False,
         )
     else:
         holoRF = RootFinder(
-            testFunctions[testName][0],
+            f,
+            df,
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+            estimatorType=estimatorType,
             verbose=False,
         )
     holoRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
@@ -90,7 +99,9 @@ def simpleArgumentRootFinder(
 
 
 def simpleArgumentNewtonRootFinder(
-    testName: str, parallel: bool = False
+    testName: str,
+    parallel: bool = False,
+    estimatorType: EstimatorTypes = EstimatorTypes.SUMMATION_ESTIMATOR,
 ) -> RootFinderInterface:
     """Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
 
@@ -103,20 +114,24 @@ def simpleArgumentNewtonRootFinder(
     :rtype: RootFinderInterface
     """
     holoNewtonRF: RootFinderInterface
+    f = testFunctions[testName][0]
+    df = testFunctions[testName][1]
     if parallel:
         holoNewtonRF = ParallelRootFinder(
-            testFunctions[testName][0],
-            df=testFunctions[testName][1],
+            f,
+            df,
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
+            estimatorType=estimatorType,
             verbose=False,
         )
     else:
         holoNewtonRF = RootFinder(
-            testFunctions[testName][0],
-            df=testFunctions[testName][1],
+            f,
+            df,
             containerType=ContainerTypes.ROUNDING_CONTAINER,
             algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
+            estimatorType=estimatorType,
             verbose=False,
         )
     holoNewtonRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)

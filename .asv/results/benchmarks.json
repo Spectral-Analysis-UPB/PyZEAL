@@ -1,6 +1,6 @@
 {
     "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinder": {
-        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinder(self) -> None:\n        \"\"\"\n        Runs the Newton grid based version of the rootfinding algorithm for all\n        test cases and non-parallel.\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            gridRF = newtonGridFinder(\n                caseName, numSamplePoints=50, parallel=False\n            )\n            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(3, 3))",
+        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinder(self) -> None:\n        \"\"\"\n        Runs the Newton grid based version of the rootfinding algorithm for all\n        test cases and non-parallel.\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            gridRF = newtonGridFinder(\n                caseName, numSamplePoints=50, parallel=False\n            )\n            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(5, 5))",
         "min_run_count": 2,
         "name": "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinder",
         "number": 0,
@@ -12,11 +12,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "0c8f99b975c5f6ce93182b28e762b1767e515e0a4c056a5b125a744795eea02f",
+        "version": "b61ee90ec010393ed452986594b402e6b2a0619a0a85bce4f61c46690dc652a2",
         "warmup_time": -1
     },
     "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinderDerivativeFree": {
-        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinderDerivativeFree(self) -> None:\n        \"\"\"\n        Runs the derivative-free version of the Newton grid based algorithm\n        for all test cases and non-parallel.\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            gridRF = newtonGridFinder(\n                caseName,\n                numSamplePoints=50,\n                derivativeFree=True,\n                parallel=False,\n            )\n            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(3, 3))",
+        "code": "class NewtonGridSuite:\n    def TimeNewtonGridRootfinderDerivativeFree(self) -> None:\n        \"\"\"\n        Runs the derivative-free version of the Newton grid based algorithm\n        for all test cases and non-parallel.\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            gridRF = newtonGridFinder(\n                caseName,\n                numSamplePoints=50,\n                derivativeFree=True,\n                parallel=False,\n            )\n            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(5, 5))",
         "min_run_count": 2,
         "name": "newton_grid_timings.NewtonGridSuite.TimeNewtonGridRootfinderDerivativeFree",
         "number": 0,
@@ -28,13 +28,13 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "c51f3ba71c68dccfbfb3454245206752e99725a1925ed1ef279c80415f4964cf",
+        "version": "9b363443f2d199ad582c2c71945ef7f9297976f7a7e5257773e8d08493fc807c",
         "warmup_time": -1
     },
-    "simple_argument_newton_timings.SimpleArgumentSuite.TimeSimpleArgument": {
-        "code": "class SimpleArgumentSuite:\n    def TimeSimpleArgument(self) -> None:\n        \"\"\"\n        Runs the normal version of the rootfinding algorithm for all\n        test cases\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            hrf = simpleArgumentNewtonRootFinder(caseName)\n            hrf.calculateRoots(RE_RAN, IM_RAN, (3, 3))",
+    "simple_argument_newton_timings.SimpleArgumentSuite.TimeSimpleArgumentNewtonQuadrature": {
+        "code": "class SimpleArgumentSuite:\n    def TimeSimpleArgumentNewtonQuadrature(self) -> None:\n        \"\"\"\n        Analogous to `TimeSimpleArgumentSummation` but here the algorithm uses\n        quadrature based argument estimation.\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            hrf = simpleArgumentNewtonRootFinder(\n                caseName,\n                parallel=False,\n                estimatorType=EstimatorTypes.QUADRATURE_ESTIMATOR,\n            )\n            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))",
         "min_run_count": 2,
-        "name": "simple_argument_newton_timings.SimpleArgumentSuite.TimeSimpleArgument",
+        "name": "simple_argument_newton_timings.SimpleArgumentSuite.TimeSimpleArgumentNewtonQuadrature",
         "number": 0,
         "param_names": [],
         "params": [],
@@ -44,13 +44,13 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "0c2b1fc1fcb6634c42230d60848a1fa10860e107b4eeefed315cb76045bf20fa",
+        "version": "218cec19b86d35f05daeba20e77d9a0c8cd32052f34212119cb390d30d89b032",
         "warmup_time": -1
     },
-    "simple_argument_timings.SimpleArgumentSuite.TimeSimpleArgument": {
-        "code": "class SimpleArgumentSuite:\n    def TimeSimpleArgument(self) -> None:\n        \"\"\"\n        Runs the normal version of the rootfinding algorithm for all\n        test cases\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            hrf = simpleArgumentRootFinder(caseName)\n            hrf.calculateRoots(RE_RAN, IM_RAN, (3, 3))",
+    "simple_argument_newton_timings.SimpleArgumentSuite.TimeSimpleArgumentNewtonSummation": {
+        "code": "class SimpleArgumentSuite:\n    def TimeSimpleArgumentNewtonSummation(self) -> None:\n        \"\"\"\n        Runs the simple argument version of the rootfinding algorithm with\n        summation based argument estimation and non-parallel.\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            hrf = simpleArgumentNewtonRootFinder(\n                caseName,\n                parallel=False,\n                estimatorType=EstimatorTypes.SUMMATION_ESTIMATOR,\n            )\n            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))",
         "min_run_count": 2,
-        "name": "simple_argument_timings.SimpleArgumentSuite.TimeSimpleArgument",
+        "name": "simple_argument_newton_timings.SimpleArgumentSuite.TimeSimpleArgumentNewtonSummation",
         "number": 0,
         "param_names": [],
         "params": [],
@@ -60,7 +60,39 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "05514de8094c62515c1abac6d9b55818641635a1c9fb5d5cb71aa50e1d236dba",
+        "version": "01971d4616671cb80330bcfcb673e6acd289f21c625430241da3c113a53f2016",
+        "warmup_time": -1
+    },
+    "simple_argument_timings.SimpleArgumentSuite.TimeSimpleArgumentQuadrature": {
+        "code": "class SimpleArgumentSuite:\n    def TimeSimpleArgumentQuadrature(self) -> None:\n        \"\"\"\n        Analogous to `TimeSimpleArgumentSummation` but here the algorithm uses\n        quadrature based argument estimation.\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            hrf = simpleArgumentRootFinder(\n                caseName,\n                parallel=False,\n                estimatorType=EstimatorTypes.QUADRATURE_ESTIMATOR,\n            )\n            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))",
+        "min_run_count": 2,
+        "name": "simple_argument_timings.SimpleArgumentSuite.TimeSimpleArgumentQuadrature",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "bb94085e0df249d5910125c3554b7d0d35a9e35a295f4005966d3a02b5540229",
+        "warmup_time": -1
+    },
+    "simple_argument_timings.SimpleArgumentSuite.TimeSimpleArgumentSummation": {
+        "code": "class SimpleArgumentSuite:\n    def TimeSimpleArgumentSummation(self) -> None:\n        \"\"\"\n        Runs the simple argument version of the rootfinding algorithm with\n        summation based argument estimation and non-parallel.\n        \"\"\"\n        for caseName in benchmarkFunctions:\n            hrf = simpleArgumentRootFinder(\n                caseName,\n                parallel=False,\n                estimatorType=EstimatorTypes.SUMMATION_ESTIMATOR,\n            )\n            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))",
+        "min_run_count": 2,
+        "name": "simple_argument_timings.SimpleArgumentSuite.TimeSimpleArgumentSummation",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "50c2a93a3083757896ea29e7fa4d874bcfe7dcb25fc7dd3c7b8f6a864fc4c048",
         "warmup_time": -1
     },
     "version": 2

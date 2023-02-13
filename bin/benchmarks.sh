@@ -15,6 +15,13 @@ then
     asv publish
 fi
 
+if [[ "$1" == "--existing" || "$2" == "--existing" ]]
+then
+    echo "[asv] running benchmarks for commits with pre-existing benchmarks..."
+    asv run EXISTING
+    asv publish
+fi
+
 if [[ "$1" == "--preview" || "$2" == "--preview" ]]
 then
     echo "[asv] starting browser preview of benchmarks..." 

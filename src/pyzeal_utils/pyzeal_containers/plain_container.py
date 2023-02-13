@@ -37,7 +37,7 @@ class PlainContainer(RootContainer):
         Initialize a new PlainContainer.
         """
         self.rootBuffer = cast(tQueue, queue or Manager().Queue())
-        self.logger.info("initialized a plain root container")
+        self.logger.info("initialized a new plain root container")
 
     def addRoot(self, root: tRoot, context: FilterContext) -> None:
         """

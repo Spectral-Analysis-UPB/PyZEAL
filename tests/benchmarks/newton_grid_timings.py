@@ -24,9 +24,9 @@ JSONSettingsService().verbose = False
 
 class NewtonGridSuite:
     """
-    Timing benchmarks for `NewtonGridRootFinder`.
-
-    Includes simple polynomials and trigonometric functions.
+    Timing benchmarks for the root finding algorithm which uses a grid of
+    starting points for an ordinary Newton algorithm. Includes simple
+    polynomials as well as trigonometric and exponential functions.
     """
 
     def TimeNewtonGridRootfinder(self) -> None:
@@ -38,7 +38,7 @@ class NewtonGridSuite:
             gridRF = newtonGridFinder(
                 caseName, numSamplePoints=50, parallel=False
             )
-            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(3, 3))
+            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(5, 5))
 
     def TimeNewtonGridRootfinderDerivativeFree(self) -> None:
         """
@@ -52,4 +52,4 @@ class NewtonGridSuite:
                 derivativeFree=True,
                 parallel=False,
             )
-            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(3, 3))
+            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(5, 5))

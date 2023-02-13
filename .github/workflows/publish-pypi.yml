@@ -1,6 +1,12 @@
 name: publish-pypi
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
     build-n-publish:

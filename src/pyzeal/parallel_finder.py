@@ -20,6 +20,7 @@ from rich.progress import TaskID
 
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.parallel_types import FinderProgressManager, tQueue
 from pyzeal_types.root_types import tHoloFunc
 from pyzeal_utils.filter_context import FilterContext
@@ -42,6 +43,7 @@ class ParallelRootFinder(RootFinder):
         *,
         containerType: ContainerTypes = ContainerTypes.DEFAULT,
         algorithmType: AlgorithmTypes = AlgorithmTypes.DEFAULT,
+        estimatorType: EstimatorTypes = EstimatorTypes.DEFAULT,
         precision: Tuple[int, int] = (3, 3),
         numSamplePoints: Optional[int] = None,
         verbose: Optional[bool] = None,
@@ -75,6 +77,7 @@ class ParallelRootFinder(RootFinder):
             df=df,
             containerType=containerType,
             algorithmType=algorithmType,
+            estimatorType=estimatorType,
             precision=precision,
             numSamplePoints=numSamplePoints,
             verbose=verbose,

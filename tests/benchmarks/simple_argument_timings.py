@@ -1,9 +1,14 @@
 """
-Timing benchmark suite for the simple argument (no numerical quadrature) based
-root finding algorithm.
+Timing benchmark suite for the simple argument (with and without numerical
+quadrature) based root finding algorithm.
+
+Authors:\n
+- Luca Wasmuth\n
+- Philipp Schuette\n
 """
 
 from pyzeal_settings.json_settings_service import JSONSettingsService
+from pyzeal_types.estimator_types import EstimatorTypes
 
 from .resources.testing_fixtures import simpleArgumentRootFinder
 from .resources.testing_resources import IM_RAN, RE_RAN
@@ -22,16 +27,33 @@ JSONSettingsService().verbose = False
 
 class SimpleArgumentSuite:
     """
-    Timing benchmarks for `NewtonGridRootFinder`.
-
-    Includes simple polynomials and trigonometric functions.
+    Timing benchmarks for the simple argument principle based root finder.
+    Includes simple polynomials as well as trigonometric and exponential
+    functions.
     """
 
-    def TimeSimpleArgument(self) -> None:
+    def TimeSimpleArgumentSummation(self) -> None:
         """
-        Runs the normal version of the rootfinding algorithm for all
-        test cases
+        Runs the simple argument version of the rootfinding algorithm with
+        summation based argument estimation and non-parallel.
         """
         for caseName in benchmarkFunctions:
-            hrf = simpleArgumentRootFinder(caseName)
-            hrf.calculateRoots(RE_RAN, IM_RAN, (3, 3))
+            hrf = simpleArgumentRootFinder(
+                caseName,
+                parallel=False,
+                estimatorType=EstimatorTypes.SUMMATION_ESTIMATOR,
+            )
+            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))
+
+    def TimeSimpleArgumentQuadrature(self) -> None:
+        """
+        Analogous to `TimeSimpleArgumentSummation` but here the algorithm uses
+        quadrature based argument estimation.
+        """
+        for caseName in benchmarkFunctions:
+            hrf = simpleArgumentRootFinder(
+                caseName,
+                parallel=False,
+                estimatorType=EstimatorTypes.QUADRATURE_ESTIMATOR,
+            )
+            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))
