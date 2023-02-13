@@ -51,9 +51,7 @@ def testSimpleArgument(testName: str, parallel: bool) -> None:
     hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
-    assert np.allclose(
-        foundRoots, expectedRoots, atol=1e-3
-    ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
+    assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
 
 
 @given(
@@ -86,9 +84,4 @@ def testSimpleArgumentFinderHypothesis(roots) -> None:
     # We only find a higher-order zero once, so we have to remove duplicates
     uniqueRoots = list(set(roots))
     expectedRoots = np.sort_complex(np.array(uniqueRoots))
-    try:
-        assert np.allclose(
-            foundRoots, expectedRoots, atol=1e-3
-        ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
-    except ValueError:
-        pass  # This happens if allclose is called with differing sizes
+    assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
