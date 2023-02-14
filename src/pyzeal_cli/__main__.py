@@ -50,8 +50,14 @@ def mainPyZEAL() -> None:
 
 
 def changeContainerSetting(container: str, service: SettingsService) -> None:
-    """
-    TODO
+    """Try to change the default container setting in `service` to `container`.
+    If the container name is invalid, `SystemExit(2)` is raised.
+
+    :param container: New default container name (case-insensitive).
+    :type container: str
+    :param service: Settings service to update.
+    :type service: SettingsService
+    :raises SystemExit: Raised when no container with a matching name is found.
     """
     oldContainer = service.defaultContainer
     newContainer: Optional[ContainerTypes] = None
@@ -72,8 +78,14 @@ def changeContainerSetting(container: str, service: SettingsService) -> None:
 
 
 def changeAlgorithmSetting(algorithm: str, service: SettingsService) -> None:
-    """
-    TODO
+    """Try to change the default algorithm setting in `service` to `algorithm`.
+    If the algorithm name is invalid, `SystemExit(2)` is raised.
+
+    :param algorithm: New default algorithm name (case-insensitive)
+    :type algorithm: str
+    :param service: Settings service to update.
+    :type service: SettingsService
+    :raises SystemExit: Raised when no algorithm with a matching name is found.
     """
     oldAlgorithm = service.defaultAlgorithm
     newAlgorithm: Optional[AlgorithmTypes] = None
@@ -94,8 +106,14 @@ def changeAlgorithmSetting(algorithm: str, service: SettingsService) -> None:
 
 
 def changeLogLevelSetting(logLevel: str, service: SettingsService) -> None:
-    """
-    TODO
+    """Try to change the logLevel setting in `service` to `logLevel`.
+    If the logLevel is invalid, `SystemExit(2)` is raised.
+
+    :param logLevel: New log level (case-insensitive)
+    :type logLevel: str
+    :param service: Settings service to update.
+    :type service: SettingsService
+    :raises SystemExit: Raised when the log level is invalid.
     """
     oldLevel = service.logLevel
     newLevel: Optional[LogLevel] = None
@@ -116,8 +134,14 @@ def changeLogLevelSetting(logLevel: str, service: SettingsService) -> None:
 
 
 def changeVerbositySetting(verbose: str, service: SettingsService) -> None:
-    """
-    TODO
+    """Try to update the verbosity setting of `service`. If `verbose` is not
+    "true" or "false", `SystemExit(2)` is raised.
+
+    :param verbose: New verbosity setting
+    :type verbose: str
+    :param service: Setting service to update
+    :type service: SettingsService
+    :raises SystemExit: Raised when an invalid verbosity setting is given.
     """
     oldVerbosity = service.verbose
     newVerbosity: Optional[bool] = None

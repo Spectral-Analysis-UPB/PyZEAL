@@ -37,6 +37,7 @@ def _compareRootSets(roots1: tVec, roots2: tVec, atol: float) -> bool:
 
     return True
 
+
 def rootsMatchClosely(roots1: tVec, roots2: tVec, atol: float) -> bool:
     """Determine if `roots1` and `roots2` contain the same roots, up to
     precision `atol`.
