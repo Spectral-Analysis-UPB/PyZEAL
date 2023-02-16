@@ -5,14 +5,22 @@ Authors:\n
 - Philipp Schuette
 """
 
+from typing import Final
+
 import numpy as np
-from scipy.integrate import quad
+from scipy.integrate import romb
 
 from pyzeal_types.root_types import tVec
 from pyzeal_utils.root_context import RootContext
 
 from .argument_estimator import ArgumentEstimator
 from .estimator_cache import EstimatorCache
+
+####################
+# Global Constants #
+####################
+
+EXP_SAMPLE_POINTS: Final[int] = 12  # number of sample points for integration
 
 
 class QuadratureEstimator(ArgumentEstimator):
@@ -46,15 +54,20 @@ class QuadratureEstimator(ArgumentEstimator):
             except TypeError as ex:
                 raise ValueError("derivative required for quadrature!") from ex
 
-        realResult = quad(
-            lambda t: np.real(_logDeriv(zStart + t * (zEnd - zStart))), 0, 1
+        funcValues = _logDeriv(
+            np.linspace(zStart, zEnd, 2**EXP_SAMPLE_POINTS + 1)
         )
-        imagResult = quad(
-            lambda t: np.imag(_logDeriv(zStart + t * (zEnd - zStart))), 0, 1
+        distance = abs(zEnd - zStart)
+
+        realResult = romb(
+            np.real(funcValues), distance / (2**EXP_SAMPLE_POINTS)
+        )
+        imagResult = romb(
+            np.imag(funcValues), distance / (2**EXP_SAMPLE_POINTS)
         )
         # the result is expected to be real (after devision by 1j)
         return complex(
-            (zEnd - zStart) * (-1j * realResult[0] + imagResult[0])
+            (zEnd - zStart) * (-1j * realResult + imagResult) / distance
         ).real
 
     @property

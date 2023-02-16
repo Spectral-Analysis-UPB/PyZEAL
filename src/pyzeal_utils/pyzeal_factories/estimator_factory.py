@@ -34,7 +34,8 @@ class EstimatorFactory:
         maxPrecision: Optional[float],
         cache: EstimatorCache,
     ) -> ArgumentEstimator:
-        """Construct and return an estimator instance based on the given type
+        """
+        Construct and return an estimator instance based on the given type
         of estimator `estimatorType`.
 
         :param estimatorType: Type of estimator to return

@@ -75,6 +75,7 @@ class AlgorithmFactory:
                 SettingsServicesTypes.DEFAULT
             ).defaultAlgorithm,
             numSamplePoints=numSamplePoints,
+            estimatorType=estimatorType,
         )
 
     @staticmethod

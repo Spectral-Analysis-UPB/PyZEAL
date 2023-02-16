@@ -39,7 +39,8 @@ KNOWN_FAILURES = [
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
 def testSimpleArgumentNewton(testName, parallel) -> None:
-    """Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by
+    """
+    Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by
     `testName`
 
     :param testName: Name of the test case
