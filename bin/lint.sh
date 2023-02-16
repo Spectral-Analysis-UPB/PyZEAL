@@ -58,9 +58,11 @@ echo ""
 
 if [[ "$1" == "--tests" ]]
 then
-    echo "|--------------------------|"
-    echo "|[running tests with pytest|"
-    echo "|--------------------------|"
+    echo "|---------------------------|"
+    echo "|[running tests with pytest]|"
+    echo "|---------------------------|"
     pytest --cov=src/ --cov-report=html tests/
     echo ""
 fi
+
+echo "--> all done!"

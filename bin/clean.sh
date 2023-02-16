@@ -9,7 +9,7 @@ cd ..
 # remove pytest related stuff in project root
 rm -rf .mypy_cache
 rm -rf .pytest_cache
-rm .coverage
+if [[ -f ".coverage" ]]; then rm .coverage; fi
 rm -rf htmlcov
 
 # remove all __pycache__ directories

@@ -20,7 +20,7 @@ from .estimator_cache import EstimatorCache
 # Global Constants #
 ####################
 
-EXP_SAMPLE_POINTS: Final[int] = 12  # number of sample points for integration
+EXP_SAMPLE_POINTS: Final[int] = 10  # number of sample points for integration
 
 
 class QuadratureEstimator(ArgumentEstimator):
