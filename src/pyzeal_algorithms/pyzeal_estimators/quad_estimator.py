@@ -10,7 +10,6 @@ from typing import Final
 import numpy as np
 from scipy.integrate import romb
 
-from pyzeal_types.root_types import tVec
 from pyzeal_utils.root_context import RootContext
 
 from .argument_estimator import ArgumentEstimator
@@ -46,17 +45,15 @@ class QuadratureEstimator(ArgumentEstimator):
         """
         TODO
         """
+        if context.df is None:
+            raise ValueError(
+                "derivative required for quadrature-based argument estimation!"
+            )
 
-        def _logDeriv(x: tVec) -> tVec:
-            "Logarithmic derivative of the target function. TODO: zeros!"
-            try:
-                return context.df(x) * x**order / context.f(x)  # type: ignore
-            except TypeError as ex:
-                raise ValueError("derivative required for quadrature!") from ex
-
-        funcValues = _logDeriv(
-            np.linspace(zStart, zEnd, 2**EXP_SAMPLE_POINTS + 1)
-        )
+        # TODO: caching of function evaluations!
+        # TODO: adjust line if zero on line found!
+        zArr = np.linspace(zStart, zEnd, 2**EXP_SAMPLE_POINTS + 1)
+        funcValues = context.df(zArr) * zArr**order / context.f(zArr)
         distance = abs(zEnd - zStart)
 
         realResult = romb(
