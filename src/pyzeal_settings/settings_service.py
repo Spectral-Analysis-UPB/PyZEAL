@@ -1,5 +1,6 @@
 """
-TODO
+Class `SettingsService` from the package `pyzeal_settings`.
+This module defines a protocol for a generic settings provider.
 
 Authors:\n
 - Philipp Schuette\n
@@ -21,56 +22,72 @@ class SettingsService(Protocol):
 
     @property
     def defaultContainer(self) -> ContainerTypes:
-        """
-        TODO
+        """Get the default container type.
+
+        :return: Default container type
+        :rtype: ContainerTypes
         """
         ...
 
     @defaultContainer.setter
     def defaultContainer(self, value: ContainerTypes) -> None:
-        """
-        TODO
+        """Set the default container type to `value`.
+
+        :param value: New default container type.
+        :type value: ContainerTypes
         """
         ...
 
     @property
     def defaultAlgorithm(self) -> AlgorithmTypes:
-        """
-        TODO
+        """Get the default algorithm type.
+
+        :return: Default algorithm type.
+        :rtype: AlgorithmTypes
         """
         ...
 
     @defaultAlgorithm.setter
     def defaultAlgorithm(self, value: AlgorithmTypes) -> None:
-        """
-        TODO
+        """Set the default algorithm type to `value`.
+
+        :param value: New default algorithm type
+        :type value: AlgorithmTypes
         """
         ...
 
     @property
     def logLevel(self) -> LogLevel:
-        """
-        TODO
+        """Get the current LogLevel setting.
+
+        :return: Current LogLevel
+        :rtype: LogLevel
         """
         ...
 
     @logLevel.setter
     def logLevel(self, value: LogLevel) -> None:
-        """
-        TODO
+        """Set the LogLevel to `value`.
+
+        :param value: New LogLevel to use
+        :type value: LogLevel
         """
         ...
 
     @property
     def verbose(self) -> bool:
-        """
-        TODO
+        """Get current verbosity setting.
+
+        :return: True if verbose mode is enabled.
+        :rtype: bool
         """
         ...
 
     @verbose.setter
     def verbose(self, value: bool) -> None:
-        """
-        TODO
+        """Set the verbosity setting
+
+        :param value: New verbosity setting
+        :type value: bool
         """
         ...

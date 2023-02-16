@@ -35,8 +35,20 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
         imRan: Tuple[float, float],
         context: RootContext,
     ) -> None:
-        """
-        TODO
+        """Calculates zeros of `self.func` by applying the argument principle
+        over a rectangle and recursively dividing this rectangle into smaller
+        ones, until rectangles are sufficiently small to reliably perform a
+        Newton search. Zeros found are put into `resultQueue`. The finished
+        calculation gets reported to the progress bar `progress` under the
+        task id `task`.
+
+        :param zParts: Rectangle describing the search area
+        :type zParts: tRecGrid
+        :param phiParts: Change in argument along the rectangle
+        :type phiParts: tRecGrid
+        :param context: RootContext object containing the rest of the
+            information
+        :type context: RootContext
         """
         # calculate difference between right/left and top/bottom
         x1, x2 = reRan
@@ -56,6 +68,9 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
             )
             return
 
+        # Newton performs a lot better if the derivative is given,
+        # so a bigger box suffices in that case. 0.15 is chosen as
+        # it passes all tests, while 0.16 fails some
         # check if the current box contains a simple root
         if TWO_PI < phi < FOUR_PI and deltaRe < 0.1 and deltaIm < 0.1:
             try:

@@ -15,43 +15,59 @@ class PyZEALLogger(Protocol):
     "The logging interface used throughout the PyZEAL project."
 
     def debug(self, msg: str, *args: Union[str, int, float]) -> None:
-        """
-        TODO
+        """Log `msg` with severity DEBUG.
+
+        :param msg: Messageto log
+        :type msg: str
         """
         ...
 
     def info(self, msg: str, *args: Union[str, int, float]) -> None:
-        """
-        TODO
+        """Log `msg` with severity INFO.
+
+        :param msg: Messageto log
+        :type msg: str
         """
         ...
 
     def warning(self, msg: str, *args: Union[str, int, float]) -> None:
-        """
-        TODO
+        """Log `msg` with severity WARNING.
+
+        :param msg: Messageto log
+        :type msg: str
         """
         ...
 
     def error(self, msg: str, *args: Union[str, int, float]) -> None:
-        """
-        TODO
+        """Log `msg` with severity ERROR.
+
+        :param msg: Messageto log
+        :type msg: str
         """
         ...
 
     def critical(self, msg: str, *args: Union[str, int, float]) -> None:
-        """
-        TODO
+        """Log `msg` with severity CRITICAL.
+
+        :param msg: Messageto log
+        :type msg: str
         """
         ...
 
     def setLevel(self, level: int) -> None:
-        """
-        TODO
+        """Set the logging level to `level`
+
+        :param level: `LogLevel` to set
+        :type level: int
         """
         ...
 
     def isEnabledFor(self, level: int) -> bool:
-        """
-        TODO
+        """Test if logging is enabled for level `level`.
+
+        :param level: Level to test
+        :type level: int
+        :return: If logging is enabled for level `level`
+        :rtype: bool
         """
         ...

@@ -159,14 +159,20 @@ class RoundingContainer(RootContainer):
         return complex(round(x, precision[0]), round(y, precision[1])), root[1]
 
     def registerFilter(self, filterPredicate: tRootFilter, key: str) -> None:
-        """
-        TODO
+        """Register a new filter to check possible roots against
+
+        :param filterPredicate: New filter to register
+        :type filterPredicate: tRootFilter
+        :param key: A key to identify this filter
+        :type key: str
         """
         self.filters[key] = filterPredicate
 
     def unregisterFilter(self, key: str) -> None:
-        """
-        TODO
+        """Remove the filter identified by `key`.
+
+        :param key: Filter key
+        :type key: str
         """
         try:
             self.filters.pop(key)

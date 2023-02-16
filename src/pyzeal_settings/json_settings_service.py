@@ -90,61 +90,37 @@ class JSONSettingsService(SettingsService):
 
     @property
     def defaultContainer(self) -> ContainerTypes:
-        """
-        TODO
-        """
         return self._container
 
     @defaultContainer.setter
     def defaultContainer(self, value: ContainerTypes) -> None:
-        """
-        TODO
-        """
         self._container = value
         JSONSettingsService.createOrUpdateSetting("defaultContainer", value)
 
     @property
     def defaultAlgorithm(self) -> AlgorithmTypes:
-        """
-        TODO
-        """
         return self._algorithm
 
     @defaultAlgorithm.setter
     def defaultAlgorithm(self, value: AlgorithmTypes) -> None:
-        """
-        TODO
-        """
         self._algorithm = value
         JSONSettingsService.createOrUpdateSetting("defaultAlgorithm", value)
 
     @property
     def logLevel(self) -> LogLevel:
-        """
-        TODO
-        """
         return self._level
 
     @logLevel.setter
     def logLevel(self, value: LogLevel) -> None:
-        """
-        TODO
-        """
         self._level = value
         JSONSettingsService.createOrUpdateSetting("logLevel", value)
 
     @property
     def verbose(self) -> bool:
-        """
-        TODO
-        """
         return self._verbose
 
     @verbose.setter
     def verbose(self, value: bool) -> None:
-        """
-        TODO
-        """
         self._verbose = value
         JSONSettingsService.createOrUpdateSetting("verbose", value)
 
@@ -158,8 +134,18 @@ class JSONSettingsService(SettingsService):
         ],
         value: Union[ContainerTypes, AlgorithmTypes, LogLevel, bool],
     ) -> None:
-        """
-        TODO
+        """Update a setting or create a new setting if no value has been set
+        yet.
+
+        :param setting: setting to create/update
+        :type setting: Union[ Literal["defaultContainer"],
+                              Literal["defaultAlgorithm"],
+                              Literal["logLevel"],
+                              Literal["verbose"], ]
+        :param value: New setting value
+        :type value: Union[ContainerTypes, AlgorithmTypes, LogLevel, bool]
+        :raises InvalidSettingException: If the given value is invalid for the
+            specified setting, an `InvalidSettingException` is raised.
         """
         currentSettings: Dict[str, Union[str, bool]] = {}
         try:
@@ -214,8 +200,12 @@ class JSONSettingsService(SettingsService):
     def loadSettingsFromFile(
         filename: str, settings: Dict[str, Union[str, bool]]
     ) -> None:
-        """
-        TODO
+        """Load the settings stored in `filename` into `settings`.
+
+        :param filename: File to load
+        :type filename: str
+        :param settings: Dict to store the read settings in
+        :type settings: Dict[str, Union[str, bool]]
         """
         try:
             with open(filename, "r", encoding="utf-8") as settingsFile:

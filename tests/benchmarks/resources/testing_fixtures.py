@@ -1,5 +1,5 @@
 """
-TODO
+Provide rootfinder setup methods with common settings for testing purposes.
 """
 
 from pyzeal import ParallelRootFinder, RootFinder, RootFinderInterface
@@ -17,8 +17,21 @@ def newtonGridFinder(
     parallel: bool = False,
     derivativeFree: bool = False,
 ) -> RootFinderInterface:
-    """
-    TODO
+    """Returns a NEWTON_GRID RootFinder for the test case `testName`
+
+    :param testName: Test case name
+    :type testName: str
+    :param numSamplePoints: `numSamplePoints` passed to the RootFinder,
+        defaults to 20
+    :type numSamplePoints: int, optional
+    :param parallel: Set to `True` if the RootFinder should search in
+        parallel, defaults to False
+    :type parallel: bool, optional
+    :param derivativeFree: Set to `True` if the RootFinder should operate
+        without the derivative, defaults to False
+    :type derivativeFree: bool, optional
+    :return: Initialized RootFinder
+    :rtype: RootFinderInterface
     """
     f = testFunctions[testName][0]
     df = testFunctions[testName][1] if not derivativeFree else None
@@ -49,8 +62,15 @@ def simpleArgumentRootFinder(
     parallel: bool = False,
     estimatorType: EstimatorTypes = EstimatorTypes.SUMMATION_ESTIMATOR,
 ) -> RootFinderInterface:
-    """
-    TODO
+    """Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
+
+    :param testName: Test case name
+    :type testName: str
+    :param parallel: Set to `True` if the RootFinder should search in parallel,
+        defaults to False
+    :type parallel: bool, optional
+    :return: Initialized RootFinder
+    :rtype: RootFinderInterface
     """
     holoRF: RootFinderInterface
     f = testFunctions[testName][0]
@@ -83,8 +103,15 @@ def simpleArgumentNewtonRootFinder(
     parallel: bool = False,
     estimatorType: EstimatorTypes = EstimatorTypes.SUMMATION_ESTIMATOR,
 ) -> RootFinderInterface:
-    """
-    TODO
+    """Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
+
+    :param testName: Test case name
+    :type testName: str
+    :param parallel: Set to `True` if the RootFinder should search in parallel,
+        defaults to False
+    :type parallel: bool, optional
+    :return: Initialized RootFinder
+    :rtype: RootFinderInterface
     """
     holoNewtonRF: RootFinderInterface
     f = testFunctions[testName][0]

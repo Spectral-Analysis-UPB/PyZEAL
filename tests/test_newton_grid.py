@@ -32,17 +32,19 @@ NUM_SAMPLE_POINTS = 20
 # disable progress bar by default for tests
 JSONSettingsService().verbose = False
 # some test functions do not work due to algorithmic limitations
-KNOWN_FAILURES = ["x^4-1", "log and sin composition", "x^100", "1e6 * x^100"]
+KNOWN_FAILURES = ["log and sin composition", "x^100", "1e6 * x^100"]
 
 
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testNewtonGridRootFinder(testName, parallel) -> None:
-    """
-    Test the Newton-Grid-Rootfinder with polynomial and elementary functions.
+def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
+    """Test the Newton-Grid-Rootfinder with the function given by `testName`
 
-    TODO
+    :param testName: Name of the test case
+    :type testName: str
+    :param parallel: If roots should be searched in parallel
+    :type parallel: bool
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
@@ -52,13 +54,7 @@ def testNewtonGridRootFinder(testName, parallel) -> None:
         print(gridRF.roots)
         foundRoots = np.sort_complex(gridRF.roots)
         expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
-        # First variant fails 1 test, second fails 3 tests - however, these
-        # seem to be different ones:
-        # assert np.allclose(foundRoots, expectedRoots, atol=1e-3)
-        # assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
-        assert np.allclose(
-            foundRoots, expectedRoots, atol=1e-3
-        ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
+        assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
 
 
 @given(
@@ -68,11 +64,11 @@ def testNewtonGridRootFinder(testName, parallel) -> None:
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
 def testNewtonGridRootFinderHypothesis(roots) -> None:
-    """
-    Test the grid-based Newton rootfinder on polynomials whose roots are
+    """Test the grid-based Newton rootfinder on polynomials whose roots are
     generated automatically using the hypothesis package.
 
-    TODO
+    :param roots: Roots of a polynomial
+    :type roots: List[complex]
     """
     f = Polynomial.fromroots(roots)
     df = f.deriv()
@@ -87,12 +83,7 @@ def testNewtonGridRootFinderHypothesis(roots) -> None:
     gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
     gridRF.calculateRoots((-10, 10), (-10, 10), precision=(3, 3))
     foundRoots = np.sort_complex(gridRF.roots)
-    # We only find a higher-order zero once, so we have to remove duplicates
+    # We only find a higher-order zero once, so we remove duplicates
     uniqueRoots = list(set(roots))
     expectedRoots = np.sort_complex(np.array(uniqueRoots))
-    try:
-        assert np.allclose(
-            foundRoots, expectedRoots, atol=1e-3
-        ) or rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
-    except ValueError:
-        pass  # This happens if allclose is called with differing sizes
+    assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)

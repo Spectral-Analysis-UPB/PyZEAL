@@ -35,9 +35,21 @@ class ContainerFactory:
     logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
 
     @staticmethod
-    def _func_value_zero(threshold: int, root: tRoot, context: FilterContext):
-        """
-        TODO
+    def _func_value_zero(
+        threshold: int, root: tRoot, context: FilterContext
+    ) -> bool:
+        """Filter predicate to determine if a possible root has a function
+        value sufficiently close to zero
+
+        :param threshold: A function is considered zero if its absolute value
+            is below 10^-(threshold)
+        :type threshold: int
+        :param root: Root candidate
+        :type root: tRoot
+        :param context: Context containing information about the search
+        :type context: FilterContext
+        :return: `True` if the function is close enough to zero
+        :rtype: bool
         """
         return cast(
             bool,
@@ -46,9 +58,15 @@ class ContainerFactory:
         )
 
     @staticmethod
-    def _zero_in_bounds(root: tRoot, context: FilterContext):
-        """
-        TODO
+    def _zero_in_bounds(root: tRoot, context: FilterContext) -> bool:
+        """Filter predicate to determine if `root` is in bounds for `context`.
+
+        :param root: Root to filter
+        :type root: tRoot
+        :param context: Context containing information about the search
+        :type context: FilterContext
+        :return: `True` if root is in bounds
+        :rtype: bool
         """
         return (
             context.reRan[0] <= root[0].real <= context.reRan[1]
