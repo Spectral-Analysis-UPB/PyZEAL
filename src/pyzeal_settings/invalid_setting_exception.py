@@ -1,5 +1,5 @@
 """
-TODO
+Exception class for invalid setting configurations
 
 Authors:\n
 - Philipp Schuette\n

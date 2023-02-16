@@ -7,6 +7,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.estimator_types import EstimatorTypes
 
 from .resources.testing_fixtures import simpleArgumentRootFinder
@@ -20,6 +21,8 @@ benchmarkFunctions = [
     "sin(x)",
     "exp(x)",
 ]
+# disable progress bar
+JSONSettingsService().verbose = False
 
 
 class SimpleArgumentSuite:

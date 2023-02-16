@@ -1,5 +1,5 @@
 """
-TODO
+This class stores named constants for log levels.
 """
 
 import logging

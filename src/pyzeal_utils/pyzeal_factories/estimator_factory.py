@@ -1,9 +1,13 @@
 """
-TODO
+This module provides a static factory class which maps the argument estimators
+available in the `EstimatorType` enumeration to appropriate members of the
+`ArgumentEstimator` type.
 
 Authors:\n
 - Philipp Schuette\n
 """
+
+from typing import Optional
 
 from pyzeal_algorithms.pyzeal_estimators import (
     ArgumentEstimator,
@@ -25,18 +29,37 @@ class EstimatorFactory:
     def getConcreteEstimator(
         estimatorType: EstimatorTypes,
         *,
-        numPts: int,
-        deltaPhi: float,
-        maxPrecision: float,
+        numPts: Optional[int],
+        deltaPhi: Optional[float],
+        maxPrecision: Optional[float],
         cache: EstimatorCache,
     ) -> ArgumentEstimator:
-        """
-        TODO
+        """Construct and return an estimator instance based on the given type
+        of estimator `estimatorType`.
+
+        :param estimatorType: Type of estimator to return
+        :type estimatorType: EstimatorTypes
+        :param numPts: Number of sampling points
+        :type numPts: Optional[int]
+        :param deltaPhi: Threshold for argument change in a single step
+        :type deltaPhi: Optional[float]
+        :param maxPrecision: Maximum precision, after which no more refinement
+            takes place
+        :type maxPrecision: Optional[float]
+        :param cache: Cache to store argument changes
+        :type cache: EstimatorCache
+        :return: Estimator instance with given parameters
+        :rtype: ArgumentEstimator
         """
         if estimatorType == EstimatorTypes.SUMMATION_ESTIMATOR:
             EstimatorFactory.logger.debug(
                 "requested a new phase summation based argument estimator..."
             )
+            if numPts is None or deltaPhi is None or maxPrecision is None:
+                raise ValueError(
+                    "SUMMATION_ESTIMATOR requires numPts, deltaPhi and \
+                        maxPrecision!"
+                )
             return SummationEstimator(
                 numPts=numPts,
                 deltaPhi=deltaPhi,

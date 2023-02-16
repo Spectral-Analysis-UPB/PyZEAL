@@ -26,7 +26,8 @@ from pyzeal_utils.pyzeal_containers.root_container import (
 
 class PlainContainer(RootContainer):
     """
-    TODO
+    Minimal container implementation. Simply adds roots to an internal buffer
+    without any further action.
     """
 
     __slots__ = ("rootBuffer",)
@@ -95,13 +96,19 @@ class PlainContainer(RootContainer):
         raise NotImplementedError("cannot clear plain containers!")
 
     def registerFilter(self, filterPredicate: tRootFilter, key: str) -> None:
-        """
-        TODO
+        """This is not supported by `PlainContainer`.
+
+        :param filterPredicate: New filter to register
+        :type filterPredicate: tRootFilter
+        :param key: A key to identify this filter
+        :type key: str
         """
         raise NotImplementedError("plain containers do not support filtering!")
 
     def unregisterFilter(self, key: str) -> None:
-        """
-        TODO
+        """This is not supported by `PlainContainer`.
+
+        :param key: Filter key
+        :type key: str
         """
         raise NotImplementedError("plain containers do not support filtering!")
