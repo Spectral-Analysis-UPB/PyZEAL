@@ -24,8 +24,8 @@ class AssociatedPolynomialAlgorithm(FinderAlgorithm, Loggable):
 
     def calcRoots(self, context: RootContext) -> None:
         """
-        Start a root calculation using numerical quadrature and the associated
-        polynomial. TODO
+        Start a root calculation using numerical quadrature and the polynomial
+        associated with the roots of the target function. TODO
 
         :param context: context in which the algorithm operates
         :type context: RootContext

@@ -90,6 +90,7 @@ class JSONSettingsService(SettingsService):
 
     @property
     def defaultContainer(self) -> ContainerTypes:
+        "Get the currently active default container."
         return self._container
 
     @defaultContainer.setter
@@ -99,6 +100,7 @@ class JSONSettingsService(SettingsService):
 
     @property
     def defaultAlgorithm(self) -> AlgorithmTypes:
+        "Get the currently active default algorithm."
         return self._algorithm
 
     @defaultAlgorithm.setter
@@ -108,6 +110,7 @@ class JSONSettingsService(SettingsService):
 
     @property
     def logLevel(self) -> LogLevel:
+        "Get the currently active standard log level."
         return self._level
 
     @logLevel.setter
@@ -117,6 +120,7 @@ class JSONSettingsService(SettingsService):
 
     @property
     def verbose(self) -> bool:
+        "Get the currently active verbosity level."
         return self._verbose
 
     @verbose.setter
@@ -134,7 +138,8 @@ class JSONSettingsService(SettingsService):
         ],
         value: Union[ContainerTypes, AlgorithmTypes, LogLevel, bool],
     ) -> None:
-        """Update a setting or create a new setting if no value has been set
+        """
+        Update a setting or create a new setting if no value has been set
         yet.
 
         :param setting: setting to create/update
@@ -200,7 +205,8 @@ class JSONSettingsService(SettingsService):
     def loadSettingsFromFile(
         filename: str, settings: Dict[str, Union[str, bool]]
     ) -> None:
-        """Load the settings stored in `filename` into `settings`.
+        """
+        Load the settings stored in `filename` into `settings`.
 
         :param filename: File to load
         :type filename: str

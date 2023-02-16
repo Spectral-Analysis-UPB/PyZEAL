@@ -186,7 +186,8 @@ class ParallelRootFinder(RootFinder):
         progress: Optional[FinderProgressBar],
         task: Optional[TaskID],
     ) -> List[RootContext]:
-        """Convenience method that constructs a list of RootContext objects on
+        """
+        Convenience method that constructs a list of RootContext objects on
         which child processes operate by applying a concrete RootAlgorithm.
 
         :param numProcesses: The number of processes, which determines the
@@ -233,7 +234,8 @@ class ParallelRootFinder(RootFinder):
         return contexts
 
     def rootWorker(self, context: RootContext) -> None:
-        """Worker function that executes a root finding algorithm in a child
+        """
+        Worker function that executes a root finding algorithm in a child
         process.
 
         :param context: Context object on which roots are searched

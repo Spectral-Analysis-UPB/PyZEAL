@@ -204,10 +204,6 @@ class RootFinder(RootFinderInterface, Loggable):
         """
         return self._container
 
-    @container.setter
-    def container(self, value: RootContainer) -> None:
-        self._container = value
-
     def desymmetrizeDomain(
         self,
         reRan: Tuple[float, float],
