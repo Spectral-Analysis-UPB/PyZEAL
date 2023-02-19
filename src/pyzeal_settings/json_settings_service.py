@@ -8,7 +8,7 @@ Authors:\n
 
 from json import dump, load
 from os.path import dirname, join
-from typing import Dict, Literal, Union
+from typing import Dict, Literal, Tuple, Union
 
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_settings.invalid_setting_exception import InvalidSettingException
@@ -24,14 +24,14 @@ class JSONSettingsService(SettingsService):
     access to settings must happen through a service like this one.
     """
 
-    slots = ("_container", "_algorithm", "_level", "_verbose")
+    slots = ("_container", "_algorithm", "_level", "_verbose", "_precision")
 
     def __init__(self) -> None:
         """
         Create an instance of a new `SettingsSerive`. The basis for its
         properties are the currently persisted (user or default) settings.
         """
-        currentSettings: Dict[str, Union[str, bool]] = {}
+        currentSettings: Dict[str, Union[str, bool, Tuple[int, int]]] = {}
         # first load default settings (must always exist)...
         JSONSettingsService.loadSettingsFromFile(
             join(dirname(__file__), "default_settings.json"), currentSettings
@@ -71,6 +71,12 @@ class JSONSettingsService(SettingsService):
         verbosity = currentSettings.get("verbose", None)
         if verbosity is not None:
             self._verbose = bool(verbosity)
+        # set default precision
+        if "precision" in currentSettings.keys():
+            self._precision = (
+                int(currentSettings["precision"][0]),
+                int(currentSettings["precision"][1]),
+            )
 
     def __str__(self) -> str:
         """
@@ -128,6 +134,10 @@ class JSONSettingsService(SettingsService):
         self._verbose = value
         JSONSettingsService.createOrUpdateSetting("verbose", value)
 
+    @property
+    def precision(self) -> Tuple[int, int]:
+        return self._precision
+
     @staticmethod
     def createOrUpdateSetting(
         setting: Union[
@@ -135,8 +145,11 @@ class JSONSettingsService(SettingsService):
             Literal["defaultAlgorithm"],
             Literal["logLevel"],
             Literal["verbose"],
+            Literal["precision"],
         ],
-        value: Union[ContainerTypes, AlgorithmTypes, LogLevel, bool],
+        value: Union[
+            ContainerTypes, AlgorithmTypes, LogLevel, bool, Tuple[int, int]
+        ],
     ) -> None:
         """
         Update a setting or create a new setting if no value has been set
@@ -152,7 +165,7 @@ class JSONSettingsService(SettingsService):
         :raises InvalidSettingException: If the given value is invalid for the
             specified setting, an `InvalidSettingException` is raised.
         """
-        currentSettings: Dict[str, Union[str, bool]] = {}
+        currentSettings: Dict[str, Union[str, bool, Tuple[int, int]]] = {}
         try:
             with open(
                 join(dirname(__file__), "custom_settings.json"),
@@ -190,6 +203,18 @@ class JSONSettingsService(SettingsService):
             else:
                 raise InvalidSettingException(
                     "setting invalid value for default verbosity!"
+                )
+        elif setting == "precision":
+            if isinstance(value, tuple):
+                if isinstance(value[0], int) and isinstance(value[1], int):
+                    currentSettings["precision"] = (value[0], value[1])
+                else:
+                    raise InvalidSettingException(
+                        "setting invalid value for default precision!"
+                    )
+            else:
+                raise InvalidSettingException(
+                    "setting invalid value for default precision!"
                 )
         else:
             raise InvalidSettingException("trying to set invalid setting key!")

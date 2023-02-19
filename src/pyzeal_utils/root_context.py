@@ -16,7 +16,7 @@ from pyzeal_types.root_types import tHoloFunc
 from pyzeal_utils.filter_context import FilterContext
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
-
+from pyzeal_settings.json_settings_service import JSONSettingsService
 
 @dataclass(frozen=True)
 class RootContext:
@@ -30,7 +30,7 @@ class RootContext:
     container: RootContainer
     reRan: Tuple[float, float] = (-1.0, 1.0)
     imRan: Tuple[float, float] = (-1.0, 1.0)
-    precision: Tuple[int, int] = 3, 3
+    precision: Tuple[int, int] = JSONSettingsService().precision
     progress: Optional[FinderProgressBar] = None
     task: Optional[TaskID] = None
 

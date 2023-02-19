@@ -44,7 +44,7 @@ class ParallelRootFinder(RootFinder):
         containerType: ContainerTypes = ContainerTypes.DEFAULT,
         algorithmType: AlgorithmTypes = AlgorithmTypes.DEFAULT,
         estimatorType: EstimatorTypes = EstimatorTypes.DEFAULT,
-        precision: Tuple[int, int] = (3, 3),
+        precision: Optional[Tuple[int, int]] = None,
         numSamplePoints: Optional[int] = None,
         verbose: Optional[bool] = None,
     ) -> None:
@@ -60,7 +60,7 @@ class ParallelRootFinder(RootFinder):
         :param algorithmType: the type of algorithm used for root finding
         :type algorithmType: AlgorithmTypes
         :param precision: the accuracy at which roots are considered exact
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
         :type numSamplePoints: Optional[int]
         :param verbose: flag that toggles the command line progress bar
@@ -112,7 +112,7 @@ class ParallelRootFinder(RootFinder):
         :param imRan: vertical extend of the complex region to search in
         :type imRan: Tuple[int, int]
         :param precision: accuracy of the search in real and imaginary parts
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         """
         # if no precision was given, use default precision from constructor
         precision = self.precision if precision is None else precision

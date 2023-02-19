@@ -53,7 +53,7 @@ class RootFinder(RootFinderInterface, Loggable):
         containerType: ContainerTypes = ContainerTypes.DEFAULT,
         algorithmType: AlgorithmTypes = AlgorithmTypes.DEFAULT,
         estimatorType: EstimatorTypes = EstimatorTypes.DEFAULT,
-        precision: Tuple[int, int] = (3, 3),
+        precision: Optional[Tuple[int, int]] = None,
         numSamplePoints: Optional[int] = None,
         verbose: Optional[bool] = None,
     ) -> None:
@@ -71,7 +71,7 @@ class RootFinder(RootFinderInterface, Loggable):
         :param estimatorType: the type of argument estimator used
         :type estimatorType: EstimatorTypes
         :param precision: the accuracy at which roots are considered exact
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
         :type numSamplePoints: Optional[int]
         :param verbose: flag that toggles the command line progress bar
@@ -84,10 +84,14 @@ class RootFinder(RootFinderInterface, Loggable):
             estimatorType=estimatorType,
             numSamplePoints=numSamplePoints,
         )
+        self.precision = (
+            precision
+            if precision is not None
+            else JSONSettingsService().precision
+        )
         self._container = ContainerFactory.getConcreteContainer(
             containerType, precision=precision
         )
-        self.precision = precision
         self.verbose = verbose if verbose else JSONSettingsService().verbose
         self.logger.debug("initialized the new root finder %s!", str(self))
 
@@ -125,7 +129,6 @@ class RootFinder(RootFinderInterface, Loggable):
         precision = self.precision if precision is None else precision
         # desymmetrize the input rectangle
         (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
-
         # initialize the progress bar
         progress = FinderProgressBar() if self.verbose else None
         task: Optional[TaskID] = None

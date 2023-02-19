@@ -11,7 +11,7 @@ Authors:\n
 """
 
 from abc import ABC, abstractmethod
-from typing import Tuple
+from typing import Optional, Tuple
 
 from numpy import int32
 from numpy.typing import NDArray
@@ -34,7 +34,7 @@ class RootFinderInterface(ABC):
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
-        precision: Tuple[int, int],
+        precision: Optional[Tuple[int, int]],
     ) -> None:
         """
         Abstract entry point for starting a root finding calculation in the
@@ -46,7 +46,7 @@ class RootFinderInterface(ABC):
         :param imRan: vertical extend of the complex region to search in
         :type imRan: Tuple[int, int]
         :param precision: accuracy of the search in real and imaginary parts
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         """
 
     @property

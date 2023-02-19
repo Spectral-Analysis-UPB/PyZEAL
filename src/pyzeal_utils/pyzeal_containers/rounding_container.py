@@ -9,11 +9,12 @@ Authors:\n
 """
 
 from logging import INFO
-from typing import Dict, Set, Tuple
+from typing import Dict, Optional, Set, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
 
+from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.root_types import tRoot, tVec
 from pyzeal_utils.filter_context import FilterContext
 from pyzeal_utils.pyzeal_containers.root_container import (
@@ -34,14 +35,19 @@ class RoundingContainer(RootContainer):
 
     __slots__ = ("precision", "rootSet", "filters")
 
-    def __init__(self, precision: Tuple[int, int]) -> None:
+    def __init__(self, precision: Optional[Tuple[int, int]]) -> None:
         """
-        Initialize a rounding RootContainer with a given accuracy.
+        Initialize a rounding RootContainer. If no precision is given,
+        default precision is used.
 
         :param precision: expected accuracy of roots to be added
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         """
-        self.precision = precision
+        self.precision = (
+            precision
+            if precision is not None
+            else JSONSettingsService().precision
+        )
         self.rootSet: Set[tRoot] = set()
         self.filters: Dict[str, tRootFilter] = {}
         self.logger.info("initialized a new rounding root container")

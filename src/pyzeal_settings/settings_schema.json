@@ -13,6 +13,14 @@
         },
         "verbose": {
             "type": "boolean"
+        },
+        "precision": {
+            "type": "array",
+            "prefixItems": [
+                { "type": "number" },
+                { "type": "number" }
+            ],
+            "items": false
         }
     },
     "additionalProperties": false,

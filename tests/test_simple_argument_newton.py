@@ -51,7 +51,7 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
     if testName in KNOWN_FAILURES:
         pytest.skip()
     hrf = simpleArgumentNewtonRootFinder(testName, parallel=parallel)
-    hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
+    hrf.calculateRoots(RE_RAN, IM_RAN)
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
     assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
@@ -83,7 +83,7 @@ def testSimpleArgumentNewtonHypothesis(roots) -> None:
     )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    hrf.calculateRoots((-5.0, 5.01), (-5.0, 5.01), precision=(5, 5))
+    hrf.calculateRoots((-5.0, 5.01), (-5.0, 5.01))
     foundRoots = np.sort_complex(hrf.roots)
 
     # We only find a higher-order zero once, so we have to remove duplicates
