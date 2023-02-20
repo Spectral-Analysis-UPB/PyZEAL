@@ -78,7 +78,7 @@ def testSimpleArgumentFinderHypothesis(roots) -> None:
     )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    hrf.calculateRoots((-5.0, 5.01), (-5.0, 5.01), precision=(5,5))
+    hrf.calculateRoots((-5.0, 5.01), (-5.0, 5.01))
     foundRoots = np.sort_complex(hrf.roots)
 
     # We only find a higher-order zero once, so we have to remove duplicates

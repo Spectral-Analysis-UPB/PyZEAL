@@ -90,7 +90,7 @@ class RootFinder(RootFinderInterface, Loggable):
             else JSONSettingsService().precision
         )
         self._container = ContainerFactory.getConcreteContainer(
-            containerType, precision=precision
+            containerType, precision=precision  # type: ignore
         )
         self.verbose = verbose if verbose else JSONSettingsService().verbose
         self.logger.debug("initialized the new root finder %s!", str(self))

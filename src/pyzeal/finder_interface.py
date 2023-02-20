@@ -34,7 +34,7 @@ class RootFinderInterface(ABC):
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
-        precision: Optional[Tuple[int, int]],
+        precision: Optional[Tuple[int, int]] = None,
     ) -> None:
         """
         Abstract entry point for starting a root finding calculation in the

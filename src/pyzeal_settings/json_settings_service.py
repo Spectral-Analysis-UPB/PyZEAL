@@ -28,7 +28,7 @@ class JSONSettingsService(SettingsService):
 
     def __init__(self) -> None:
         """
-        Create an instance of a new `SettingsSerive`. The basis for its
+        Create an instance of a new `SettingsService`. The basis for its
         properties are the currently persisted (user or default) settings.
         """
         currentSettings: Dict[str, Union[str, bool, Tuple[int, int]]] = {}
@@ -72,10 +72,19 @@ class JSONSettingsService(SettingsService):
         if verbosity is not None:
             self._verbose = bool(verbosity)
         # set default precision
-        if "precision" in currentSettings.keys():
-            self._precision = (
-                int(currentSettings["precision"][0]),
-                int(currentSettings["precision"][1]),
+        if "precision" in currentSettings:
+            precision = currentSettings["precision"]
+            if isinstance(precision, tuple):
+                if isinstance(precision[0], int) and isinstance(
+                    precision[1], int
+                ):
+                    self._precision = (
+                        precision[0],
+                        precision[1],
+                    )
+        if not hasattr(self, "_precision"):
+            raise InvalidSettingException(
+                "invalid setting for default precision!"
             )
 
     def __str__(self) -> str:
@@ -137,6 +146,11 @@ class JSONSettingsService(SettingsService):
     @property
     def precision(self) -> Tuple[int, int]:
         return self._precision
+
+    @precision.setter
+    def precision(self, value: Tuple[int, int]):
+        self._precision = value
+        JSONSettingsService.createOrUpdateSetting("precision", value)
 
     @staticmethod
     def createOrUpdateSetting(
@@ -228,7 +242,7 @@ class JSONSettingsService(SettingsService):
 
     @staticmethod
     def loadSettingsFromFile(
-        filename: str, settings: Dict[str, Union[str, bool]]
+        filename: str, settings: Dict[str, Union[str, bool, Tuple[int, int]]]
     ) -> None:
         """
         Load the settings stored in `filename` into `settings`.
@@ -236,11 +250,13 @@ class JSONSettingsService(SettingsService):
         :param filename: File to load
         :type filename: str
         :param settings: Dict to store the read settings in
-        :type settings: Dict[str, Union[str, bool]]
+        :type settings: Dict[str, Union[str, bool, Tuple[int, int]]]
         """
         try:
             with open(filename, "r", encoding="utf-8") as settingsFile:
                 for key, value in load(settingsFile).items():
+                    if key == "precision":  # precision is loaded as a list
+                        value = (value[0], value[1])  # convert to tuple
                     settings[key] = value
         except FileNotFoundError:
             pass
