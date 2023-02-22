@@ -10,7 +10,7 @@ Authors:\n
 """
 
 from multiprocessing import Manager
-from typing import List, Optional, cast
+from typing import List, Optional, Tuple, cast
 
 import numpy as np
 from numpy.typing import NDArray

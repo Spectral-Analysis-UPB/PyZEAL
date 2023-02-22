@@ -2,13 +2,18 @@
 Provide rootfinder setup methods with common settings for testing purposes.
 """
 
+import os
+
 from pyzeal import ParallelRootFinder, RootFinder, RootFinderInterface
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.filter_types import FilterTypes
 
-from .testing_resources import testFunctions
+if os.environ.get("ASV") is not None:
+    from .testing_resources import testFunctions
+else:
+    from testing_resources import testFunctions
 
 
 def newtonGridFinder(
