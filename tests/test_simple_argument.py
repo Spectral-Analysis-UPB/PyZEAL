@@ -4,6 +4,7 @@ of the root finding algorithm interface.
 """
 
 from datetime import timedelta
+from typing import List
 
 import numpy as np
 import pytest
@@ -14,6 +15,7 @@ from pyzeal import RootFinder
 from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.filter_types import FilterTypes
 
 from .benchmarks.resources.testing_fixtures import simpleArgumentRootFinder
@@ -36,7 +38,13 @@ KNOWN_FAILURES = [
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgument(testName: str, parallel: bool) -> None:
+@pytest.mark.parametrize(
+    "estimator",
+    [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],
+)
+def testSimpleArgument(
+    testName: str, parallel: bool, estimator: EstimatorTypes
+) -> None:
     """Test the SIMPLE_ARGUMENT RootFinder with the test case given by
     `testName`
 
@@ -47,7 +55,9 @@ def testSimpleArgument(testName: str, parallel: bool) -> None:
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
-    hrf = simpleArgumentRootFinder(testName, parallel=parallel)
+    hrf = simpleArgumentRootFinder(
+        testName, parallel=parallel, estimatorType=estimator
+    )
     hrf.calculateRoots(RE_RAN, IM_RAN)
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
@@ -60,7 +70,7 @@ def testSimpleArgument(testName: str, parallel: bool) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testSimpleArgumentFinderHypothesis(roots) -> None:
+def testSimpleArgumentFinderHypothesis(roots: List[complex]) -> None:
     """Test the root finder algorithm based on a simple partial integration of
     the classical argument principle on polynomials whose roots are generated
     automatically using the hypothesis package.

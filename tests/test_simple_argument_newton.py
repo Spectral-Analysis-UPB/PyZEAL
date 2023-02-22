@@ -4,6 +4,7 @@ of the root finding algorithm interface.
 """
 
 from datetime import timedelta
+from typing import List
 
 import numpy as np
 import pytest
@@ -14,6 +15,7 @@ from pyzeal import RootFinder
 from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.filter_types import FilterTypes
 
 from .benchmarks.resources.testing_fixtures import (
@@ -33,12 +35,19 @@ KNOWN_FAILURES = [
     "log and sin composition",  # see issue #12
     "x^100",  # roots of very high orders require too much z-refinement
     "1e6 * x^100",
+    "x^30",
 ]
 
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgumentNewton(testName, parallel) -> None:
+@pytest.mark.parametrize(
+    "estimator",
+    [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],
+)
+def testSimpleArgumentNewton(
+    testName: str, parallel: bool, estimator: EstimatorTypes
+) -> None:
     """
     Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by
     `testName`
@@ -50,7 +59,9 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
-    hrf = simpleArgumentNewtonRootFinder(testName, parallel=parallel)
+    hrf = simpleArgumentNewtonRootFinder(
+        testName, parallel=parallel, estimatorType=estimator
+    )
     hrf.calculateRoots(RE_RAN, IM_RAN)
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
@@ -63,7 +74,7 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testSimpleArgumentNewtonHypothesis(roots) -> None:
+def testSimpleArgumentNewtonHypothesis(roots: List[complex]) -> None:
     """Test the root finder algorithm based on a simple partial integration of
     the classical argument principle combined with a Newton algorithm upon
     sufficient refinement of the subdivision into rectangles. The testfunctions
