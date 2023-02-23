@@ -30,8 +30,8 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
     VIEW_CHANGE_DESCRIPTION: Final[
         str
     ] = "view and change the settings that determine pyzeal default behaviour"
-    PROGRAM_NAME = "pyzeal"
-    VERSION = version(PROGRAM_NAME)
+    PROGRAM_NAME: Final[str] = "pyzeal"
+    VERSION: Final[str] = version(PROGRAM_NAME)
 
     def __init__(self) -> None:
         """
