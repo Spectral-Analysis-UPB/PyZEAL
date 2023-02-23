@@ -22,10 +22,10 @@ flake8 src/ \
     && echo "no linting errors with flake8!"
 echo ""
 
-echo "|---------------------------|"
-echo "|[running pylint on sources]|"
-echo "|---------------------------|"
-pylint src/
+echo "|-------------------------------------|"
+echo "|[running pylint on tests and sources]|"
+echo "|-------------------------------------|"
+pylint src/ tests/
 echo ""
 
 echo "|------------------------------------------------|"

@@ -9,10 +9,14 @@ Authors:\n
 """
 
 from argparse import ArgumentParser
+from importlib.metadata import version
 from typing import Final
 
+from pyzeal_cli.parse_results import ParseResults
+from pyzeal_cli.parser_facade import PyZEALParserInterface
 
-class PyZEALParser(ArgumentParser):
+
+class PyZEALParser(ArgumentParser, PyZEALParserInterface):
     """
     Specialized `argparse.ArgumentParser` which parses arguments provided to
     the PyZEAL CLI by a user.
@@ -26,6 +30,8 @@ class PyZEALParser(ArgumentParser):
     VIEW_CHANGE_DESCRIPTION: Final[
         str
     ] = "view and change the settings that determine pyzeal default behaviour"
+    PROGRAM_NAME = "pyzeal"
+    VERSION = version(PROGRAM_NAME)
 
     def __init__(self) -> None:
         """
@@ -35,12 +41,14 @@ class PyZEALParser(ArgumentParser):
         """
         super().__init__(
             description=PyZEALParser.MAIN_DESCRIPTION,
-            prog="pyzeal",
+            prog=f"{PyZEALParser.PROGRAM_NAME}",
         )
 
         # add version info option
         self.add_argument(
-            "--version", action="version", version="%(prog)s 0.0.1"
+            "--version",
+            action="version",
+            version=f"%(prog)s {PyZEALParser.VERSION}",
         )
 
         # add subcommands for viewing and for changing options
@@ -77,6 +85,29 @@ class PyZEALParser(ArgumentParser):
         )
         changeParser.add_argument(
             "--verbose",
-            choices=["true", "false"],
+            choices=["true", "True", "false", "False"],
             help="change current default verbosity level",
+        )
+
+    def parseArgs(self) -> ParseResults:
+        """
+        TODO
+        """
+        # fetch cli arguments
+        args = super().parse_args()
+
+        # extract cli arguments
+        doPrint = getattr(args, "print", None)
+        container = getattr(args, "container", None)
+        algorithm = getattr(args, "algorithm", None)
+        logLevel = getattr(args, "log_level", None)
+        verbose = getattr(args, "verbose", None)
+
+        # return wrapped cli arguments
+        return ParseResults(
+            doPrint=bool(doPrint) if doPrint else False,
+            container=container if container else "",
+            algorithm=algorithm if algorithm else "",
+            logLevel=logLevel if logLevel else "",
+            verbose=verbose if verbose else "",
         )

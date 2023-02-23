@@ -1,5 +1,5 @@
 """
-Class PyZEALLogger from the package pyzeal.
+Class PyZEALLogger from the package pyzeal_logging.
 This module provides a facade for `logging.Logger` class from the standard
 library `logging` module. Any access to loggers in this project should happen
 only through this interface.
