@@ -26,7 +26,7 @@ class ArgumentEstimator(ABC, Loggable):
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
         context: RootContext,
-    ) -> float:
+    ) -> complex:
         """
         Calculate the `order`-th moment of the logarithmic derivative of the
         target function `context.f` along the boundary of the rectangle
@@ -45,7 +45,7 @@ class ArgumentEstimator(ABC, Loggable):
             y1,
             y2,
         )
-        phi: float = 0
+        phi: complex = 0
 
         # check if the requested complex line already resides in cache
         arguments: List[Tuple[complex, complex]] = [
@@ -55,18 +55,18 @@ class ArgumentEstimator(ABC, Loggable):
             (x1 + y2 * 1j, x1 + y1 * 1j),
         ]
         for zStart, zEnd in arguments:
-            if entry := self.cache.retrieve(zStart, zEnd):
+            if entry := self.cache.retrieve(order, zStart, zEnd):
                 phi += entry
             else:
                 deltaPhi = self.calcMomentAlongLine(
                     order, zStart, zEnd, context
                 )
                 # store the missing entry in the cache
-                self.cache.store(zStart, zEnd, deltaPhi)
-                self.cache.store(zEnd, zStart, -deltaPhi)
+                self.cache.store(order, zStart, zEnd, deltaPhi)
+                self.cache.store(order, zEnd, zStart, -deltaPhi)
                 phi += deltaPhi
 
-        self.logger.debug("estimated argument is %f", phi / (2.0 * np.pi))
+        self.logger.debug("estimated argument is %s", str(phi / (2.0 * np.pi)))
         return phi
 
     @abstractmethod
@@ -76,7 +76,7 @@ class ArgumentEstimator(ABC, Loggable):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-    ) -> float:
+    ) -> complex:
         """
         TODO
         """

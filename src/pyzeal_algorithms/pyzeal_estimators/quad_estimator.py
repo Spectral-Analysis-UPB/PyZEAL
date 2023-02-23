@@ -19,7 +19,7 @@ from .estimator_cache import EstimatorCache
 # Global Constants #
 ####################
 
-EXP_SAMPLE_POINTS: Final[int] = 10  # number of sample points for integration
+EXP_SAMPLE_POINTS: Final[int] = 12  # number of sample points for integration
 
 
 class QuadratureEstimator(ArgumentEstimator):
@@ -41,7 +41,7 @@ class QuadratureEstimator(ArgumentEstimator):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-    ) -> float:
+    ) -> complex:
         """
         TODO
         """
@@ -62,10 +62,10 @@ class QuadratureEstimator(ArgumentEstimator):
         imagResult = romb(
             np.imag(funcValues), distance / (2**EXP_SAMPLE_POINTS)
         )
-        # the result is expected to be real (after devision by 1j)
+        # result (divided by 1j) is only necessarily real if order=0!
         return complex(
             (zEnd - zStart) * (-1j * realResult + imagResult) / distance
-        ).real
+        )
 
     @property
     def cache(self) -> EstimatorCache:

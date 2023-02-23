@@ -75,7 +75,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-    ) -> float:
+    ) -> complex:
         r"""
         Calculate the total complex argument along a line in the complex plane
         by summing incremental changes in the phase of the function values.
@@ -92,7 +92,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         # look for required function values in the internal caches
         x1, y1 = zStart.real, zStart.imag
         x2, y2 = zEnd.real, zEnd.imag
-        phi: float
+        phi: complex
         # handle the case of horizontal line first
         if y1 == y2:
             phi = self.retrieveCachedHorizontal(x1, x2, y1, context)
@@ -107,7 +107,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
 
     def retrieveCachedHorizontal(
         self, x1: float, x2: float, y: float, context: RootContext
-    ) -> float:
+    ) -> complex:
         """
         TODO
         """
@@ -121,7 +121,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
                     "horizontal line start in internal cache found - dividing!"
                 )
                 value = cache[y][(x1, "start")]
-                middleIdx = np.where(value[0].real <= x2)[0][-1]
+                middleIdx = np.where(np.real(value[0]) <= x2)[0][-1]
                 newValue = (
                     value[0][: middleIdx + 1],
                     value[1][: middleIdx + 1],
@@ -133,7 +133,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
                     "horizontal line end in internal cache found - dividing!"
                 )
                 value = cache[y][(x2, "end")]
-                middleIdx = np.where(x1 <= value[0].real)[0][0]
+                middleIdx = np.where(x1 <= np.real(value[0]))[0][0]
                 newValue = (
                     value[0][middleIdx:],
                     value[1][middleIdx:],
@@ -151,7 +151,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
 
     def retrieveCachedVertical(
         self, y1: float, y2: float, x: float, context: RootContext
-    ) -> float:
+    ) -> complex:
         """
         TODO
         """
@@ -164,7 +164,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
                     "vertical line start in internal cache found - dividing!"
                 )
                 value = cache[x][(y1, "start")]
-                middleIdx = np.where(value[0].imag <= y2)[0][-1]
+                middleIdx = np.where(np.imag(value[0]) <= y2)[0][-1]
                 newValue = (
                     value[0][: middleIdx + 1],
                     value[1][: middleIdx + 1],
@@ -176,7 +176,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
                     "vertical line end in internal cache found - dividing!"
                 )
                 value = cache[x][(y2, "end")]
-                middleIdx = np.where(y1 <= value[0].imag)[0][0]
+                middleIdx = np.where(y1 <= np.imag(value[0]))[0][0]
                 newValue = (
                     value[0][middleIdx:],
                     value[1][middleIdx:],
