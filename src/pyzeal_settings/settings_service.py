@@ -22,7 +22,8 @@ class SettingsService(Protocol):
 
     @property
     def defaultContainer(self) -> ContainerTypes:
-        """Get the default container type.
+        """
+        Get the default container type.
 
         :return: Default container type
         :rtype: ContainerTypes
@@ -31,7 +32,8 @@ class SettingsService(Protocol):
 
     @defaultContainer.setter
     def defaultContainer(self, value: ContainerTypes) -> None:
-        """Set the default container type to `value`.
+        """
+        Set the default container type to `value`.
 
         :param value: New default container type.
         :type value: ContainerTypes
@@ -40,7 +42,8 @@ class SettingsService(Protocol):
 
     @property
     def defaultAlgorithm(self) -> AlgorithmTypes:
-        """Get the default algorithm type.
+        """
+        Get the default algorithm type.
 
         :return: Default algorithm type.
         :rtype: AlgorithmTypes
@@ -49,7 +52,8 @@ class SettingsService(Protocol):
 
     @defaultAlgorithm.setter
     def defaultAlgorithm(self, value: AlgorithmTypes) -> None:
-        """Set the default algorithm type to `value`.
+        """
+        Set the default algorithm type to `value`.
 
         :param value: New default algorithm type
         :type value: AlgorithmTypes
@@ -58,7 +62,8 @@ class SettingsService(Protocol):
 
     @property
     def logLevel(self) -> LogLevel:
-        """Get the current LogLevel setting.
+        """
+        Get the current LogLevel setting.
 
         :return: Current LogLevel
         :rtype: LogLevel
@@ -67,7 +72,8 @@ class SettingsService(Protocol):
 
     @logLevel.setter
     def logLevel(self, value: LogLevel) -> None:
-        """Set the LogLevel to `value`.
+        """
+        Set the LogLevel to `value`.
 
         :param value: New LogLevel to use
         :type value: LogLevel
@@ -76,7 +82,8 @@ class SettingsService(Protocol):
 
     @property
     def verbose(self) -> bool:
-        """Get current verbosity setting.
+        """
+        Get current verbosity setting.
 
         :return: True if verbose mode is enabled.
         :rtype: bool
@@ -85,7 +92,8 @@ class SettingsService(Protocol):
 
     @verbose.setter
     def verbose(self, value: bool) -> None:
-        """Set the verbosity setting
+        """
+        Set the verbosity setting
 
         :param value: New verbosity setting
         :type value: bool

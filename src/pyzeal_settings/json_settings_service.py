@@ -88,9 +88,9 @@ class JSONSettingsService(SettingsService):
             + f"-> default verbosity:   {self.verbose}"
         )
 
+    # docstr-coverage:inherited
     @property
     def defaultContainer(self) -> ContainerTypes:
-        "Get the currently active default container."
         return self._container
 
     @defaultContainer.setter
@@ -98,9 +98,9 @@ class JSONSettingsService(SettingsService):
         self._container = value
         JSONSettingsService.createOrUpdateSetting("defaultContainer", value)
 
+    # docstr-coverage:inherited
     @property
     def defaultAlgorithm(self) -> AlgorithmTypes:
-        "Get the currently active default algorithm."
         return self._algorithm
 
     @defaultAlgorithm.setter
@@ -108,9 +108,9 @@ class JSONSettingsService(SettingsService):
         self._algorithm = value
         JSONSettingsService.createOrUpdateSetting("defaultAlgorithm", value)
 
+    # docstr-coverage:inherited
     @property
     def logLevel(self) -> LogLevel:
-        "Get the currently active standard log level."
         return self._level
 
     @logLevel.setter
@@ -118,9 +118,9 @@ class JSONSettingsService(SettingsService):
         self._level = value
         JSONSettingsService.createOrUpdateSetting("logLevel", value)
 
+    # docstr-coverage:inherited
     @property
     def verbose(self) -> bool:
-        "Get the currently active verbosity level."
         return self._verbose
 
     @verbose.setter
