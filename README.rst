@@ -23,9 +23,6 @@ The PyZEAL numerical project
 .. image:: ./docs/_static/docstr_coverage_badge.svg
    :target: https://pypi.org/project/docstr-coverage/
 
-.. image:: https://img.shields.io/badge/docs-docstr--cov-success
-   :target: https://pypi.org/project/docstr-coverage/
-
 .. image:: https://img.shields.io/badge/mypy-checked-blue
    :target: https://mypy.readthedocs.io/en/stable/
 
