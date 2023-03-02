@@ -29,7 +29,7 @@ class QuadratureEstimator(ArgumentEstimator):
 
     __slots__ = ("_cache",)
 
-    def __init__(self, cache: EstimatorCache) -> None:
+    def __init__(self, *, cache: EstimatorCache) -> None:
         """
         TODO
         """
