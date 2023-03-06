@@ -23,24 +23,24 @@ class TestAlgorithm(FinderAlgorithm):
         return "a TestObject instance..."
 
 
-class AlgorithmPlugin(PyZEALPlugin[TestAlgorithm]):
+class AlgorithmPlugin(PyZEALPlugin[FinderAlgorithm]):
     "TODO"
 
-    _instance: Optional[PyZEALPlugin[TestAlgorithm]] = None
+    _instance: Optional[PyZEALPlugin[FinderAlgorithm]] = None
 
     @staticmethod
-    def initialize() -> Callable[..., TestAlgorithm]:
+    def initialize() -> Callable[..., FinderAlgorithm]:
         return lambda: TestAlgorithm()
 
     @staticmethod
-    def getInstance() -> PyZEALPlugin[TestAlgorithm]:
+    def getInstance() -> PyZEALPlugin[FinderAlgorithm]:
         if AlgorithmPlugin._instance is None:
             AlgorithmPlugin._instance = AlgorithmPlugin()
         return AlgorithmPlugin._instance
 
     @property
-    def pluginType(self) -> Type[TestAlgorithm]:
-        return TestAlgorithm
+    def pluginType(self) -> Type[FinderAlgorithm]:
+        return FinderAlgorithm
 
     @property
     def pluginName(self) -> str:

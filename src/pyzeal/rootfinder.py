@@ -18,11 +18,12 @@ from pyzeal.finder_interface import RootFinderInterface
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_logging.loggable import Loggable
-from pyzeal_settings.json_settings_service import JSONSettingsService
+from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.root_types import tHoloFunc, tVec
+from pyzeal_types.settings_types import SettingsServicesTypes
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.lambda_wrapper import LambdaWrapper
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
@@ -94,7 +95,14 @@ class RootFinder(RootFinderInterface, Loggable):
             RootContainer, containerType=containerType, precision=precision
         )
         self.precision = precision
-        self.verbose = verbose if verbose else JSONSettingsService().verbose
+
+        self.verbose = (
+            verbose
+            if verbose
+            else ServiceLocator.tryResolve(
+                SettingsService, settingsType=SettingsServicesTypes.DEFAULT
+            ).verbose
+        )
         self.logger.debug("initialized the new root finder %s!", str(self))
 
     def __str__(self) -> str:
