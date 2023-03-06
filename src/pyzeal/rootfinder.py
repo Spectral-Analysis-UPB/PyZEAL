@@ -23,6 +23,7 @@ from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.root_types import tHoloFunc, tVec
 from pyzeal_utils.finder_progress import FinderProgressBar
+from pyzeal_utils.lambda_wrapper import LambdaWrapper
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 from pyzeal_utils.pyzeal_factories.algorithm_factory import AlgorithmFactory
 from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
@@ -61,9 +62,9 @@ class RootFinder(RootFinderInterface, Loggable):
         Initialize a simple, non-parallel root finder.
 
         :param f: the function whose roots should be calculated
-        :type f: Callable[[comlex], complex]
+        :type f: Callable[[tVec], tVec]
         :param df: the derivative of `f`
-        :type df: Optional[Callable[[complex], complex]]
+        :type df: Optional[Callable[[tVec], tVec]]
         :param containerType: the type of container found roots are stored in
         :type containerType: ContainerTypes
         :param algorithmType: the type of algorithm used for root finding
@@ -77,7 +78,7 @@ class RootFinder(RootFinderInterface, Loggable):
         :param verbose: flag that toggles the command line progress bar
         :type verbose: Optional[bool]
         """
-        self.f = f
+        self.f = LambdaWrapper.wrap(f) if f.__name__ == "<lambda>" else f
         self.df = df
         self.algorithm = AlgorithmFactory.getConcreteAlgorithm(
             algorithmType,

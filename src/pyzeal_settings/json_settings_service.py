@@ -8,13 +8,18 @@ Authors:\n
 
 from json import dump, load
 from os.path import dirname, join
-from typing import Dict, Literal, Union
+from typing import Dict, Final, Literal, Union
 
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_settings.invalid_setting_exception import InvalidSettingException
 from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+
+# location where the default settings should be
+DEFAULT_SETTINGS: Final[str] = join(dirname(__file__), "default_settings.json")
+# default location where custom settings are saved
+CUSTOM_SETTINGS: Final[str] = join(dirname(__file__), "custom_settings.json")
 
 
 class JSONSettingsService(SettingsService):
@@ -34,11 +39,11 @@ class JSONSettingsService(SettingsService):
         currentSettings: Dict[str, Union[str, bool]] = {}
         # first load default settings (must always exist)...
         JSONSettingsService.loadSettingsFromFile(
-            join(dirname(__file__), "default_settings.json"), currentSettings
+            DEFAULT_SETTINGS, currentSettings
         )
         # ...then try to load custom settings (might not exist)
         JSONSettingsService.loadSettingsFromFile(
-            join(dirname(__file__), "custom_settings.json"), currentSettings
+            CUSTOM_SETTINGS, currentSettings
         )
 
         # set default container
