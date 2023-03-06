@@ -7,6 +7,7 @@ Authors:\n
 """
 
 from datetime import timedelta
+from typing import List
 
 import numpy as np
 import pytest
@@ -63,7 +64,7 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testNewtonGridRootFinderHypothesis(roots) -> None:
+def testNewtonGridRootFinderHypothesis(roots: List[complex]) -> None:
     """Test the grid-based Newton rootfinder on polynomials whose roots are
     generated automatically using the hypothesis package.
 

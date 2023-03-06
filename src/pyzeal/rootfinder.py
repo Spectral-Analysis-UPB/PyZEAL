@@ -15,6 +15,7 @@ from numpy.typing import NDArray
 from rich.progress import TaskID
 
 from pyzeal.finder_interface import RootFinderInterface
+from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_logging.loggable import Loggable
 from pyzeal_settings.json_settings_service import JSONSettingsService
@@ -25,9 +26,8 @@ from pyzeal_types.root_types import tHoloFunc, tVec
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.lambda_wrapper import LambdaWrapper
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
-from pyzeal_utils.pyzeal_factories.algorithm_factory import AlgorithmFactory
-from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
 from pyzeal_utils.root_context import RootContext
+from pyzeal_utils.service_locator import ServiceLocator
 
 
 class RootFinder(RootFinderInterface, Loggable):
@@ -78,15 +78,20 @@ class RootFinder(RootFinderInterface, Loggable):
         :param verbose: flag that toggles the command line progress bar
         :type verbose: Optional[bool]
         """
-        self.f = LambdaWrapper.wrap(f) if f.__name__ == "<lambda>" else f
+        self.f = (
+            LambdaWrapper.wrap(f)
+            if getattr(f, "__name__", None) == "<lambda>"
+            else f
+        )
         self.df = df
-        self.algorithm = AlgorithmFactory.getConcreteAlgorithm(
-            algorithmType,
+        self.algorithm: FinderAlgorithm = ServiceLocator.tryResolve(
+            FinderAlgorithm,
+            algoType=algorithmType,
             estimatorType=estimatorType,
             numSamplePoints=numSamplePoints,
         )
-        self._container = ContainerFactory.getConcreteContainer(
-            containerType, precision=precision
+        self._container = ServiceLocator.tryResolve(
+            RootContainer, containerType=containerType, precision=precision
         )
         self.precision = precision
         self.verbose = verbose if verbose else JSONSettingsService().verbose

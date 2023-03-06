@@ -10,6 +10,7 @@ from typing import Final
 import numpy as np
 from scipy.integrate import romb
 
+from pyzeal_types.root_types import tVec
 from pyzeal_utils.root_context import RootContext
 
 from .argument_estimator import ArgumentEstimator
@@ -53,7 +54,7 @@ class QuadratureEstimator(ArgumentEstimator):
         # TODO: caching of function evaluations!
         # TODO: adjust line if zero on line found!
         zArr = np.linspace(zStart, zEnd, 2**EXP_SAMPLE_POINTS + 1)
-        funcValues = context.df(zArr) * zArr**order / context.f(zArr)
+        funcValues: tVec = context.df(zArr) * zArr**order / context.f(zArr)
         distance = abs(zEnd - zStart)
 
         realResult = romb(

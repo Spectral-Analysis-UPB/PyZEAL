@@ -4,6 +4,7 @@ of the root finding algorithm interface.
 """
 
 from datetime import timedelta
+from typing import List
 
 import numpy as np
 import pytest
@@ -38,7 +39,7 @@ KNOWN_FAILURES = [
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgumentNewton(testName, parallel) -> None:
+def testSimpleArgumentNewton(testName: str, parallel: bool) -> None:
     """
     Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by
     `testName`
@@ -63,8 +64,9 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testSimpleArgumentNewtonHypothesis(roots) -> None:
-    """Test the root finder algorithm based on a simple partial integration of
+def testSimpleArgumentNewtonHypothesis(roots: List[complex]) -> None:
+    """
+    Test the root finder algorithm based on a simple partial integration of
     the classical argument principle combined with a Newton algorithm upon
     sufficient refinement of the subdivision into rectangles. The testfunctions
     are polynomials whose roots are generated automatically using the

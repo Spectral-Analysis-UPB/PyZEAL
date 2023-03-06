@@ -9,21 +9,7 @@ Authors:\n
 from inspect import Parameter, signature
 from typing import Callable, Dict, Type, TypeVar
 
-from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
-from pyzeal_algorithms.pyzeal_estimators.argument_estimator import (
-    ArgumentEstimator,
-)
-from pyzeal_settings.settings_service import SettingsService
-from pyzeal_utils.pyzeal_containers.root_container import RootContainer
-from pyzeal_utils.pyzeal_factories.algorithm_factory import AlgorithmFactory
-from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
-from pyzeal_utils.pyzeal_factories.estimator_factory import EstimatorFactory
-from pyzeal_utils.pyzeal_factories.settings_factory import (
-    SettingsServiceFactory,
-)
-from pyzeal_utils.service_configuration_exception import (
-    InvalidServiceConfiguration,
-)
+from pyzeal_utils.configuration_exception import InvalidServiceConfiguration
 
 # type variable for the various signatures of ServiceLocator
 T = TypeVar("T")
@@ -34,14 +20,9 @@ class ServiceLocator:
     _summary_
     """
 
-    _transientServices: Dict[Type, Callable[..., object]] = {
-        FinderAlgorithm: AlgorithmFactory.getConcreteAlgorithm,
-        SettingsService: SettingsServiceFactory.getConcreteSettings,
-        ArgumentEstimator: EstimatorFactory.getConcreteEstimator,
-        RootContainer: ContainerFactory.getConcreteContainer,
-    }
+    _transientServices: Dict[Type[object], Callable[..., object]] = {}
 
-    _singletonServices: Dict[Type, object] = {}
+    _singletonServices: Dict[Type[object], object] = {}
 
     @staticmethod
     def registerAsSingleton(serviceType: Type[T], instance: T) -> bool:
@@ -78,7 +59,7 @@ class ServiceLocator:
         return True
 
     @staticmethod
-    def tryResolve(serviceType: Type[T], **kwargs) -> T:
+    def tryResolve(serviceType: Type[T], **kwargs: object) -> T:
         """
         Try to resolve the requested service type by first searching registered
         singleton and then registered transient configurations.

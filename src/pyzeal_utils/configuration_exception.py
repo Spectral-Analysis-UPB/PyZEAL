@@ -6,16 +6,18 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Type
+from typing import Generic, Type, TypeVar
+
+T = TypeVar("T")
 
 
-class InvalidServiceConfiguration(Exception):
+class InvalidServiceConfiguration(Exception, Generic[T]):
     """
     This exception should be raised if invalid configurations are encountered
     during registration/resolving of services with ServiceLocator.
     """
 
-    def __init__(self, serviceType: Type) -> None:
+    def __init__(self, serviceType: Type[T]) -> None:
         """
         Initialize a new `InvalidServiceConfiguration` exception.
 

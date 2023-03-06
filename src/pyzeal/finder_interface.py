@@ -18,6 +18,7 @@ from numpy.typing import NDArray
 
 from pyzeal_types.filter_types import FilterTypes
 from pyzeal_types.root_types import tVec
+from pyzeal_utils.initialization_handler import PyZEALInitializationHandler
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
 
@@ -28,6 +29,8 @@ class RootFinderInterface(ABC):
     for a given concrete problem methods for calculating roots as well as
     properties for retrieving roots and their orders are available.
     """
+
+    PyZEALInitializationHandler.initPyZEALServices()
 
     @abstractmethod
     def calculateRoots(

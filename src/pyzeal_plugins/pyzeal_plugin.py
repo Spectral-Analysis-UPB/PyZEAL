@@ -9,13 +9,22 @@ Authors:\n
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Callable, Generic, Tuple, Type, TypeVar
+from typing import Any, Callable, Generic, Tuple, Type, TypeVar, Union
 
-tPluggable = object
-T = TypeVar("T", bound=tPluggable)
+from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
+from pyzeal_algorithms.pyzeal_estimators.argument_estimator import (
+    ArgumentEstimator,
+)
+from pyzeal_utils.pyzeal_containers.root_container import RootContainer
+
+# adding Any to the Union (effectively rendering it an Any-expression) allows
+# the injection of arbitrary objects via Plugins
+# TODO: remove Any before release!
+tPluggable = Union[Any, FinderAlgorithm, ArgumentEstimator, RootContainer]
+T_co = TypeVar("T_co", bound=tPluggable, covariant=True)
 
 
-class PyZEALPlugin(ABC, Generic[T]):
+class PyZEALPlugin(ABC, Generic[T_co]):
     """
     _summary_
 
@@ -25,7 +34,7 @@ class PyZEALPlugin(ABC, Generic[T]):
 
     @staticmethod
     @abstractmethod
-    def initialize() -> Callable[..., T]:
+    def initialize() -> Callable[..., T_co]:
         """
         _summary_
 
@@ -35,7 +44,7 @@ class PyZEALPlugin(ABC, Generic[T]):
 
     @staticmethod
     @abstractmethod
-    def getInstance() -> PyZEALPlugin:
+    def getInstance() -> PyZEALPlugin[T_co]:
         """
         _summary_
 
@@ -45,7 +54,7 @@ class PyZEALPlugin(ABC, Generic[T]):
 
     @property
     @abstractmethod
-    def pluginType(self) -> Type[T]:
+    def pluginType(self) -> Type[T_co]:
         """
         _summary_
 

@@ -4,6 +4,7 @@ of the root finding algorithm interface.
 """
 
 from datetime import timedelta
+from typing import List
 
 import numpy as np
 import pytest
@@ -60,7 +61,7 @@ def testSimpleArgument(testName: str, parallel: bool) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testSimpleArgumentFinderHypothesis(roots) -> None:
+def testSimpleArgumentFinderHypothesis(roots: List[complex]) -> None:
     """Test the root finder algorithm based on a simple partial integration of
     the classical argument principle on polynomials whose roots are generated
     automatically using the hypothesis package.

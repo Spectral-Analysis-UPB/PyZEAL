@@ -17,7 +17,7 @@ from types import ModuleType
 from typing import Final, List, Optional, Type
 
 from pyzeal_logging.loggable import Loggable
-from pyzeal_plugins.pyzeal_plugin import PyZEALPlugin
+from pyzeal_plugins.pyzeal_plugin import PyZEALPlugin, tPluggable
 from pyzeal_utils.service_locator import ServiceLocator
 
 # default location where custom plugins are installed
@@ -46,7 +46,9 @@ class PluginLoader(Loggable):
         )
 
     @staticmethod
-    def loadPlugins(path: str = PLUGIN_INSTALL_DIR) -> List[PyZEALPlugin]:
+    def loadPlugins(
+        path: str = PLUGIN_INSTALL_DIR,
+    ) -> List[PyZEALPlugin[tPluggable]]:
         """
         _summary_
 
@@ -56,7 +58,7 @@ class PluginLoader(Loggable):
         :rtype: List[str]
         """
         instance = PluginLoader.getInstance()
-        plugins: List[PyZEALPlugin] = []
+        plugins: List[PyZEALPlugin[tPluggable]] = []
         for plugin in instance.locateAndLoadPlugins(path):
             pluginInstance = plugin.getInstance()
             ServiceLocator.registerAsTransient(
@@ -65,7 +67,9 @@ class PluginLoader(Loggable):
             plugins.append(pluginInstance)
         return plugins
 
-    def locateAndLoadPlugins(self, path: str) -> List[Type[PyZEALPlugin]]:
+    def locateAndLoadPlugins(
+        self, path: str
+    ) -> List[Type[PyZEALPlugin[tPluggable]]]:
         """
         _summary_
 
@@ -74,7 +78,7 @@ class PluginLoader(Loggable):
         :return: _description_
         :rtype: _type_
         """
-        plugins: List[Type[PyZEALPlugin]] = []
+        plugins: List[Type[PyZEALPlugin[tPluggable]]] = []
         self.logger.info("starting plugin discovery in %s...", path)
         candidates = PluginLoader.discoverModules(path)
         self.logger.debug("contents of plugin directory: %s", str(candidates))
@@ -92,7 +96,7 @@ class PluginLoader(Loggable):
 
     def loadPlugin(
         self, candidateModule: ModuleType
-    ) -> Optional[Type[PyZEALPlugin]]:
+    ) -> Optional[Type[PyZEALPlugin[tPluggable]]]:
         """
         _summary_
 

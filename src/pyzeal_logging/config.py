@@ -45,8 +45,8 @@ def initLogger(logName: str) -> PyZEALLogger:
     logger = logging.getLogger(logName)
     logger.setLevel(
         SettingsServiceFactory.getConcreteSettings(
-            SettingsServicesTypes.DEFAULT
-        ).logLevel.value
+            settingsType=SettingsServicesTypes.DEFAULT
+        ).logLevel.value,
     )
 
     if not logger.hasHandlers():

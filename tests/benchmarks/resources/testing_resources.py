@@ -28,25 +28,29 @@ localTestFunctions: Dict[
         Tuple[complex, ...],
     ],
 ] = {
-    "x^2-1": (lambda x: x**2 - 1, lambda x: 2 * x, (-1, 1)),
-    "x^2+1": (lambda x: x**2 + 1, lambda x: 2 * x, (1j, -1j)),
-    "x^4-1": (lambda x: x**4 - 1, lambda x: 4 * x**3, (1, -1, 1j, -1j)),
+    "x^2-1": (lambda x: cast(tVec, x**2 - 1), lambda x: 2 * x, (-1, 1)),
+    "x^2+1": (lambda x: cast(tVec, x**2 + 1), lambda x: 2 * x, (1j, -1j)),
+    "x^4-1": (
+        lambda x: cast(tVec, x**4 - 1),
+        lambda x: cast(tVec, 4 * x**3),
+        (1, -1, 1j, -1j),
+    ),
     "x^3+x^2+x+1": (
-        lambda x: x**3 + x**2 + x + 1,
+        lambda x: cast(tVec, 1 * x**3 + x**2 + x + 1),
         lambda x: cast(tVec, 3 * x**2 + 2 * x + 1),
         (-1, 1j, -1j),
     ),
-    "x^2+26.01": (lambda x: x**2 + 26.01, lambda x: 2 * x, ()),
+    "x^2+26.01": (lambda x: cast(tVec, x**2 + 26.01), lambda x: 2 * x, ()),
     "x^4-6.25x+9": (
         lambda x: cast(
             tVec, (x - np.sqrt(2)) * (x + np.sqrt(2)) * (x - 1.5) * (x + 1.5)
         ),
-        lambda x: 4 * x**3 - 8.5 * x,
+        lambda x: cast(tVec, 4 * x**3 - 8.5 * x),
         (np.sqrt(2), -np.sqrt(2), 1.5, -1.5),
     ),
     "x^5-4x+2": (
-        lambda x: cast(tVec, x**5 - 4 * x + 2),
-        lambda x: 5 * x**4 - 4,
+        lambda x: cast(tVec, 1 * x**5 - 4 * x + 2),
+        lambda x: cast(tVec, 5 * x**4 - 4),
         (
             0.508499484,
             -1.51851215,
@@ -56,17 +60,25 @@ localTestFunctions: Dict[
         ),
     ),
     "x^3-0.01x": (
-        lambda x: (x - 0.1) * (x + 0.1) * x,
-        lambda x: 3 * x**2 - 0.01,
+        lambda x: cast(tVec, 1 * (x - 0.1) * (x + 0.1) * x),
+        lambda x: cast(tVec, 3 * x**2 - 0.01),
         (0.1, 0, -0.1),
     ),
-    "x^30": (lambda x: x**30, lambda x: 30 * x**29, (0,)),
-    "x^100": (lambda x: x**100, lambda x: 100 * x**99, (0,)),
-    "1e6 * x^100": (lambda x: 1e6 * x**100, lambda x: 1e8 * x**99, (0,)),
-    "x^2-25": (lambda x: (x - 5) * (x + 5), lambda x: 2 * x, (5, -5)),
+    "x^30": (lambda x: x**30, lambda x: cast(tVec, 30 * x**29), (0,)),
+    "x^100": (lambda x: x**100, lambda x: cast(tVec, 100 * x**99), (0,)),
+    "1e6 * x^100": (
+        lambda x: cast(tVec, 1e6 * x**100),
+        lambda x: cast(tVec, 1e8 * x**99),
+        (0,),
+    ),
+    "x^2-25": (
+        lambda x: cast(tVec, 1 * (x - 5) * (x + 5)),
+        lambda x: 2 * x,
+        (5, -5),
+    ),
     "x^2+(0.000024414 - i)x": (
         lambda x: x * (x + 0.000024414 - 1j),
-        lambda x: 2 * x + 0.000024414 - 1j,
+        lambda x: cast(tVec, 2 * x + 0.000024414 - 1j),
         (0, -0.000024414 + 1j),
     ),
     "sin(x)": (np.sin, np.cos, (-1 * np.pi, 0, np.pi)),
@@ -88,12 +100,12 @@ localTestFunctions: Dict[
     ),
     "seventh root": (
         lambda x: x ** (1 / 7),
-        lambda x: 1 / 7 * x ** (-6 / 7),
+        lambda x: cast(tVec, 1 / 7 * x ** (-6 / 7)),
         (0,),
     ),
     "log(x^2+26)": (
         lambda x: cast(tVec, np.log(x**2 + 26)),
-        lambda x: 2 * x / (x**2 + 26),
+        lambda x: cast(tVec, 2 * x / (x**2 + 26)),
         (-5j, 5j),
     ),
     "log, arctan, exp composition": (
@@ -107,8 +119,9 @@ localTestFunctions: Dict[
 
 
 # wrap lambdas inside partial so multithreading works correctly
-def f(name: str, x: tVec):
-    """Evaluate the function `name` with argument `x`. Use with `partial` to
+def f(name: str, x: tVec) -> tVec:
+    """
+    Evaluate the function `name` with argument `x`. Use with `partial` to
     get a function in `x`.
 
     :param name: Function name
@@ -121,7 +134,7 @@ def f(name: str, x: tVec):
     return localTestFunctions[name][0](x)
 
 
-def df(name: str, x: tVec):
+def df(name: str, x: tVec) -> tVec:
     """
     Evaluate the derivative of function `name` at `x`.
 

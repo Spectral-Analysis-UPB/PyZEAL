@@ -17,10 +17,13 @@ import numpy as np
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_algorithms.pyzeal_estimators import EstimatorCache
+from pyzeal_algorithms.pyzeal_estimators.argument_estimator import (
+    ArgumentEstimator,
+)
 from pyzeal_logging.loggable import Loggable
 from pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal_utils.pyzeal_factories.estimator_factory import EstimatorFactory
 from pyzeal_utils.root_context import RootContext
+from pyzeal_utils.service_locator import ServiceLocator
 
 ####################
 # Global Constants #
@@ -64,7 +67,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         :type maxPrecision: float
         """
         self.cache = EstimatorCache()
-        self.estimator = EstimatorFactory.getConcreteEstimator(
+        self.estimator = ServiceLocator.tryResolve(
+            ArgumentEstimator,
             estimatorType=estimatorType,
             numPts=numPts,
             deltaPhi=deltaPhi,
@@ -92,7 +96,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             context.functionDataToString(),
         )
         # reset cache
-        if self.cache.dirty is True:
+        if self.cache.dirty():
             self.logger.info("resetting argument estimator cache...")
             self.cache.reset()
 
