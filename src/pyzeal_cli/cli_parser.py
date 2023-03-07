@@ -24,15 +24,15 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
 
     MAIN_DESCRIPTION: Final[str] = (
         "welcome to the PyZEAL project! from the command line you can control "
-        + "various aspects of this package, like viewing and manipulating the "
-        + "settings which control its default behaviour."
+        "various aspects of this package, like viewing and manipulating the "
+        "settings which control its default behaviour."
     )
     SETTINGS_PLUGINS_DESCRIPTION: Final[str] = (
         "manipulate PyZEAL behaviour by changing the (default) settings and"
         " (un-)installing (custom) plugins"
     )
-    PROGRAM_NAME = "pyzeal"
-    VERSION = version(PROGRAM_NAME)
+    PROGRAM_NAME: Final[str] = "pyzeal"
+    VERSION: Final[str] = version(PROGRAM_NAME)
 
     def __init__(self) -> None:
         """

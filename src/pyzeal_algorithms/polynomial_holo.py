@@ -9,20 +9,15 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Final, Tuple
+from typing import Tuple
 
 import numpy as np
 
-from pyzeal_algorithms.simple_holo import TWO_PI, SimpleArgumentAlgorithm
+from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal_logging.loggable import Loggable
 from pyzeal_utils.root_context import RootContext
 
-####################
-# Global Constants #
-####################
-
-MAXIMUM_PHASE_MULTIPLIER: Final[int] = 2  # cutoff for polynomial construction
-# MAXIMUM_PHASE_MULTIPLIER: Final[int] = 7
+from .constants import FOUR_PI, TWO_PI
 
 
 class AssociatedPolynomialAlgorithm(SimpleArgumentAlgorithm, Loggable):
@@ -78,7 +73,7 @@ class AssociatedPolynomialAlgorithm(SimpleArgumentAlgorithm, Loggable):
 
         # check if the current box contains sufficiently few roots to construct
         # an associated polynomial with stable coefficients/roots
-        if TWO_PI < phi < 8.0:
+        if TWO_PI < phi < FOUR_PI:
             self.logger.debug(
                 "constructing Newton polynomials from higher moments!"
             )
