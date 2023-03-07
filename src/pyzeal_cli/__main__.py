@@ -10,13 +10,15 @@ Authors:\n
 from sys import argv
 from typing import Optional
 
-from pyzeal_cli.cli_parser import PyZEALParser
 from pyzeal_cli.parser_facade import PyZEALParserInterface
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.init_modes import InitModes
+from pyzeal_utils.initialization_handler import PyZEALInitializationHandler
+from pyzeal_utils.service_locator import ServiceLocator
 
 
 class PyZEALEntry:
@@ -24,8 +26,10 @@ class PyZEALEntry:
     TODO
     """
 
-    parser: PyZEALParserInterface = PyZEALParser()
-    settingsService: SettingsService = JSONSettingsService()
+    PyZEALInitializationHandler.initPyZEALServices(InitModes.CLI)
+
+    parser = ServiceLocator.tryResolve(PyZEALParserInterface)
+    settingsService = ServiceLocator.tryResolve(SettingsService)
 
     @staticmethod
     def mainPyZEAL() -> None:
