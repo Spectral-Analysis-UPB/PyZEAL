@@ -15,7 +15,7 @@ from pyzeal_algorithms.pyzeal_estimators import (
     QuadratureEstimator,
     SummationEstimator,
 )
-from pyzeal_logging.config import initLogger
+from pyzeal_logging.log_manager import LogManager
 from pyzeal_types.estimator_types import EstimatorTypes
 
 
@@ -23,7 +23,7 @@ class EstimatorFactory:
     "Static factory class used to create instances of argument estimators."
 
     # initialize the module level logger
-    logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
+    logger = LogManager.initLogger(__name__.rsplit(".", maxsplit=1)[-1])
 
     @staticmethod
     def getConcreteEstimator(

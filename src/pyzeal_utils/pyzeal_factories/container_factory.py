@@ -12,8 +12,8 @@ from typing import Callable, Optional, Tuple, cast
 
 import numpy as np
 
-from pyzeal_logging.config import initLogger
 from pyzeal_logging.log_levels import LogLevel
+from pyzeal_logging.log_manager import LogManager
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.filter_types import FilterTypes
 from pyzeal_types.parallel_types import tQueue
@@ -32,7 +32,7 @@ class ContainerFactory:
     "Static factory class used to create instances of root containers."
 
     # initialize the module level logger
-    logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
+    logger = LogManager.initLogger(__name__.rsplit(".", maxsplit=1)[-1])
 
     @staticmethod
     def _func_value_zero(
