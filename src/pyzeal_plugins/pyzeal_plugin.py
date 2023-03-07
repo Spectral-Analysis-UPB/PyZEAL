@@ -32,6 +32,16 @@ class PyZEALPlugin(ABC, Generic[T_co]):
     :type ABC: _type_
     """
 
+    def __str__(self) -> str:
+        "Print a human-readable representation of the plugin."
+        major, minor, patch = self.pluginVersion
+        maxLength = 30
+        cutoff = min(len(self.pluginName), maxLength)
+        return (
+            f"{self.pluginName[:cutoff]: <{maxLength}} "
+            f" @ v{major}.{minor}.{patch}"
+        )
+
     @staticmethod
     @abstractmethod
     def initialize() -> Callable[..., T_co]:

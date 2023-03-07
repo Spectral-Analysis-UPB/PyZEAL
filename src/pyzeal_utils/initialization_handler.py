@@ -77,9 +77,11 @@ class PyZEALInitializationHandler:
                 PyZEALParserInterface, PyZEALParser()
             )
 
-        # plugins are always loaded!
-        PyZEALInitializationHandler.logger.info("loading plugins...")
-        PluginLoader.loadPlugins()
+        # plugins cannot be loader in cli mode (plugins might be broken...)!
+        if mode not in InitModes.CLI:
+            PyZEALInitializationHandler.logger.info("loading plugins...")
+            PluginLoader.loadPlugins()
 
         # initialization complete!
         PyZEALInitializationHandler.initialized = True
+        PyZEALInitializationHandler.logger.info("initialization complete!")

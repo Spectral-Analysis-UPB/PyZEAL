@@ -27,9 +27,10 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         + "various aspects of this package, like viewing and manipulating the "
         + "settings which control its default behaviour."
     )
-    VIEW_CHANGE_DESCRIPTION: Final[
-        str
-    ] = "view and change the settings that determine pyzeal default behaviour"
+    SETTINGS_PLUGINS_DESCRIPTION: Final[str] = (
+        "manipulate PyZEAL behaviour by changing the (default) settings and"
+        " (un-)installing (custom) plugins"
+    )
     PROGRAM_NAME = "pyzeal"
     VERSION = version(PROGRAM_NAME)
 
@@ -51,10 +52,10 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             version=f"%(prog)s {PyZEALParser.VERSION}",
         )
 
-        # add subcommands for viewing and for changing options
+        # add subcommands for options and plugins
         subParsers = self.add_subparsers(
-            title=PyZEALParser.VIEW_CHANGE_DESCRIPTION,
-            help="view/change application settings",
+            title=PyZEALParser.SETTINGS_PLUGINS_DESCRIPTION,
+            help="view/change settings and (un-)install plugins",
             parser_class=ArgumentParser,
         )
         viewParser = subParsers.add_parser("view")
@@ -89,6 +90,26 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             help="change current default verbosity level",
         )
 
+        # add subcommands for (un-)installing plugins
+        pluginParser = subParsers.add_parser("plugin")
+        pluginParser.add_argument(
+            "-l", "--list", action="store_true", help="list installed plugins"
+        )
+        pluginParser.add_argument(
+            "-m",
+            "--modules",
+            action="store_true",
+            help="list contents of installation directory",
+        )
+        pluginParser.add_argument(
+            "--install",
+            help="install a given file containing a plugin (or plugin data)",
+        )
+        pluginParser.add_argument(
+            "--uninstall",
+            help="uninstall a given plugin-related (data or source) file",
+        )
+
     def parseArgs(self) -> ParseResults:
         """
         TODO
@@ -102,6 +123,10 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         algorithm = getattr(args, "algorithm", None)
         logLevel = getattr(args, "log_level", None)
         verbose = getattr(args, "verbose", None)
+        listPlugins = getattr(args, "list", None)
+        listModules = getattr(args, "modules", None)
+        install = getattr(args, "install", None)
+        uninstall = getattr(args, "uninstall", None)
 
         # return wrapped cli arguments
         return ParseResults(
@@ -110,4 +135,8 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             algorithm=algorithm if algorithm else "",
             logLevel=logLevel if logLevel else "",
             verbose=verbose if verbose else "",
+            listPlugins=bool(listPlugins) if listPlugins else False,
+            listModules=bool(listModules) if listModules else False,
+            install=install if install else "",
+            uninstall=uninstall if uninstall else "",
         )

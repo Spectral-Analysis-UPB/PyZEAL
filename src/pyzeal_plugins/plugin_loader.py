@@ -68,7 +68,7 @@ class PluginLoader(Loggable):
         return plugins
 
     def locateAndLoadPlugins(
-        self, path: str
+        self, path: str = PLUGIN_INSTALL_DIR
     ) -> List[Type[PyZEALPlugin[tPluggable]]]:
         """
         _summary_
@@ -140,7 +140,7 @@ class PluginLoader(Loggable):
         return "." + name if extension.lower() == ".py" else ""
 
     @staticmethod
-    def discoverModules(path: str) -> List[str]:
+    def discoverModules(path: str = PLUGIN_INSTALL_DIR) -> List[str]:
         """
         _summary_
 

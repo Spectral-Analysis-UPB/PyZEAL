@@ -25,7 +25,6 @@ from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.root_types import tHoloFunc, tVec
 from pyzeal_types.settings_types import SettingsServicesTypes
 from pyzeal_utils.finder_progress import FinderProgressBar
-from pyzeal_utils.lambda_wrapper import LambdaWrapper
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
 from pyzeal_utils.root_context import RootContext
 from pyzeal_utils.service_locator import ServiceLocator
@@ -79,11 +78,7 @@ class RootFinder(RootFinderInterface, Loggable):
         :param verbose: flag that toggles the command line progress bar
         :type verbose: Optional[bool]
         """
-        self.f = (
-            LambdaWrapper.wrap(f)
-            if getattr(f, "__name__", None) == "<lambda>"
-            else f
-        )
+        self.f = f
         self.df = df
         self.algorithm: FinderAlgorithm = ServiceLocator.tryResolve(
             FinderAlgorithm,
