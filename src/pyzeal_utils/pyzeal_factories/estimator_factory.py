@@ -29,10 +29,10 @@ class EstimatorFactory:
     def getConcreteEstimator(
         estimatorType: EstimatorTypes,
         *,
-        numPts: Optional[int],
-        deltaPhi: Optional[float],
-        maxPrecision: Optional[float],
         cache: EstimatorCache,
+        numPts: Optional[int] = None,
+        deltaPhi: Optional[float] = None,
+        maxPrecision: Optional[float] = None,
     ) -> ArgumentEstimator:
         """
         Construct and return an estimator instance based on the given type

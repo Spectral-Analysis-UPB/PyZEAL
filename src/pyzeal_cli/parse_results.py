@@ -19,3 +19,7 @@ class ParseResults:
     algorithm: str
     logLevel: str
     verbose: str
+    listPlugins: bool
+    listModules: bool
+    install: str
+    uninstall: str

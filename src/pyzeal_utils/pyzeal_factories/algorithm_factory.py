@@ -11,6 +11,7 @@ from typing import Optional
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_algorithms.newton_grid import NewtonGridAlgorithm
+from pyzeal_algorithms.polynomial_holo import AssociatedPolynomialAlgorithm
 from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal_algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
 from pyzeal_logging.config import initLogger
@@ -65,6 +66,11 @@ class AlgorithmFactory:
                 "requested usage of a SimpleArgumentNewtonAlgorithm..."
             )
             return SimpleArgumentNewtonAlgorithm(estimatorType=estimatorType)
+        if algoType == AlgorithmTypes.ASSOCIATED_POLYNOMIAL:
+            AlgorithmFactory.logger.debug(
+                "requested usage of an AssociatedPolynomialAlgorithm..."
+            )
+            return AssociatedPolynomialAlgorithm(estimatorType=estimatorType)
 
         # return the current default algorithm
         AlgorithmFactory.logger.debug(

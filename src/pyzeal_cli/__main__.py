@@ -7,16 +7,21 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+from os.path import abspath
 from sys import argv
 from typing import Optional
 
-from pyzeal_cli.cli_parser import PyZEALParser
 from pyzeal_cli.parser_facade import PyZEALParserInterface
 from pyzeal_logging.log_levels import LogLevel
+from pyzeal_plugins.installation_helper import InstallationHelper
+from pyzeal_plugins.plugin_loader import PluginLoader
 from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.init_modes import InitModes
+from pyzeal_utils.initialization_handler import PyZEALInitializationHandler
+from pyzeal_utils.service_locator import ServiceLocator
 
 
 class PyZEALEntry:
@@ -24,8 +29,10 @@ class PyZEALEntry:
     TODO
     """
 
-    parser: PyZEALParserInterface = PyZEALParser()
-    settingsService: SettingsService = JSONSettingsService()
+    PyZEALInitializationHandler.initPyZEALServices(InitModes.CLI)
+
+    parser = ServiceLocator.tryResolve(PyZEALParserInterface)
+    settingsService = ServiceLocator.tryResolve(SettingsService)
 
     @staticmethod
     def mainPyZEAL() -> None:
@@ -34,7 +41,7 @@ class PyZEALEntry:
         """
 
         args = PyZEALEntry.parser.parseArgs()
-        # check if any arguments were provided an respond with usage hint
+        # check if any arguments were provided and respond with usage hint
         if len(argv) < 2:
             print("this is the CLI of the PyZEAL package. use '-h' for help.")
 
@@ -54,6 +61,35 @@ class PyZEALEntry:
             PyZEALEntry.changeLogLevelSetting(args.logLevel, settingsService)
         if args.verbose:
             PyZEALEntry.changeVerbositySetting(args.verbose, settingsService)
+
+        # check if 'plugin' subcommand was selected and manipulate plugins
+        if args.listPlugins:
+            print("currently installed Plugins:")
+            print("----------------------------")
+            for plugin in PluginLoader.loadPlugins():
+                print(plugin)
+
+        if args.listModules:
+            print("installation directory contents:")
+            print("--------------------------------")
+            for module in PluginLoader.discoverModules():
+                print(module)
+
+        if args.install:
+            print(f"installing plugin {args.install}...")
+            if InstallationHelper.installPlugin(abspath(args.install)):
+                print("[success] plugin was installed!")
+            else:
+                print("[error] the requested plugin does not exist - abort!")
+                raise SystemExit(2)
+
+        if args.uninstall:
+            print(f"uninstalling plugin {args.uninstall}...")
+            if InstallationHelper.uninstallPlugin(args.uninstall):
+                print("[success] plugin was uninstalled!")
+            else:
+                print("[error] the requested plugin does not exist - abort!")
+                raise SystemExit(2)
 
         # a valid subcommand was selected but with no meaningful options
         if len(argv) == 2:

@@ -8,17 +8,19 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Tuple, cast
+from typing import Final, Tuple, cast
 
 from scipy.optimize import newton
 
-from pyzeal_algorithms.simple_holo import (
-    FOUR_PI,
-    TWO_PI,
-    SimpleArgumentAlgorithm,
-)
+from pyzeal_algorithms.simple_holo import TWO_PI, SimpleArgumentAlgorithm
 from pyzeal_logging.loggable import Loggable
 from pyzeal_utils.root_context import RootContext
+
+####################
+# Global Constants #
+####################
+
+FOUR_PI: Final[float] = 8.0  # numerical cutoff between 4*pi and 6*pi
 
 
 class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
@@ -29,25 +31,29 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
     reached.
     """
 
-    def calcRootsRecursion(
+    def decideRefinement(
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
+        phi: float,
         context: RootContext,
     ) -> None:
-        """Calculates zeros of `self.func` by applying the argument principle
-        over a rectangle and recursively dividing this rectangle into smaller
-        ones, until rectangles are sufficiently small to reliably perform a
-        Newton search. Zeros found are put into `resultQueue`. The finished
-        calculation gets reported to the progress bar `progress` under the
-        task id `task`.
+        """
+        Decide which way the current search area should be subdivided and
+        calculate roots in the subdivided areas. The simple strategy consists
+        of the choices (1) return, if argument indicates no roots, (2) place
+        root in `context.container` if roots present and accuracy attained,
+        (3) start Newton algorithm if simple root present and sufficent
+        accuracy attained, or (4) subdivide further if multiple roots present
+        or attained accuracy insufficient for Newton algorithm.
 
-        :param zParts: Rectangle describing the search area
-        :type zParts: tRecGrid
-        :param phiParts: Change in argument along the rectangle
-        :type phiParts: tRecGrid
-        :param context: RootContext object containing the rest of the
-            information
+        :param reRan: Real part of current search Range
+        :type reRan: Tuple[float, float]
+        :param imRan: Imaginary part of current search range
+        :type imRan: Tuple[float, float]
+        :param phi: Change in argument along the boundary of the current range
+        :type phi: float
+        :param context: `RootContext` in which the algorithm operates
         :type context: RootContext
         """
         # calculate difference between right/left and top/bottom
@@ -55,10 +61,7 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
         y1, y2 = imRan
         deltaRe = x2 - x1
         deltaIm = y2 - y1
-        # check if the given rectangle contains at least one zero
-        phi = self.estimator.calcMoment(
-            0, reRan=reRan, imRan=imRan, context=context
-        )
+
         # check if desired accuracy is aquired
         epsReal = 10 ** (-context.precision[0])
         epsImag = 10 ** (-context.precision[1])
@@ -68,10 +71,8 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
             )
             return
 
-        # Newton performs a lot better if the derivative is given,
-        # so a bigger box suffices in that case. 0.15 is chosen as
-        # it passes all tests, while 0.16 fails some
-        # check if the current box contains a simple root
+        # check if the current box contains a simple root - Newton's algorithm
+        # does not perform well enough to start within large rectangles
         if TWO_PI < phi < FOUR_PI and deltaRe < 0.1 and deltaIm < 0.1:
             try:
                 self.logger.debug(
@@ -108,4 +109,4 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
                     )
             return
 
-        self.decideRefinement((x1, x2), (y1, y2), phi, context)
+        super().decideRefinement((x1, x2), (y1, y2), phi, context)

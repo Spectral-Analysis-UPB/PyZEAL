@@ -40,8 +40,7 @@ echo ""
 echo "|--------------------------------------------------------------|"
 echo "|[running docstring coverage on sources, tests, and benchmarks]|"
 echo "|--------------------------------------------------------------|"
-docstr-coverage -p src/
-docstr-coverage -p tests/
+docstr-coverage -b docs/_static/ -p src/ tests/
 echo ""
 
 echo "|--------------------------|"

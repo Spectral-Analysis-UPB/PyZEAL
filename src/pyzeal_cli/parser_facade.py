@@ -8,11 +8,12 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 from pyzeal_cli.parse_results import ParseResults
 
 
+@runtime_checkable
 class PyZEALParserInterface(Protocol):
     """
     TODO

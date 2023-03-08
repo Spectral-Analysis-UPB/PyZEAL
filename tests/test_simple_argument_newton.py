@@ -75,7 +75,8 @@ def testSimpleArgumentNewton(
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
 def testSimpleArgumentNewtonHypothesis(roots: List[complex]) -> None:
-    """Test the root finder algorithm based on a simple partial integration of
+    """
+    Test the root finder algorithm based on a simple partial integration of
     the classical argument principle combined with a Newton algorithm upon
     sufficient refinement of the subdivision into rectangles. The testfunctions
     are polynomials whose roots are generated automatically using the

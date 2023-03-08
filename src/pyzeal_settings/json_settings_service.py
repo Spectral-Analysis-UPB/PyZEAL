@@ -9,12 +9,18 @@ Authors:\n
 from json import dump, load
 from os.path import dirname, join
 from typing import Dict, Literal, Tuple, Union
+from typing import Dict, Final, Literal, Union
 
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_settings.invalid_setting_exception import InvalidSettingException
 from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+
+# location where the default settings should be
+DEFAULT_SETTINGS: Final[str] = join(dirname(__file__), "default_settings.json")
+# default location where custom settings are saved
+CUSTOM_SETTINGS: Final[str] = join(dirname(__file__), "custom_settings.json")
 
 
 class JSONSettingsService(SettingsService):
@@ -34,11 +40,11 @@ class JSONSettingsService(SettingsService):
         currentSettings: Dict[str, Union[str, bool, Tuple[int, int]]] = {}
         # first load default settings (must always exist)...
         JSONSettingsService.loadSettingsFromFile(
-            join(dirname(__file__), "default_settings.json"), currentSettings
+            DEFAULT_SETTINGS, currentSettings
         )
         # ...then try to load custom settings (might not exist)
         JSONSettingsService.loadSettingsFromFile(
-            join(dirname(__file__), "custom_settings.json"), currentSettings
+            CUSTOM_SETTINGS, currentSettings
         )
 
         # set default container
@@ -96,9 +102,9 @@ class JSONSettingsService(SettingsService):
             + f"-> default verbosity:   {self.verbose}"
         )
 
+    # docstr-coverage:inherited
     @property
     def defaultContainer(self) -> ContainerTypes:
-        "Get the currently active default container."
         return self._container
 
     @defaultContainer.setter
@@ -106,9 +112,9 @@ class JSONSettingsService(SettingsService):
         self._container = value
         JSONSettingsService.createOrUpdateSetting("defaultContainer", value)
 
+    # docstr-coverage:inherited
     @property
     def defaultAlgorithm(self) -> AlgorithmTypes:
-        "Get the currently active default algorithm."
         return self._algorithm
 
     @defaultAlgorithm.setter
@@ -116,9 +122,9 @@ class JSONSettingsService(SettingsService):
         self._algorithm = value
         JSONSettingsService.createOrUpdateSetting("defaultAlgorithm", value)
 
+    # docstr-coverage:inherited
     @property
     def logLevel(self) -> LogLevel:
-        "Get the currently active standard log level."
         return self._level
 
     @logLevel.setter
@@ -126,9 +132,9 @@ class JSONSettingsService(SettingsService):
         self._level = value
         JSONSettingsService.createOrUpdateSetting("logLevel", value)
 
+    # docstr-coverage:inherited
     @property
     def verbose(self) -> bool:
-        "Get the currently active verbosity level."
         return self._verbose
 
     @verbose.setter

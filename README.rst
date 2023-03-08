@@ -20,7 +20,7 @@ The PyZEAL numerical project
 .. image:: https://codecov.io/gh/Spectral-Analysis-UPB/PyZEAL/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/Spectral-Analysis-UPB/PyZEAL
 
-.. image:: https://img.shields.io/badge/docs-docstr--cov-success
+.. image:: ./docs/_static/docstr_coverage_badge.svg
    :target: https://pypi.org/project/docstr-coverage/
 
 .. image:: https://img.shields.io/badge/mypy-checked-blue

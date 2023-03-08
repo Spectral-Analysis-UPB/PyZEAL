@@ -21,7 +21,8 @@ class Loggable(Protocol):
     @property
     def logger(self) -> PyZEALLogger:
         """
-        The logger instance associated with this Loggable class.
+        The logger instance associated with this Loggable class. Instance
+        creation happens upon first property access.
 
         :returns: the logger of this class
         :rtype: PyZEALLogger
@@ -30,7 +31,6 @@ class Loggable(Protocol):
             self._logger = initLogger(
                 self.__module__.rsplit(".", maxsplit=1)[-1]
             )
-            return self._logger
         return self._logger
 
     def setLevel(self, level: LogLevel) -> None:

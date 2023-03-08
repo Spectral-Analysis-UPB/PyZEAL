@@ -26,7 +26,7 @@ Z_REFINE: Final[int] = 100
 MAX_Z_LENGTH: Final[int] = 100
 # type alias for internal caches
 tCache = Dict[
-    float,
+    Tuple[float, int],
     Dict[
         Tuple[float, Union[Literal["start"], Literal["end"]]],
         Tuple[tVec, tVec],
@@ -75,7 +75,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         zStart: complex,
         zEnd: complex,
         context: RootContext,
-    ) -> float:
+    ) -> complex:
         r"""
         Calculate the total complex argument along a line in the complex plane
         by summing incremental changes in the phase of the function values.
@@ -84,20 +84,15 @@ class SummationEstimator(ArgumentEstimator, Loggable):
 
         TODO
         """
-        if order != 0:
-            raise NotImplementedError(
-                "argument estimation via phase summation only works for n=0!"
-            )
-
         # look for required function values in the internal caches
         x1, y1 = zStart.real, zStart.imag
         x2, y2 = zEnd.real, zEnd.imag
-        phi: float
+        phi: complex
         # handle the case of horizontal line first
         if y1 == y2:
-            phi = self.retrieveCachedHorizontal(x1, x2, y1, context)
+            phi = self.retrieveCachedHorizontal(order, x1, x2, y1, context)
         elif x1 == x2:
-            phi = self.retrieveCachedVertical(y1, y2, x1, context)
+            phi = self.retrieveCachedVertical(order, y1, y2, x1, context)
         else:
             raise ValueError(
                 f"{zStart} and {zEnd} must define an axis-parallel line!"
@@ -106,8 +101,8 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         return phi
 
     def retrieveCachedHorizontal(
-        self, x1: float, x2: float, y: float, context: RootContext
-    ) -> float:
+        self, order: int, x1: float, x2: float, y: float, context: RootContext
+    ) -> complex:
         """
         TODO
         """
@@ -115,85 +110,86 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         # the internal caches only contain positively oriented lines
         sign = 1 if x1 < x2 else -1
         x1, x2 = sorted((x1, x2))
-        if y in cache:
-            if (x1, "start") in cache[y]:
+        if (y, order) in cache:
+            if (x1, "start") in cache[(y, order)]:
                 self.logger.debug(
                     "horizontal line start in internal cache found - dividing!"
                 )
-                value = cache[y][(x1, "start")]
-                middleIdx = np.where(value[0].real <= x2)[0][-1]
+                value = cache[(y, order)][(x1, "start")]
+                middleIdx = np.where(np.real(value[0]) <= x2)[0][-1]
                 newValue = (
                     value[0][: middleIdx + 1],
                     value[1][: middleIdx + 1],
                 )
-                self.storeCache(y, x1, x2, cache, newValue)
+                self.storeCache(y, order, x1, x2, cache, newValue)
                 return cast(float, sign * newValue[1].sum())
-            if (x2, "end") in cache[y]:
+            if (x2, "end") in cache[(y, order)]:
                 self.logger.debug(
                     "horizontal line end in internal cache found - dividing!"
                 )
-                value = cache[y][(x2, "end")]
-                middleIdx = np.where(x1 <= value[0].real)[0][0]
+                value = cache[(y, order)][(x2, "end")]
+                middleIdx = np.where(x1 <= np.real(value[0]))[0][0]
                 newValue = (
                     value[0][middleIdx:],
                     value[1][middleIdx:],
                 )
-                self.storeCache(y, x1, x2, cache, newValue)
+                self.storeCache(y, order, x1, x2, cache, newValue)
                 return cast(float, sign * newValue[1].sum())
 
         self.logger.debug("internal cache miss on horizontal line!")
-        newValue = self.genPhiArr(x1 + 1j * y, x2 + 1j * y, context)
+        newValue = self.genPhiArr(order, x1 + 1j * y, x2 + 1j * y, context)
 
-        if y not in cache:
-            cache[y] = {}
-        self.storeCache(y, x1, x2, cache, newValue)
+        if (y, order) not in cache:
+            cache[(y, order)] = {}
+        self.storeCache(y, order, x1, x2, cache, newValue)
         return cast(float, sign * newValue[1].sum())
 
     def retrieveCachedVertical(
-        self, y1: float, y2: float, x: float, context: RootContext
-    ) -> float:
+        self, order: int, y1: float, y2: float, x: float, context: RootContext
+    ) -> complex:
         """
         TODO
         """
         cache = self.cacheVertical
         sign = 1 if y1 < y2 else -1
         y1, y2 = sorted((y1, y2))
-        if x in cache:
-            if (y1, "start") in cache[x]:
+        if (x, order) in cache:
+            if (y1, "start") in cache[(x, order)]:
                 self.logger.debug(
                     "vertical line start in internal cache found - dividing!"
                 )
-                value = cache[x][(y1, "start")]
-                middleIdx = np.where(value[0].imag <= y2)[0][-1]
+                value = cache[(x, order)][(y1, "start")]
+                middleIdx = np.where(np.imag(value[0]) <= y2)[0][-1]
                 newValue = (
                     value[0][: middleIdx + 1],
                     value[1][: middleIdx + 1],
                 )
-                self.storeCache(x, y1, y2, cache, newValue)
+                self.storeCache(x, order, y1, y2, cache, newValue)
                 return cast(float, sign * newValue[1].sum())
-            if (y2, "end") in cache[x]:
+            if (y2, "end") in cache[(x, order)]:
                 self.logger.debug(
                     "vertical line end in internal cache found - dividing!"
                 )
-                value = cache[x][(y2, "end")]
-                middleIdx = np.where(y1 <= value[0].imag)[0][0]
+                value = cache[(x, order)][(y2, "end")]
+                middleIdx = np.where(y1 <= np.imag(value[0]))[0][0]
                 newValue = (
                     value[0][middleIdx:],
                     value[1][middleIdx:],
                 )
-                self.storeCache(x, y1, y2, cache, newValue)
+                self.storeCache(x, order, y1, y2, cache, newValue)
                 return cast(float, sign * newValue[1].sum())
 
         self.logger.debug("internal cache miss on vertical line!")
-        newValue = self.genPhiArr(x + 1j * y1, x + 1j * y2, context)
+        newValue = self.genPhiArr(order, x + 1j * y1, x + 1j * y2, context)
 
-        if x not in cache:
-            cache[x] = {}
-        self.storeCache(x, y1, y2, cache, newValue)
+        if (x, order) not in cache:
+            cache[(x, order)] = {}
+        self.storeCache(x, order, y1, y2, cache, newValue)
         return cast(float, sign * newValue[1].sum())
 
     def genPhiArr(
         self,
+        order: int,
         zStart: complex,
         zEnd: complex,
         context: RootContext,
@@ -206,6 +202,8 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         line is adjusted by translating into direction `pos` by a small offset.
         The number of support points on the line is adjusted dynamically.
 
+        :param order:
+        :type order: int
         :param zStart:
         :type zStart: complex
         :param zEnd:
@@ -215,6 +213,10 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         :return:
         :rtype: Tuple[NDArray[complex], NDArray[complex]]
         """
+        if order != 0:
+            raise NotImplementedError(
+                f"summation estimator is not implemented for order={order}>0!"
+            )
         pos = "horizontal" if zStart.imag == zEnd.imag else "vertical"
         zArr = np.linspace(zStart, zEnd, self.numPts)
         funcArr = context.f(zArr)
@@ -304,13 +306,27 @@ class SummationEstimator(ArgumentEstimator, Loggable):
     def storeCache(
         self,
         z: float,
+        order: int,
         start: float,
         end: float,
         cache: tCache,
         newValue: Tuple[tVec, tVec],
     ) -> None:
         """
-        TODO
+        _summary_
+
+        :param z: _description_
+        :type z: float
+        :param order: _description_
+        :type order: int
+        :param start: _description_
+        :type start: float
+        :param end: _description_
+        :type end: float
+        :param cache: _description_
+        :type cache: tCache
+        :param newValue: _description_
+        :type newValue: Tuple[tVec, tVec]
         """
-        cache[z][(start, "start")] = newValue
-        cache[z][(end, "end")] = newValue
+        cache[(z, order)][(start, "start")] = newValue
+        cache[(z, order)][(end, "end")] = newValue

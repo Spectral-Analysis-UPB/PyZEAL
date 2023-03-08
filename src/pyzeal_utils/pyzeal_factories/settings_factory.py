@@ -16,7 +16,7 @@ class SettingsServiceFactory:
 
     @staticmethod
     def getConcreteSettings(
-        settingsType: SettingsServicesTypes,
+        settingsType: SettingsServicesTypes = SettingsServicesTypes.DEFAULT,
     ) -> SettingsService:
         """
         Construct and return a new concrete implementation of the

@@ -17,18 +17,19 @@ import numpy as np
 
 from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_algorithms.pyzeal_estimators import EstimatorCache
+from pyzeal_algorithms.pyzeal_estimators.argument_estimator import (
+    ArgumentEstimator,
+)
 from pyzeal_logging.loggable import Loggable
 from pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal_utils.pyzeal_factories.estimator_factory import EstimatorFactory
 from pyzeal_utils.root_context import RootContext
+from pyzeal_utils.service_locator import ServiceLocator
 
 ####################
 # Global Constants #
 ####################
 
-# constants determining the numerical cutoff between 0 and 2*pi
-TWO_PI: Final[float] = 5.0
-FOUR_PI: Final[float] = 8.0
+TWO_PI: Final[float] = 5.0  # numerical cutoff between 0 and 2*pi
 # default values for the argument estimator
 DEFAULT_NUM_PTS = 6500
 DEFAULT_DELTA_PHI = 0.01
@@ -66,14 +67,17 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         :type maxPrecision: float
         """
         self.cache = EstimatorCache()
-        self.estimator = EstimatorFactory.getConcreteEstimator(
+        self.estimator = ServiceLocator.tryResolve(
+            ArgumentEstimator,
             estimatorType=estimatorType,
             numPts=numPts,
             deltaPhi=deltaPhi,
             maxPrecision=maxPrecision,
             cache=self.cache,
         )
-        self.logger.debug("initialized a new SimpleArgumentAlgorithm!")
+        self.logger.debug(
+            "initialized a new subclass of SimpleArgumentAlgorithm!"
+        )
 
     def calcRoots(self, context: RootContext) -> None:
         """
@@ -92,12 +96,13 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
             context.functionDataToString(),
         )
         # reset cache
-        self.logger.info("resetting argument estimator cache...")
-        self.cache.reset()
+        if self.cache.dirty():
+            self.logger.info("resetting argument estimator cache...")
+            self.cache.reset()
 
         phi = self.estimator.calcMoment(
             0, context.reRan, context.imRan, context
-        )
+        ).real  # if order=0 then the result is (theoretically) an int
         self.decideRefinement(context.reRan, context.imRan, phi, context)
         self.logger.debug(
             "cache hits/misses: %d/%d (= %.03f)",
@@ -117,8 +122,12 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         phi: float,
         context: RootContext,
     ) -> None:
-        """Decide which way the current search are should be subdivided and
-        calculate roots in the subdivided areas.
+        """
+        Decide which way the current search area should be subdivided and
+        calculate roots in the subdivided areas. The simple strategy consists
+        of the choices (1) return, if argument indicates no roots, (2) place
+        root in `context.container` if roots present and accuracy attained, or
+        (3) subdivide further if roots present but accuracy not yet attained.
 
         :param reRan: Real part of current search Range
         :type reRan: Tuple[float, float]
@@ -165,24 +174,37 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         # the current box contains a root and must be refined further
         if deltaRe / epsReal > deltaIm / epsImag:
             midPoint = (x1 + x2) / 2
-            self.calcRootsRecursion((x1, midPoint), (y1, y2), context)
-            self.cache.remove(x1 + y2 * 1j, x1 + y1 * 1j)
-            self.calcRootsRecursion((midPoint, x2), (y1, y2), context)
-            self.cache.remove(x2 + y1 * 1j, x2 + y2 * 1j)
+            phi = self.calculateRefinedMoment(
+                (x1, midPoint), (y1, y2), context
+            )
+            self.decideRefinement((x1, midPoint), (y1, y2), phi, context)
+            self.cache.remove(0, x1 + y2 * 1j, x1 + y1 * 1j)
+            phi = self.calculateRefinedMoment(
+                (midPoint, x2), (y1, y2), context
+            )
+            self.decideRefinement((midPoint, x2), (y1, y2), phi, context)
+            self.cache.remove(0, x2 + y1 * 1j, x2 + y2 * 1j)
         else:
             midPoint = (y1 + y2) / 2
-            self.calcRootsRecursion((x1, x2), (y1, midPoint), context)
-            self.cache.remove(x1 + y1 * 1j, x2 + y1 * 1j)
-            self.calcRootsRecursion((x1, x2), (midPoint, y2), context)
-            self.cache.remove(x2 + y2 * 1j, x1 + y2 * 1j)
+            phi = self.calculateRefinedMoment(
+                (x1, x2), (y1, midPoint), context
+            )
+            self.decideRefinement((x1, x2), (y1, midPoint), phi, context)
+            self.cache.remove(0, x1 + y1 * 1j, x2 + y1 * 1j)
+            phi = self.calculateRefinedMoment(
+                (x1, x2), (midPoint, y2), context
+            )
+            self.decideRefinement((x1, x2), (midPoint, y2), phi, context)
+            self.cache.remove(0, x2 + y2 * 1j, x1 + y2 * 1j)
 
-    def calcRootsRecursion(
+    def calculateRefinedMoment(
         self,
         reRan: Tuple[float, float],
         imRan: Tuple[float, float],
         context: RootContext,
-    ) -> None:
-        """Recursively calculate roots in the given search range according to
+    ) -> float:
+        """
+        Recursively calculate roots in the given search range according to
         `context`.
 
         :param reRan: Real part of current search range
@@ -195,13 +217,13 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         # check if the given rectangle contains at least one zero
         phi = self.estimator.calcMoment(
             0, reRan=reRan, imRan=imRan, context=context
-        )
+        ).real
         self.logger.debug(
             "simple argument recursively refined with total phase=%f",
             phi / (2.0 * np.pi),
         )
 
-        self.decideRefinement(reRan, imRan, phi, context)
+        return phi
 
     @staticmethod
     def getRootFromRectangle(
@@ -212,8 +234,9 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         phi: float,
         context: RootContext,
     ) -> None:
-        """Compute the location of a root in a sufficiently small rectangle
-        and update the progress bar
+        """
+        Compute the location of a root in a sufficiently small rectangle and
+        update the progress bar
 
         :param right: _description_
         :type right: complex

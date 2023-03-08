@@ -23,7 +23,7 @@ class EstimatorCache(Loggable):
         """
         TODO
         """
-        self._cache: Dict[Tuple[complex, complex], float] = {}
+        self._cache: Dict[int, Dict[Tuple[complex, complex], complex]] = {}
         self.logger.info("initialized a new argument estimator cache...")
         # cache hits and misses are only recorded if logging is set to DEBUG
         self.cacheHits = 0
@@ -31,9 +31,10 @@ class EstimatorCache(Loggable):
 
     def store(
         self,
+        order: int,
         zStart: complex,
         zEnd: complex,
-        argument: float,
+        argument: complex,
     ) -> None:
         """
         Store the total argument change associated with a horizontally or
@@ -41,18 +42,22 @@ class EstimatorCache(Loggable):
 
         TODO
         """
-        self._cache[(zStart, zEnd)] = argument
+        if (orderCache := self._cache.get(order, None)) is None:
+            self._cache[order] = {(zStart, zEnd): argument}
+        else:
+            orderCache[(zStart, zEnd)] = argument
         self.logger.debug(
-            "stored value %f under key %s in estimator cache!",
-            argument,
-            str((zStart, zEnd)),
+            "stored value %s under key %s in estimator cache!",
+            str(argument),
+            str((order, (zStart, zEnd))),
         )
 
     def retrieve(
         self,
+        order: int,
         zStart: complex,
         zEnd: complex,
-    ) -> Optional[float]:
+    ) -> Optional[complex]:
         """
         Retrieve the total argument change associated with a horizontally or
         vertically oriented range of complex numbers. Returns `None` if the
@@ -60,7 +65,10 @@ class EstimatorCache(Loggable):
 
         TODO
         """
-        value = self._cache.get((zStart, zEnd), None)
+        if (orderCache := self._cache.get(order, None)) is None:
+            value = None
+        else:
+            value = orderCache.get((zStart, zEnd), None)
         self.logger.debug(
             "retrieved value %s under key %s from estimator cache!",
             str(value),
@@ -73,6 +81,7 @@ class EstimatorCache(Loggable):
 
     def remove(
         self,
+        order: int,
         zStart: complex,
         zEnd: complex,
     ) -> None:
@@ -82,12 +91,19 @@ class EstimatorCache(Loggable):
 
         TODO
         """
-        value = self._cache.pop((zStart, zEnd), None)
-        self.logger.debug(
-            "removed value %s under key %s from estimator cache!",
-            str(value),
-            str((zStart, zEnd)),
-        )
+        if order in self._cache:
+            value = self._cache[order].pop((zStart, zEnd), None)
+            self.logger.debug(
+                "removed value %s under key %s from estimator cache!",
+                str(value),
+                str((zStart, zEnd)),
+            )
+
+    def dirty(self) -> bool:
+        """
+        TODO
+        """
+        return len(self._cache) > 0
 
     def reset(self) -> None:
         """

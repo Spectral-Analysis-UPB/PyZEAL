@@ -14,4 +14,5 @@ class AlgorithmTypes(Enum):
     NEWTON_GRID = "NewtonGrid"
     SIMPLE_ARGUMENT = "SimpleArgument"
     SIMPLE_ARGUMENT_NEWTON = "SimpleArgumentNewton"
+    ASSOCIATED_POLYNOMIAL = "AssociatedPolynomial"
     DEFAULT = "DefaultAlgorithm"

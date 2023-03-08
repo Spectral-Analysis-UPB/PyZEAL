@@ -15,18 +15,19 @@ from numpy.typing import NDArray
 from rich.progress import TaskID
 
 from pyzeal.finder_interface import RootFinderInterface
+from pyzeal_algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_logging.loggable import Loggable
-from pyzeal_settings.json_settings_service import JSONSettingsService
+from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.root_types import tHoloFunc, tVec
+from pyzeal_types.settings_types import SettingsServicesTypes
 from pyzeal_utils.finder_progress import FinderProgressBar
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
-from pyzeal_utils.pyzeal_factories.algorithm_factory import AlgorithmFactory
-from pyzeal_utils.pyzeal_factories.container_factory import ContainerFactory
 from pyzeal_utils.root_context import RootContext
+from pyzeal_utils.service_locator import ServiceLocator
 
 
 class RootFinder(RootFinderInterface, Loggable):
@@ -61,9 +62,9 @@ class RootFinder(RootFinderInterface, Loggable):
         Initialize a simple, non-parallel root finder.
 
         :param f: the function whose roots should be calculated
-        :type f: Callable[[comlex], complex]
+        :type f: Callable[[tVec], tVec]
         :param df: the derivative of `f`
-        :type df: Optional[Callable[[complex], complex]]
+        :type df: Optional[Callable[[tVec], tVec]]
         :param containerType: the type of container found roots are stored in
         :type containerType: ContainerTypes
         :param algorithmType: the type of algorithm used for root finding
@@ -79,20 +80,24 @@ class RootFinder(RootFinderInterface, Loggable):
         """
         self.f = f
         self.df = df
-        self.algorithm = AlgorithmFactory.getConcreteAlgorithm(
-            algorithmType,
+        self.algorithm: FinderAlgorithm = ServiceLocator.tryResolve(
+            FinderAlgorithm,
+            algoType=algorithmType,
             estimatorType=estimatorType,
             numSamplePoints=numSamplePoints,
         )
-        self.precision = (
-            precision
-            if precision is not None
-            else JSONSettingsService().precision
+        self._container = ServiceLocator.tryResolve(
+            RootContainer, containerType=containerType, precision=precision
         )
-        self._container = ContainerFactory.getConcreteContainer(
-            containerType, precision=self.precision
+        self.precision = precision
+
+        self.verbose = (
+            verbose
+            if verbose
+            else ServiceLocator.tryResolve(
+                SettingsService, settingsType=SettingsServicesTypes.DEFAULT
+            ).verbose
         )
-        self.verbose = verbose if verbose else JSONSettingsService().verbose
         self.logger.debug("initialized the new root finder %s!", str(self))
 
     def __str__(self) -> str:
