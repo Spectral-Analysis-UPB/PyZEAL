@@ -58,7 +58,7 @@ def testSimpleArgument(
     hrf = simpleArgumentRootFinder(
         testName, parallel=parallel, estimatorType=estimator
     )
-    hrf.calculateRoots(RE_RAN, IM_RAN)
+    hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
     assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
@@ -88,7 +88,7 @@ def testSimpleArgumentFinderHypothesis(roots: List[complex]) -> None:
     )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    hrf.calculateRoots((-5.0, 5.01), (-5.0, 5.01))
+    hrf.calculateRoots((-5.0, 5.01), (-5.0, 5.01), (5, 5))
     foundRoots = np.sort_complex(hrf.roots)
 
     # We only find a higher-order zero once, so we have to remove duplicates

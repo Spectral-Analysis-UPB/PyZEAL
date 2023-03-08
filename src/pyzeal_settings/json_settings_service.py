@@ -24,7 +24,7 @@ class JSONSettingsService(SettingsService):
     access to settings must happen through a service like this one.
     """
 
-    slots = ("_container", "_algorithm", "_level", "_verbose", "_precision")
+    __slots__ = ("_container", "_algorithm", "_level", "_verbose", "_precision")
 
     def __init__(self) -> None:
         """
@@ -46,46 +46,39 @@ class JSONSettingsService(SettingsService):
             if container.value == currentSettings["defaultContainer"]:
                 self._container = container
                 break
-        if not hasattr(self, "_container"):
-            raise InvalidSettingException(
-                "invalid setting for default container!"
-            )
+
         # set default algorithm
         for algorithm in AlgorithmTypes:
             if algorithm.value == currentSettings["defaultAlgorithm"]:
                 self._algorithm = algorithm
                 break
-        if not hasattr(self, "_algorithm"):
-            raise InvalidSettingException(
-                "invalid setting for default algorithm!"
-            )
+
         # set default logging level
         for level in LogLevel:
             if level.name == currentSettings["logLevel"]:
                 self._level = level
-        if not hasattr(self, "_level"):
-            raise InvalidSettingException(
-                "invalid setting for default logging level!"
-            )
+
         # set default verbosity
         verbosity = currentSettings.get("verbose", None)
         if verbosity is not None:
             self._verbose = bool(verbosity)
         # set default precision
-        if "precision" in currentSettings:
-            precision = currentSettings["precision"]
-            if isinstance(precision, tuple):
-                if isinstance(precision[0], int) and isinstance(
-                    precision[1], int
-                ):
+        precision = currentSettings.get("precision", None)
+        if precision is not None:
+            try:
+                if isinstance(precision, tuple):
                     self._precision = (
                         precision[0],
                         precision[1],
                     )
-        if not hasattr(self, "_precision"):
-            raise InvalidSettingException(
-                "invalid setting for default precision!"
-            )
+            except ValueError:
+                pass
+
+        for attr in self.__slots__:
+            if not hasattr(self, attr):
+                raise InvalidSettingException(
+                    f"Invalid setting for {attr[1:]}!"
+                )
 
     def __str__(self) -> str:
         """
@@ -255,8 +248,8 @@ class JSONSettingsService(SettingsService):
         try:
             with open(filename, "r", encoding="utf-8") as settingsFile:
                 for key, value in load(settingsFile).items():
-                    if key == "precision":  # precision is loaded as a list
-                        value = (value[0], value[1])  # convert to tuple
+                    if isinstance(value, list):
+                        value = tuple(value)
                     settings[key] = value
         except FileNotFoundError:
             pass

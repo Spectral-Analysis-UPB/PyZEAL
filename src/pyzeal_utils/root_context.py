@@ -12,7 +12,6 @@ from typing import Optional, Tuple
 
 from rich.progress import TaskID
 
-from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.root_types import tHoloFunc
 from pyzeal_utils.filter_context import FilterContext
 from pyzeal_utils.finder_progress import FinderProgressBar
@@ -29,9 +28,9 @@ class RootContext:
     f: tHoloFunc
     df: Optional[tHoloFunc]
     container: RootContainer
+    precision: Tuple[int, int]
     reRan: Tuple[float, float] = (-1.0, 1.0)
     imRan: Tuple[float, float] = (-1.0, 1.0)
-    precision: Tuple[int, int] = JSONSettingsService().precision
     progress: Optional[FinderProgressBar] = None
     task: Optional[TaskID] = None
 

@@ -76,7 +76,11 @@ class RoundingContainer(RootContainer):
             self.logger.debug(
                 "new accuracy detected - rounding container cleared!"
             )
-            self.precision = context.precision
+            self.precision = (
+                context.precision
+                if context.precision is not None
+                else JSONSettingsService().precision
+            )
         self.logger.debug(
             "attempting to add new root %f + %fi to rounding container!",
             root[0].real,
