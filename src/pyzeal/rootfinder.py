@@ -146,21 +146,21 @@ class RootFinder(RootFinderInterface, Loggable):
 
         # construct the root finding context
         context = RootContext(
-            self.f,
-            self.df,
-            self.container,
-            precision,
-            (x1, x2),
-            (y1, y2),
-            progress,
-            task,
+            f=self.f,
+            df=self.df,
+            container=self.container,
+            precision=precision,
+            reRan=(x1, x2),
+            imRan=(y1, y2),
+            progress=progress,
+            task=task,
         )
         # shut down root finding in orderly fashion upon command line signals
         try:
             self.logger.info("attempting to calculate roots...")
             self.algorithm.calcRoots(context)
             if progress is not None and task is not None:
-                progress.update(task, description=("[green] search finished!"))
+                progress.update(task, description="[green] search finished!")
         except KeyboardInterrupt:
             self.logger.warning(
                 "root calculation interrupted - some roots may be missing!"

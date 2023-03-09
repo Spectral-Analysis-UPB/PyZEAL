@@ -132,13 +132,13 @@ class ParallelRootFinder(RootFinder):
             # construct a list of root contexts, several for each child process
             rootQueue: tQueue = cast(tQueue, Manager().Queue())
             contexts = self.createRootJobs(
-                cpu_count() or 1,
-                (x1, x2),
-                (y1, y2),
-                rootQueue,
-                precision,
-                progress,
-                task,
+                numProcesses=cpu_count() or 1,
+                reRan=(x1, x2),
+                imRan=(y1, y2),
+                rootQueue=rootQueue,
+                precision=precision,
+                progress=progress,
+                task=task,
             )
 
             with Pool(initializer=ParallelRootFinder.suppressSig) as pool:
@@ -220,14 +220,14 @@ class ParallelRootFinder(RootFinder):
             for j in range(len(imagPts) - 1):
                 contexts.append(
                     RootContext(
-                        self.f,
-                        self.df,
-                        plainContainer,
-                        (realPts[i], realPts[i + 1]),
-                        (imagPts[j], imagPts[j + 1]),
-                        precision,
-                        progress,
-                        task,
+                        f=self.f,
+                        df=self.df,
+                        container=plainContainer,
+                        reRan=(realPts[i], realPts[i + 1]),
+                        imRan=(imagPts[j], imagPts[j + 1]),
+                        precision=precision,
+                        progress=progress,
+                        task=task,
                     )
                 )
         return contexts
