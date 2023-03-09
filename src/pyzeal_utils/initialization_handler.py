@@ -12,7 +12,7 @@ from pyzeal_algorithms.pyzeal_estimators.argument_estimator import (
 )
 from pyzeal_cli.cli_parser import PyZEALParser
 from pyzeal_cli.parser_facade import PyZEALParserInterface
-from pyzeal_logging.config import initLogger
+from pyzeal_logging.log_manager import LogManager
 from pyzeal_plugins.plugin_loader import PluginLoader
 from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.init_modes import InitModes
@@ -30,7 +30,7 @@ class PyZEALInitializationHandler:
     "Static initialization handler for PyZEAL services."
 
     # initialize the module level logger
-    logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
+    logger = LogManager.initLogger(__name__.rsplit(".", maxsplit=1)[-1])
 
     # protect from multiple initializations
     initialized = False

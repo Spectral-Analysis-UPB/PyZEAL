@@ -26,8 +26,8 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
 
     MAIN_DESCRIPTION: Final[str] = (
         "welcome to the PyZEAL project! from the command line you can control "
-        + "various aspects of this package, like viewing and manipulating the "
-        + "settings which control its default behaviour."
+        "various aspects of this package, like viewing and manipulating the "
+        "settings which control its default behaviour."
     )
     SETTINGS_PLUGINS_DESCRIPTION: Final[str] = (
         "manipulate PyZEAL behaviour by changing the (default) settings and"

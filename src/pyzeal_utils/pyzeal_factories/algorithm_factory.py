@@ -14,8 +14,8 @@ from pyzeal_algorithms.newton_grid import NewtonGridAlgorithm
 from pyzeal_algorithms.polynomial_holo import AssociatedPolynomialAlgorithm
 from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal_algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
-from pyzeal_logging.config import initLogger
 from pyzeal_logging.log_levels import LogLevel
+from pyzeal_logging.log_manager import LogManager
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.settings_types import SettingsServicesTypes
@@ -28,7 +28,7 @@ class AlgorithmFactory:
     "Static factory class used to create instances of root finding algorithms."
 
     # initialize the module level logger
-    logger = initLogger(__name__.rsplit(".", maxsplit=1)[-1])
+    logger = LogManager.initLogger(__name__.rsplit(".", maxsplit=1)[-1])
 
     @staticmethod
     def getConcreteAlgorithm(

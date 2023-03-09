@@ -8,19 +8,15 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Final, Tuple, cast
+from typing import Tuple, cast
 
 from scipy.optimize import newton
 
-from pyzeal_algorithms.simple_holo import TWO_PI, SimpleArgumentAlgorithm
+from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal_logging.loggable import Loggable
 from pyzeal_utils.root_context import RootContext
 
-####################
-# Global Constants #
-####################
-
-FOUR_PI: Final[float] = 8.0  # numerical cutoff between 4*pi and 6*pi
+from .constants import FOUR_PI, TWO_PI
 
 
 class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):

@@ -5,8 +5,8 @@ Authors:\n
 
 from typing import Protocol
 
-from .config import initLogger
 from .log_levels import LogLevel
+from .log_manager import LogManager
 from .logger_facade import PyZEALLogger
 
 
@@ -28,7 +28,7 @@ class Loggable(Protocol):
         :rtype: PyZEALLogger
         """
         if not hasattr(self, "_logger"):
-            self._logger = initLogger(
+            self._logger = LogManager.initLogger(
                 self.__module__.rsplit(".", maxsplit=1)[-1]
             )
         return self._logger

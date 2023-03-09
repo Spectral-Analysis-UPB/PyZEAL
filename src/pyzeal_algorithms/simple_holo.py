@@ -11,7 +11,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Final, Tuple
+from typing import Tuple
 
 import numpy as np
 
@@ -25,15 +25,12 @@ from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_utils.root_context import RootContext
 from pyzeal_utils.service_locator import ServiceLocator
 
-####################
-# Global Constants #
-####################
-
-TWO_PI: Final[float] = 5.0  # numerical cutoff between 0 and 2*pi
-# default values for the argument estimator
-DEFAULT_NUM_PTS = 6500
-DEFAULT_DELTA_PHI = 0.01
-DEFAULT_MAX_PRECISION = 1e-10
+from .constants import (
+    DEFAULT_DELTA_PHI,
+    DEFAULT_MAX_PRECISION,
+    DEFAULT_NUM_PTS,
+    TWO_PI,
+)
 
 
 class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
@@ -145,7 +142,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         deltaIm = y2 - y1
 
         # check if current rectangle contains zeros
-        if phi <= TWO_PI:
+        if phi < TWO_PI:
             if context.progress is not None and context.task is not None:
                 context.progress.update(
                     context.task, advance=deltaRe * deltaIm
