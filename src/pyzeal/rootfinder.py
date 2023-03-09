@@ -54,7 +54,7 @@ class RootFinder(RootFinderInterface, Loggable):
         containerType: ContainerTypes = ContainerTypes.DEFAULT,
         algorithmType: AlgorithmTypes = AlgorithmTypes.DEFAULT,
         estimatorType: EstimatorTypes = EstimatorTypes.DEFAULT,
-        precision: Tuple[int, int] = (3, 3),
+        precision: Optional[Tuple[int, int]] = None,
         numSamplePoints: Optional[int] = None,
         verbose: Optional[bool] = None,
     ) -> None:
@@ -72,7 +72,7 @@ class RootFinder(RootFinderInterface, Loggable):
         :param estimatorType: the type of argument estimator used
         :type estimatorType: EstimatorTypes
         :param precision: the accuracy at which roots are considered exact
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
         :type numSamplePoints: Optional[int]
         :param verbose: flag that toggles the command line progress bar
@@ -89,7 +89,9 @@ class RootFinder(RootFinderInterface, Loggable):
         self._container = ServiceLocator.tryResolve(
             RootContainer, containerType=containerType, precision=precision
         )
-        self.precision = precision
+        self.precision = (
+            precision or ServiceLocator.tryResolve(SettingsService).precision
+        )
 
         self.verbose = (
             verbose
@@ -131,10 +133,9 @@ class RootFinder(RootFinderInterface, Loggable):
         :type precision: Optional[Tuple[int, int]]
         """
         # if no precision was given, use default precision from constructor
-        precision = self.precision if precision is None else precision
+        precision = precision or self.precision
         # desymmetrize the input rectangle
         (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
-
         # initialize the progress bar
         progress = FinderProgressBar() if self.verbose else None
         task: Optional[TaskID] = None
@@ -145,21 +146,21 @@ class RootFinder(RootFinderInterface, Loggable):
 
         # construct the root finding context
         context = RootContext(
-            self.f,
-            self.df,
-            self.container,
-            (x1, x2),
-            (y1, y2),
-            precision,
-            progress,
-            task,
+            f=self.f,
+            df=self.df,
+            container=self.container,
+            precision=precision,
+            reRan=(x1, x2),
+            imRan=(y1, y2),
+            progress=progress,
+            task=task,
         )
         # shut down root finding in orderly fashion upon command line signals
         try:
             self.logger.info("attempting to calculate roots...")
             self.algorithm.calcRoots(context)
             if progress is not None and task is not None:
-                progress.update(task, description=("[green] search finished!"))
+                progress.update(task, description="[green] search finished!")
         except KeyboardInterrupt:
             self.logger.warning(
                 "root calculation interrupted - some roots may be missing!"

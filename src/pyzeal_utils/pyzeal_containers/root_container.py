@@ -11,7 +11,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -21,6 +21,7 @@ from pyzeal_types.root_types import tRoot, tVec
 from pyzeal_utils.filter_context import FilterContext, tRootFilter
 
 
+@runtime_checkable
 class RootContainer(Loggable, Protocol):
     "Structural interface for container classes meant to hold root data."
 

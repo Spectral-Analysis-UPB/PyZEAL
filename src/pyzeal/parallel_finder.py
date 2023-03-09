@@ -44,7 +44,7 @@ class ParallelRootFinder(RootFinder):
         containerType: ContainerTypes = ContainerTypes.DEFAULT,
         algorithmType: AlgorithmTypes = AlgorithmTypes.DEFAULT,
         estimatorType: EstimatorTypes = EstimatorTypes.DEFAULT,
-        precision: Tuple[int, int] = (3, 3),
+        precision: Optional[Tuple[int, int]] = None,
         numSamplePoints: Optional[int] = None,
         verbose: Optional[bool] = None,
     ) -> None:
@@ -60,7 +60,7 @@ class ParallelRootFinder(RootFinder):
         :param algorithmType: the type of algorithm used for root finding
         :type algorithmType: AlgorithmTypes
         :param precision: the accuracy at which roots are considered exact
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
         :type numSamplePoints: Optional[int]
         :param verbose: flag that toggles the command line progress bar
@@ -112,10 +112,10 @@ class ParallelRootFinder(RootFinder):
         :param imRan: vertical extend of the complex region to search in
         :type imRan: Tuple[int, int]
         :param precision: accuracy of the search in real and imaginary parts
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         """
         # if no precision was given, use default precision from constructor
-        precision = self.precision if precision is None else precision
+        precision = precision or self.precision
         # desymmetrize the input rectangle
         (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
 
@@ -132,13 +132,13 @@ class ParallelRootFinder(RootFinder):
             # construct a list of root contexts, several for each child process
             rootQueue: tQueue = cast(tQueue, Manager().Queue())
             contexts = self.createRootJobs(
-                cpu_count() or 1,
-                (x1, x2),
-                (y1, y2),
-                rootQueue,
-                precision,
-                progress,
-                task,
+                numProcesses=cpu_count() or 1,
+                reRan=(x1, x2),
+                imRan=(y1, y2),
+                rootQueue=rootQueue,
+                precision=precision,
+                progress=progress,
+                task=task,
             )
 
             with Pool(initializer=ParallelRootFinder.suppressSig) as pool:
@@ -157,8 +157,7 @@ class ParallelRootFinder(RootFinder):
                     self.logger.debug("all child processes returned normally!")
                 except KeyboardInterrupt:
                     self.logger.warning(
-                        "root calculation interrupted \
-                        - some roots may be missing!"
+                        "calculation interrupted - some roots may be missing!"
                     )
                     if progress and task:
                         progress.stop_task(task)
@@ -221,14 +220,14 @@ class ParallelRootFinder(RootFinder):
             for j in range(len(imagPts) - 1):
                 contexts.append(
                     RootContext(
-                        self.f,
-                        self.df,
-                        plainContainer,
-                        (realPts[i], realPts[i + 1]),
-                        (imagPts[j], imagPts[j + 1]),
-                        precision,
-                        progress,
-                        task,
+                        f=self.f,
+                        df=self.df,
+                        container=plainContainer,
+                        reRan=(realPts[i], realPts[i + 1]),
+                        imRan=(imagPts[j], imagPts[j + 1]),
+                        precision=precision,
+                        progress=progress,
+                        task=task,
                     )
                 )
         return contexts

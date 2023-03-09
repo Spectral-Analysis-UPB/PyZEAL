@@ -9,11 +9,11 @@ Authors:\n
 class InvalidSettingException(Exception):
     "Raise (and expect) this except whenever an invalid option is encountered."
 
-    def __init__(self, message: str) -> None:
+    def __init__(self, setting: str) -> None:
         """
         Initialize an `InvalidSettingException` instance.
 
-        :param message: exception message
-        :type message: str
+        :param setting: the setting which caused the exception
+        :type setting: str
         """
-        super().__init__(message)
+        super().__init__(f"setting invalid value for {setting}!")

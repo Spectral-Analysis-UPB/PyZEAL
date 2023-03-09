@@ -2,5 +2,6 @@
    "defaultContainer": "RoundingContainer",
    "defaultAlgorithm": "SimpleArgument",
    "logLevel": "WARNING",
-   "verbose": true
+   "verbose": true,
+   "precision": [5, 5]
 }

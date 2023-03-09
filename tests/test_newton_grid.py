@@ -51,7 +51,7 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
         pytest.skip()
     for numSamplePoints in [20, 100]:
         gridRF = newtonGridFinder(testName, numSamplePoints, parallel=parallel)
-        gridRF.calculateRoots(RE_RAN, IM_RAN, precision=(4, 4))
+        gridRF.calculateRoots(RE_RAN, IM_RAN, (5, 5))
         print(gridRF.roots)
         foundRoots = np.sort_complex(gridRF.roots)
         expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
@@ -82,7 +82,7 @@ def testNewtonGridRootFinderHypothesis(roots: List[complex]) -> None:
     )
     gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    gridRF.calculateRoots((-10, 10), (-10, 10), precision=(3, 3))
+    gridRF.calculateRoots((-10, 10), (-10, 10), (5, 5))
     foundRoots = np.sort_complex(gridRF.roots)
     # We only find a higher-order zero once, so we remove duplicates
     uniqueRoots = list(set(roots))

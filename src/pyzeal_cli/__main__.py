@@ -11,11 +11,11 @@ from os.path import abspath
 from sys import argv
 from typing import Optional
 
+from pyzeal_cli.parse_results import PluginParseResults, SettingsParseResults
 from pyzeal_cli.parser_facade import PyZEALParserInterface
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_plugins.installation_helper import InstallationHelper
 from pyzeal_plugins.plugin_loader import PluginLoader
-from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
@@ -40,16 +40,40 @@ class PyZEALEntry:
         Main entry point for the CLI of the PyZEAL project.
         """
 
-        args = PyZEALEntry.parser.parseArgs()
+        settingsArgs, pluginArgs = PyZEALEntry.parser.parseArgs()
+
         # check if any arguments were provided and respond with usage hint
         if len(argv) < 2:
             print("this is the CLI of the PyZEAL package. use '-h' for help.")
 
-        # check if 'view' subcommand was selected and print current settings
-        if args.doPrint:
-            print(JSONSettingsService())
+        PyZEALEntry.handleViewSubcommand(settingsArgs)
+        PyZEALEntry.handleChangeSubcommand(settingsArgs)
+        PyZEALEntry.handlePluginSubcommand(pluginArgs)
 
-        # check if 'change' subcommand was selected and change accordingly
+        # a valid subcommand was selected but with no meaningful options
+        if len(argv) == 2:
+            print("use '-h' with your subcommand for help.")
+
+    @staticmethod
+    def handleViewSubcommand(args: SettingsParseResults) -> None:
+        """
+        Check if the 'view' subcommand was selected and print current settings.
+
+        :param args: _description_
+        :type args: _type_
+        """
+        if args.doPrint:
+            print(PyZEALEntry.settingsService)
+
+    @staticmethod
+    def handleChangeSubcommand(args: SettingsParseResults) -> None:
+        """
+        Check if the 'change' subcommand was selected and change settings
+        accordingly.
+
+        :param args: _description_
+        :type args: _type_
+        """
         settingsService = PyZEALEntry.settingsService
         if args.container:
             PyZEALEntry.changeContainerSetting(
@@ -62,7 +86,17 @@ class PyZEALEntry:
         if args.verbose:
             PyZEALEntry.changeVerbositySetting(args.verbose, settingsService)
 
-        # check if 'plugin' subcommand was selected and manipulate plugins
+    @staticmethod
+    def handlePluginSubcommand(args: PluginParseResults) -> None:
+        """
+        Check if the 'plugin' subcommand was selected and manipulate plugins
+        accordingly.
+
+        :param args: _description_
+        :type args: _type_
+        :raises SystemExit: _description_
+        :raises SystemExit: _description_
+        """
         if args.listPlugins:
             print("currently installed Plugins:")
             print("----------------------------")
@@ -90,10 +124,6 @@ class PyZEALEntry:
             else:
                 print("[error] the requested plugin does not exist - abort!")
                 raise SystemExit(2)
-
-        # a valid subcommand was selected but with no meaningful options
-        if len(argv) == 2:
-            print("use '-h' with your subcommand for help.")
 
     @staticmethod
     def changeContainerSetting(

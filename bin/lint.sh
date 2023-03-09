@@ -64,4 +64,10 @@ then
     echo ""
 fi
 
+echo "|-------------------------|"
+echo "|[testing CLI entry point]|"
+echo "|-------------------------|"
+pyzeal --version
+echo ""
+
 echo "--> all done!"

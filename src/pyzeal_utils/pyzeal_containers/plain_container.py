@@ -27,13 +27,14 @@ class PlainContainer(RootContainer):
     without any further action.
     """
 
-    __slots__ = ("rootBuffer",)
+    __slots__ = ("rootBuffer", "_roots")
 
     def __init__(self, queue: Optional[tQueue]) -> None:
         """
         Initialize a new PlainContainer.
         """
         self.rootBuffer = cast(tQueue, queue or Manager().Queue())
+        self._roots: List[tRoot] = []
         self.logger.info("initialized a new plain root container")
 
     def addRoot(self, root: tRoot, context: FilterContext) -> None:
@@ -70,10 +71,8 @@ class PlainContainer(RootContainer):
         :return: a vector of complex roots
         :rtype: NDArray[complex128]
         """
-        result: List[complex] = []
-        while not self.rootBuffer.empty():
-            result.append(self.rootBuffer.get()[0])
-        return np.array(result)
+        self._transferRootBuffer()
+        return np.array([root for root, _ in self._roots], dtype=np.complex128)
 
     def getRootOrders(self) -> NDArray[np.int32]:
         """
@@ -83,17 +82,23 @@ class PlainContainer(RootContainer):
         :return: a vector of integer root orders (multiplicities)
         :rtype: NDArray[int32]
         """
-        result: List[complex] = []
+        self._transferRootBuffer()
+        return np.array([order for _, order in self._roots], dtype=np.int32)
+
+    def _transferRootBuffer(self) -> None:
+        """
+        TODO
+        """
         while not self.rootBuffer.empty():
-            result.append(self.rootBuffer.get()[0])
-        return np.array(result)
+            self._roots.append(self.rootBuffer.get())
 
     def clear(self) -> None:
         "Plain containers cannot be cleared."
         raise NotImplementedError("cannot clear plain containers!")
 
     def registerFilter(self, filterPredicate: tRootFilter, key: str) -> None:
-        """This is not supported by `PlainContainer`.
+        """
+        Cannot register filters with an instance of `PlainContainer`.
 
         :param filterPredicate: New filter to register
         :type filterPredicate: tRootFilter
@@ -103,7 +108,8 @@ class PlainContainer(RootContainer):
         raise NotImplementedError("plain containers do not support filtering!")
 
     def unregisterFilter(self, key: str) -> None:
-        """This is not supported by `PlainContainer`.
+        """
+        Cannot unregister filters with an instance of `PlainContainer`.
 
         :param key: Filter key
         :type key: str

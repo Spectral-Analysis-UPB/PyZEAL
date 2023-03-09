@@ -52,7 +52,7 @@ def rootsMatchClosely(roots1: tVec, roots2: tVec, atol: float) -> bool:
     :rtype: bool
     """
     try:
-        numpy_match = np.allclose(roots1, roots2, atol=atol)
+        numpyMatch = np.allclose(roots1, roots2, atol=atol)
     except ValueError:
-        numpy_match = False
-    return numpy_match or _compareRootSets(roots1, roots2, atol)
+        numpyMatch = False
+    return numpyMatch or _compareRootSets(roots1, roots2, atol)

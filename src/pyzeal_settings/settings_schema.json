@@ -13,6 +13,15 @@
         },
         "verbose": {
             "type": "boolean"
+        },
+        "precision": {
+            "type": "array",
+            "contains": {
+                "type": "number"
+            },
+            "minContains": 2,
+            "maxContains": 2,
+            "maxItems": 2
         }
     },
     "additionalProperties": false,

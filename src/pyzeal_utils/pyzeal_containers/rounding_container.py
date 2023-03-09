@@ -9,14 +9,16 @@ Authors:\n
 """
 
 from logging import INFO
-from typing import Dict, Set, Tuple
+from typing import Dict, Optional, Set, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
 
+from pyzeal_settings.settings_service import SettingsService
 from pyzeal_types.root_types import tRoot, tVec
 from pyzeal_utils.filter_context import FilterContext, tRootFilter
 from pyzeal_utils.pyzeal_containers.root_container import RootContainer
+from pyzeal_utils.service_locator import ServiceLocator
 
 
 class RoundingContainer(RootContainer):
@@ -31,14 +33,17 @@ class RoundingContainer(RootContainer):
 
     __slots__ = ("precision", "rootSet", "filters")
 
-    def __init__(self, precision: Tuple[int, int]) -> None:
+    def __init__(self, precision: Optional[Tuple[int, int]]) -> None:
         """
-        Initialize a rounding RootContainer with a given accuracy.
+        Initialize a rounding RootContainer. If no precision is given,
+        default precision is used.
 
         :param precision: expected accuracy of roots to be added
-        :type precision: Tuple[int, int]
+        :type precision: Optional[Tuple[int, int]]
         """
-        self.precision = precision
+        self.precision = (
+            precision or ServiceLocator.tryResolve(SettingsService).precision
+        )
         self.rootSet: Set[tRoot] = set()
         self.filters: Dict[str, tRootFilter] = {}
         self.logger.info("initialized a new rounding root container")
@@ -67,7 +72,10 @@ class RoundingContainer(RootContainer):
             self.logger.debug(
                 "new accuracy detected - rounding container cleared!"
             )
-            self.precision = context.precision
+            self.precision = (
+                context.precision
+                or ServiceLocator.tryResolve(SettingsService).precision
+            )
         self.logger.debug(
             "attempting to add new root %f + %fi to rounding container!",
             root[0].real,

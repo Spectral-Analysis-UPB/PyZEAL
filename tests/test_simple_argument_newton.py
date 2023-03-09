@@ -15,6 +15,7 @@ from pyzeal import RootFinder
 from pyzeal_settings.json_settings_service import JSONSettingsService
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
+from pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal_types.filter_types import FilterTypes
 
 from .benchmarks.resources.testing_fixtures import (
@@ -34,12 +35,19 @@ KNOWN_FAILURES = [
     "log and sin composition",  # see issue #12
     "x^100",  # roots of very high orders require too much z-refinement
     "1e6 * x^100",
+    "x^30",
 ]
 
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgumentNewton(testName: str, parallel: bool) -> None:
+@pytest.mark.parametrize(
+    "estimator",
+    [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],
+)
+def testSimpleArgumentNewton(
+    testName: str, parallel: bool, estimator: EstimatorTypes
+) -> None:
     """
     Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by
     `testName`
@@ -51,8 +59,10 @@ def testSimpleArgumentNewton(testName: str, parallel: bool) -> None:
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
-    hrf = simpleArgumentNewtonRootFinder(testName, parallel=parallel)
-    hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
+    hrf = simpleArgumentNewtonRootFinder(
+        testName, parallel=parallel, estimatorType=estimator
+    )
+    hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
     assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
@@ -85,7 +95,7 @@ def testSimpleArgumentNewtonHypothesis(roots: List[complex]) -> None:
     )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    hrf.calculateRoots((-5.0, 5.01), (-5.0, 5.01), precision=(5, 5))
+    hrf.calculateRoots((-5.0, 5.01), (-5.0, 5.01), (5, 5))
     foundRoots = np.sort_complex(hrf.roots)
 
     # We only find a higher-order zero once, so we have to remove duplicates

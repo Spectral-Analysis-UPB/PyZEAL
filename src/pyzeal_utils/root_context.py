@@ -28,9 +28,9 @@ class RootContext:
     f: tHoloFunc
     df: Optional[tHoloFunc]
     container: RootContainer
+    precision: Tuple[int, int]
     reRan: Tuple[float, float] = (-1.0, 1.0)
     imRan: Tuple[float, float] = (-1.0, 1.0)
-    precision: Tuple[int, int] = 3, 3
     progress: Optional[FinderProgressBar] = None
     task: Optional[TaskID] = None
 
