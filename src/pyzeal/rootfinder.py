@@ -89,7 +89,9 @@ class RootFinder(RootFinderInterface, Loggable):
         self._container = ServiceLocator.tryResolve(
             RootContainer, containerType=containerType, precision=precision
         )
-        self.precision = precision
+        self.precision = (
+            precision or ServiceLocator.tryResolve(SettingsService).precision
+        )
 
         self.verbose = (
             verbose
@@ -131,7 +133,7 @@ class RootFinder(RootFinderInterface, Loggable):
         :type precision: Optional[Tuple[int, int]]
         """
         # if no precision was given, use default precision from constructor
-        precision = self.precision if precision is None else precision
+        precision = precision or self.precision
         # desymmetrize the input rectangle
         (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
         # initialize the progress bar

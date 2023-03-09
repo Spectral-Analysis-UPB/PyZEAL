@@ -8,11 +8,13 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from argparse import ArgumentParser
-from importlib.metadata import version
-from typing import Final
+from __future__ import annotations
 
-from pyzeal_cli.parse_results import ParseResults
+from argparse import ArgumentParser, _SubParsersAction
+from importlib.metadata import version
+from typing import Final, Tuple
+
+from pyzeal_cli.parse_results import PluginParseResults, SettingsParseResults
 from pyzeal_cli.parser_facade import PyZEALParserInterface
 
 
@@ -31,8 +33,8 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         "manipulate PyZEAL behaviour by changing the (default) settings and"
         " (un-)installing (custom) plugins"
     )
-    PROGRAM_NAME = "pyzeal"
-    VERSION = version(PROGRAM_NAME)
+    PROGRAM_NAME: Final[str] = "pyzeal"
+    VERSION: Final[str] = version(PROGRAM_NAME)
 
     def __init__(self) -> None:
         """
@@ -45,12 +47,7 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             prog=f"{PyZEALParser.PROGRAM_NAME}",
         )
 
-        # add version info option
-        self.add_argument(
-            "--version",
-            action="version",
-            version=f"%(prog)s {PyZEALParser.VERSION}",
-        )
+        self.addVersionOption()
 
         # add subcommands for options and plugins
         subParsers = self.add_subparsers(
@@ -58,11 +55,44 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             help="view/change settings and (un-)install plugins",
             parser_class=ArgumentParser,
         )
+
+        self.addViewSubcommand(subParsers)
+        self.addChangeSubcommand(subParsers)
+        self.addPluginSubcommand(subParsers)
+
+    def addVersionOption(self) -> None:
+        """
+        Add version info option to the cli.
+        """
+        self.add_argument(
+            "--version",
+            action="version",
+            version=f"%(prog)s {PyZEALParser.VERSION}",
+        )
+
+    def addViewSubcommand(
+        self, subParsers: _SubParsersAction[ArgumentParser]
+    ) -> None:
+        """
+        Add view subcommand and its options to the cli.
+
+        :param subParsers: _description_
+        :type subParsers: _type_
+        """
         viewParser = subParsers.add_parser("view")
         viewParser.add_argument(
             "-p", "--print", action="store_true", help="print current settings"
         )
 
+    def addChangeSubcommand(
+        self, subParsers: _SubParsersAction[ArgumentParser]
+    ) -> None:
+        """
+        Add change subcommand and its options to the cli.
+
+        :param subParsers: _description_
+        :type subParsers: _type_
+        """
         changeParser = subParsers.add_parser("change")
         changeParser.add_argument(
             "--container",
@@ -90,7 +120,15 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             help="change current default verbosity level",
         )
 
-        # add subcommands for (un-)installing plugins
+    def addPluginSubcommand(
+        self, subParsers: _SubParsersAction[ArgumentParser]
+    ) -> None:
+        """
+        Add plugin subcommand and its options to the cli.
+
+        :param subParsers: _description_
+        :type subParsers: _type_
+        """
         pluginParser = subParsers.add_parser("plugin")
         pluginParser.add_argument(
             "-l", "--list", action="store_true", help="list installed plugins"
@@ -110,33 +148,30 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             help="uninstall a given plugin-related (data or source) file",
         )
 
-    def parseArgs(self) -> ParseResults:
+    def parseArgs(self) -> Tuple[SettingsParseResults, PluginParseResults]:
         """
-        TODO
+        Read command line arguments, parse the read arguments and return them
+        wrapped according to the `pyzeal_cli` data contract for parsed command
+        line arguments.
+
+        :return: the wrapped parsing results
+        :rtype: Tuple[SettingsParseResults, PluginParseResults]
         """
         # fetch cli arguments
         args = super().parse_args()
 
-        # extract cli arguments
-        doPrint = getattr(args, "print", None)
-        container = getattr(args, "container", None)
-        algorithm = getattr(args, "algorithm", None)
-        logLevel = getattr(args, "log_level", None)
-        verbose = getattr(args, "verbose", None)
-        listPlugins = getattr(args, "list", None)
-        listModules = getattr(args, "modules", None)
-        install = getattr(args, "install", None)
-        uninstall = getattr(args, "uninstall", None)
-
         # return wrapped cli arguments
-        return ParseResults(
-            doPrint=bool(doPrint) if doPrint else False,
-            container=container if container else "",
-            algorithm=algorithm if algorithm else "",
-            logLevel=logLevel if logLevel else "",
-            verbose=verbose if verbose else "",
-            listPlugins=bool(listPlugins) if listPlugins else False,
-            listModules=bool(listModules) if listModules else False,
-            install=install if install else "",
-            uninstall=uninstall if uninstall else "",
+        parseArgs = SettingsParseResults(
+            doPrint=getattr(args, "print", None) or False,
+            container=getattr(args, "container", None) or "",
+            algorithm=getattr(args, "algorithm", None) or "",
+            logLevel=getattr(args, "log_level", None) or "",
+            verbose=getattr(args, "verbose", None) or "",
         )
+        pluginArgs = PluginParseResults(
+            listPlugins=getattr(args, "list", None) or False,
+            listModules=getattr(args, "modules", None) or False,
+            install=getattr(args, "install", None) or "",
+            uninstall=getattr(args, "uninstall", None) or "",
+        )
+        return parseArgs, pluginArgs

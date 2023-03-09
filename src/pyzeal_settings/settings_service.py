@@ -6,13 +6,14 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Protocol, Tuple
+from typing import Protocol, Tuple, runtime_checkable
 
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal_types.container_types import ContainerTypes
 
 
+@runtime_checkable
 class SettingsService(Protocol):
     """
     This class provides a layer of abstraction for storage and retrieval of
@@ -93,7 +94,7 @@ class SettingsService(Protocol):
     @verbose.setter
     def verbose(self, value: bool) -> None:
         """
-        Set the verbosity setting
+        Set the default verbosity setting.
 
         :param value: New verbosity setting
         :type value: bool
@@ -102,9 +103,10 @@ class SettingsService(Protocol):
 
     @property
     def precision(self) -> Tuple[int, int]:
-        """Get current precision level as a negative exponent, i.e. a precision
+        """
+        Get current precision level as a negative exponent, i.e. a precision
         of 10^(-3), in real and imaginary parts respectively, corresponds
-        to a precision level of (3, 3)
+        to a precision level of (3, 3).
 
         :return: Current precision level
         :rtype: Tuple[int, int]
@@ -113,7 +115,8 @@ class SettingsService(Protocol):
 
     @precision.setter
     def precision(self, value: Tuple[int, int]) -> None:
-        """Set precision level to `value`.
+        """
+        Set the default precision level to `value`.
 
         :param value: New precision level
         :type value: Tuple[int, int]

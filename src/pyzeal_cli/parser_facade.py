@@ -8,9 +8,9 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Protocol, runtime_checkable
+from typing import Protocol, Tuple, runtime_checkable
 
-from pyzeal_cli.parse_results import ParseResults
+from pyzeal_cli.parse_results import PluginParseResults, SettingsParseResults
 
 
 @runtime_checkable
@@ -19,7 +19,7 @@ class PyZEALParserInterface(Protocol):
     TODO
     """
 
-    def parseArgs(self) -> ParseResults:
+    def parseArgs(self) -> Tuple[SettingsParseResults, PluginParseResults]:
         """
         TODO
         """

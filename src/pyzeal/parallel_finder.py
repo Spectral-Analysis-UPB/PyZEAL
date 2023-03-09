@@ -115,7 +115,7 @@ class ParallelRootFinder(RootFinder):
         :type precision: Optional[Tuple[int, int]]
         """
         # if no precision was given, use default precision from constructor
-        precision = self.precision if precision is None else precision
+        precision = precision or self.precision
         # desymmetrize the input rectangle
         (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
 
@@ -157,8 +157,7 @@ class ParallelRootFinder(RootFinder):
                     self.logger.debug("all child processes returned normally!")
                 except KeyboardInterrupt:
                     self.logger.warning(
-                        "root calculation interrupted \
-                        - some roots may be missing!"
+                        "calculation interrupted - some roots may be missing!"
                     )
                     if progress and task:
                         progress.stop_task(task)

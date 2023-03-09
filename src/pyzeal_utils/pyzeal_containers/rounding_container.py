@@ -40,11 +40,7 @@ class RoundingContainer(RootContainer):
         :param precision: expected accuracy of roots to be added
         :type precision: Optional[Tuple[int, int]]
         """
-        self.precision = (
-            precision
-            if precision is not None
-            else JSONSettingsService().precision
-        )
+        self.precision = precision or JSONSettingsService().precision
         self.rootSet: Set[tRoot] = set()
         self.filters: Dict[str, tRootFilter] = {}
         self.logger.info("initialized a new rounding root container")

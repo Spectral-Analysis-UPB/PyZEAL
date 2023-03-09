@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ParseResults:
+class SettingsParseResults:
     """
     TODO
     """
@@ -19,6 +19,14 @@ class ParseResults:
     algorithm: str
     logLevel: str
     verbose: str
+
+
+@dataclass
+class PluginParseResults:
+    """
+    TODO
+    """
+
     listPlugins: bool
     listModules: bool
     install: str

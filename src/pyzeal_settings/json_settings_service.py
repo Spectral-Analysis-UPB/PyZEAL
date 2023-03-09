@@ -8,8 +8,7 @@ Authors:\n
 
 from json import dump, load
 from os.path import dirname, join
-from typing import Dict, Literal, Tuple, Union
-from typing import Dict, Final, Literal, Union
+from typing import Dict, Final, Literal, Tuple, Union
 
 from pyzeal_logging.log_levels import LogLevel
 from pyzeal_settings.invalid_setting_exception import InvalidSettingException
@@ -22,6 +21,19 @@ DEFAULT_SETTINGS: Final[str] = join(dirname(__file__), "default_settings.json")
 # default location where custom settings are saved
 CUSTOM_SETTINGS: Final[str] = join(dirname(__file__), "custom_settings.json")
 
+# admissible keys when changing settings
+tSettingsKey = Union[
+    Literal["defaultContainer"],
+    Literal["defaultAlgorithm"],
+    Literal["logLevel"],
+    Literal["verbose"],
+    Literal["precision"],
+]
+# admissible types when assigning to settings properties
+tSettingsPropertyType = Union[
+    ContainerTypes, AlgorithmTypes, LogLevel, bool, Tuple[int, int]
+]
+
 
 class JSONSettingsService(SettingsService):
     """
@@ -30,7 +42,13 @@ class JSONSettingsService(SettingsService):
     access to settings must happen through a service like this one.
     """
 
-    __slots__ = ("_container", "_algorithm", "_level", "_verbose", "_precision")
+    __slots__ = (
+        "_container",
+        "_algorithm",
+        "_level",
+        "_verbose",
+        "_precision",
+    )
 
     def __init__(self) -> None:
         """
@@ -68,6 +86,7 @@ class JSONSettingsService(SettingsService):
         verbosity = currentSettings.get("verbose", None)
         if verbosity is not None:
             self._verbose = bool(verbosity)
+
         # set default precision
         precision = currentSettings.get("precision", None)
         if precision is not None:
@@ -82,9 +101,7 @@ class JSONSettingsService(SettingsService):
 
         for attr in self.__slots__:
             if not hasattr(self, attr):
-                raise InvalidSettingException(
-                    f"Invalid setting for {attr[1:]}!"
-                )
+                raise InvalidSettingException(attr[1:])
 
     def __str__(self) -> str:
         """
@@ -142,27 +159,19 @@ class JSONSettingsService(SettingsService):
         self._verbose = value
         JSONSettingsService.createOrUpdateSetting("verbose", value)
 
+    # docstr-coverage:inherited
     @property
     def precision(self) -> Tuple[int, int]:
         return self._precision
 
     @precision.setter
-    def precision(self, value: Tuple[int, int]):
+    def precision(self, value: Tuple[int, int]) -> None:
         self._precision = value
         JSONSettingsService.createOrUpdateSetting("precision", value)
 
     @staticmethod
     def createOrUpdateSetting(
-        setting: Union[
-            Literal["defaultContainer"],
-            Literal["defaultAlgorithm"],
-            Literal["logLevel"],
-            Literal["verbose"],
-            Literal["precision"],
-        ],
-        value: Union[
-            ContainerTypes, AlgorithmTypes, LogLevel, bool, Tuple[int, int]
-        ],
+        setting: tSettingsKey, value: tSettingsPropertyType
     ) -> None:
         """
         Update a setting or create a new setting if no value has been set
@@ -178,7 +187,9 @@ class JSONSettingsService(SettingsService):
         :raises InvalidSettingException: If the given value is invalid for the
             specified setting, an `InvalidSettingException` is raised.
         """
-        currentSettings: Dict[str, Union[str, bool, Tuple[int, int]]] = {}
+        currentSettings: Dict[
+            tSettingsKey, Union[str, bool, Tuple[int, int]]
+        ] = {}
         try:
             with open(
                 join(dirname(__file__), "custom_settings.json"),
@@ -190,47 +201,31 @@ class JSONSettingsService(SettingsService):
             pass
 
         if setting == "defaultContainer":
-            if isinstance(value, ContainerTypes):
-                currentSettings["defaultContainer"] = value.value
-            else:
-                raise InvalidSettingException(
-                    "setting invalid value for default container!"
-                )
+            if not isinstance(value, ContainerTypes):
+                raise InvalidSettingException("default container")
+            currentSettings["defaultContainer"] = value.value
         elif setting == "defaultAlgorithm":
-            if isinstance(value, AlgorithmTypes):
-                currentSettings["defaultAlgorithm"] = value.value
-            else:
-                raise InvalidSettingException(
-                    "setting invalid value for default algorithm!"
-                )
+            if not isinstance(value, AlgorithmTypes):
+                raise InvalidSettingException("default algorithm")
+            currentSettings["defaultAlgorithm"] = value.value
         elif setting == "logLevel":
-            if isinstance(value, LogLevel):
-                currentSettings["logLevel"] = value.name
-            else:
-                raise InvalidSettingException(
-                    "setting invalid value for default algorithm!"
-                )
+            if not isinstance(value, LogLevel):
+                raise InvalidSettingException("default algorithm")
+            currentSettings["logLevel"] = value.name
         elif setting == "verbose":
-            if isinstance(value, bool):
-                currentSettings["verbose"] = value
-            else:
-                raise InvalidSettingException(
-                    "setting invalid value for default verbosity!"
-                )
+            if not isinstance(value, bool):
+                raise InvalidSettingException("default verbosity")
+            currentSettings["verbose"] = value
         elif setting == "precision":
-            if isinstance(value, tuple):
-                if isinstance(value[0], int) and isinstance(value[1], int):
-                    currentSettings["precision"] = (value[0], value[1])
-                else:
-                    raise InvalidSettingException(
-                        "setting invalid value for default precision!"
-                    )
-            else:
-                raise InvalidSettingException(
-                    "setting invalid value for default precision!"
-                )
+            if not (
+                isinstance(value, tuple)
+                and isinstance(value[0], int)
+                and isinstance(value[1], int)
+            ):
+                raise InvalidSettingException("default precision")
+            currentSettings["precision"] = (value[0], value[1])
         else:
-            raise InvalidSettingException("trying to set invalid setting key!")
+            raise InvalidSettingException(f"key={setting}")
 
         with open(
             join(dirname(__file__), "custom_settings.json"),
