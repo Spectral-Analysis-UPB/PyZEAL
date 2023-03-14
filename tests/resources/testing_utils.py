@@ -7,7 +7,8 @@ Authors:\n
 """
 
 import numpy as np
-from pyzeal.types.root_types import tVec
+
+from pyzeal.pyzeal_types.root_types import tVec
 
 
 def _compareRootSets(roots1: tVec, roots2: tVec, atol: float) -> bool:

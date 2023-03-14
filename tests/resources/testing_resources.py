@@ -12,7 +12,8 @@ from functools import partial
 from typing import Dict, Tuple, cast
 
 import numpy as np
-from pyzeal.types.root_types import tHoloFunc, tVec
+
+from pyzeal.pyzeal_types.root_types import tHoloFunc, tVec
 
 # the extends of the domain which contains exactly the specified roots for the
 # given functions

@@ -4,11 +4,12 @@ TODO
 
 import numpy as np
 import pytest
-from pyzeal.algorithms.newton_grid import NewtonGridAlgorithm
 from pyzeal.tests.resources.testing_estimator_resources import (
     functions,
     generateRootContext,
 )
+
+from pyzeal.algorithms.newton_grid import NewtonGridAlgorithm
 
 
 @pytest.mark.parametrize("testName", functions.keys())

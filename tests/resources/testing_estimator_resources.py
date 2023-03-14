@@ -8,7 +8,8 @@ from functools import partial
 from typing import Tuple
 
 import numpy as np
-from pyzeal.types.container_types import ContainerTypes
+
+from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.root_context import RootContext
 

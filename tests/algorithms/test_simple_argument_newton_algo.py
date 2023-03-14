@@ -4,12 +4,13 @@ TODO
 
 import numpy as np
 import pytest
-from pyzeal.algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
 from pyzeal.tests.testing_estimator_resources import (
     functions,
     generateRootContext,
 )
-from pyzeal.types.estimator_types import EstimatorTypes
+
+from pyzeal.algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 
 
 @pytest.mark.parametrize("testName", functions.keys())

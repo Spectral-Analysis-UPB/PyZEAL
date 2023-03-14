@@ -9,8 +9,6 @@ import numpy as np
 import pytest
 from hypothesis import given, settings, strategies
 from numpy.polynomial import Polynomial
-from pyzeal.rootfinders import RootFinder
-from pyzeal.settings.json_settings_service import JSONSettingsService
 from pyzeal.tests.resources.testing_fixtures import (
     simpleArgumentNewtonRootFinder,
 )
@@ -20,9 +18,12 @@ from pyzeal.tests.resources.testing_resources import (
     testFunctions,
 )
 from pyzeal.tests.resources.testing_utils import rootsMatchClosely
-from pyzeal.types.algorithm_types import AlgorithmTypes
-from pyzeal.types.container_types import ContainerTypes
-from pyzeal.types.filter_types import FilterTypes
+
+from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
+from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.filter_types import FilterTypes
+from pyzeal.rootfinders import RootFinder
+from pyzeal.settings.json_settings_service import JSONSettingsService
 
 # disable progress bar by default for tests
 JSONSettingsService().verbose = False

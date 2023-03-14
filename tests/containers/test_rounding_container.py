@@ -2,7 +2,7 @@
 TODO
 """
 
-from pyzeal.types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.filter_context import FilterContext
 

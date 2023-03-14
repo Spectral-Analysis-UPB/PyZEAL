@@ -6,9 +6,9 @@ from functools import partial
 
 from pyzeal.cli.cli_parser import PyZEALParser, PyZEALParserInterface
 from pyzeal.cli.parse_results import ParseResults
-from pyzeal.logging.log_levels import LogLevel
-from pyzeal.types.algorithm_types import AlgorithmTypes
-from pyzeal.types.container_types import ContainerTypes
+from pyzeal.pyzeal_logging.log_levels import LogLevel
+from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
+from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.utils.initialization_handler import PyZEALInitializationHandler
 from pyzeal.utils.service_locator import ServiceLocator
 
