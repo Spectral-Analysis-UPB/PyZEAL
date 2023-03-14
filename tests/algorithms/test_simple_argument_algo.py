@@ -1,9 +1,15 @@
+"""
+TODO
+"""
+
 import numpy as np
 import pytest
-from testing_estimator_resources import functions, generateRootContext
-
-from pyzeal_algorithms.simple_holo import SimpleArgumentAlgorithm
-from pyzeal_types.estimator_types import EstimatorTypes
+from pyzeal.algorithms.simple_holo import SimpleArgumentAlgorithm
+from pyzeal.tests.resources.testing_estimator_resources import (
+    functions,
+    generateRootContext,
+)
+from pyzeal.types.estimator_types import EstimatorTypes
 
 
 @pytest.mark.parametrize("testName", functions.keys())

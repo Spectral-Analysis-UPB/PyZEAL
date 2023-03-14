@@ -37,6 +37,7 @@ rm -rf docs/_build/pdf/
 rm -rf dist/
 rm -rf ./build/
 rm -rf src/*.egg-info/
+rm -rf *.egg-info/
 rm -rf .hypothesis/
 rm -rf src/*/.hypothesis/
 rm -rf tests/.hypothesis/

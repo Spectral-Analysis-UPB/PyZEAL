@@ -3,11 +3,13 @@ This module tests the behavior of the summation-based estimator.
 """
 import numpy as np
 import pytest
-from testing_estimator_resources import lineCases, rectangleCases
-
-from pyzeal_algorithms.pyzeal_estimators import EstimatorCache
-from pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal_utils.pyzeal_factories.estimator_factory import EstimatorFactory
+from pyzeal.algorithms.estimators import EstimatorCache
+from pyzeal.tests.resources.testing_estimator_resources import (
+    lineCases,
+    rectangleCases,
+)
+from pyzeal.types.estimator_types import EstimatorTypes
+from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 
 
 @pytest.mark.parametrize("testName", rectangleCases.keys())

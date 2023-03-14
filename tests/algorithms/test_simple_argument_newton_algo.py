@@ -1,16 +1,22 @@
+"""
+TODO
+"""
+
 import numpy as np
 import pytest
-from testing_estimator_resources import functions, generateRootContext
-
-from pyzeal_algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
-from pyzeal_types.estimator_types import EstimatorTypes
+from pyzeal.algorithms.simple_holo_newton import SimpleArgumentNewtonAlgorithm
+from pyzeal.tests.testing_estimator_resources import (
+    functions,
+    generateRootContext,
+)
+from pyzeal.types.estimator_types import EstimatorTypes
 
 
 @pytest.mark.parametrize("testName", functions.keys())
 def testSimpleArgumentNewtonAlgo(testName: str):
     """
-    Test the SIMPLE_HOLO_NEWTON algorithm by checking if the found roots actually
-    have function values sufficiently close to zero.
+    Test the SIMPLE_HOLO_NEWTON algorithm by checking if the found roots
+    actually have function values sufficiently close to zero.
     """
     rC = generateRootContext(testName, (-5, 5), (-5, 5))
     algo = SimpleArgumentNewtonAlgorithm(EstimatorTypes.SUMMATION_ESTIMATOR)

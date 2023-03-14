@@ -1,20 +1,25 @@
+"""
+TODO
+"""
+
 from functools import partial
 
-from pyzeal_cli.cli_parser import PyZEALParser, PyZEALParserInterface
-from pyzeal_cli.parse_results import ParseResults
-from pyzeal_logging.log_levels import LogLevel
-from pyzeal_types.algorithm_types import AlgorithmTypes
-from pyzeal_types.container_types import ContainerTypes
-from pyzeal_utils.initialization_handler import PyZEALInitializationHandler
-from pyzeal_utils.service_locator import ServiceLocator
+from pyzeal.cli.cli_parser import PyZEALParser, PyZEALParserInterface
+from pyzeal.cli.parse_results import ParseResults
+from pyzeal.logging.log_levels import LogLevel
+from pyzeal.types.algorithm_types import AlgorithmTypes
+from pyzeal.types.container_types import ContainerTypes
+from pyzeal.utils.initialization_handler import PyZEALInitializationHandler
+from pyzeal.utils.service_locator import ServiceLocator
 
 PyZEALInitializationHandler.initPyZEALServices()
 ServiceLocator.registerAsSingleton(PyZEALParserInterface, PyZEALParser())
-from pyzeal_cli.__main__ import PyZEALEntry
+from pyzeal.cli.__main__ import PyZEALEntry
 
 
 def mockArgs(setting):
-    """Generate `ParseResults` containing the settings given by `setting`-
+    """
+    Generate `ParseResults` containing the settings given by `setting`.
 
     :param setting: Dict of settings and values
     :type setting: Dict[str, str]
@@ -39,7 +44,8 @@ def mockArgs(setting):
 
 
 def testChangeAlgorithmCall(mocker):
-    """Test if `changeAlgorithmSetting` gets called correctly.
+    """
+    Test if `changeAlgorithmSetting` gets called correctly.
 
     :param mocker: `pytest-mock` fixture
     """
@@ -124,7 +130,8 @@ def testChangeAlgorithmSettingsCall(mocker):
         partial(mockArgs, setting={"algorithm": "NEWTON_GRID"}),
     )
     mocked_property = mocker.patch(
-        "pyzeal_settings.json_settings_service.JSONSettingsService.defaultAlgorithm",
+        "pyzeal.settings.json_settings_service."
+        "JSONSettingsService.defaultAlgorithm",
         new_callable=mocker.PropertyMock,
         return_value=AlgorithmTypes.SIMPLE_ARGUMENT,
     )
@@ -134,7 +141,8 @@ def testChangeAlgorithmSettingsCall(mocker):
 
 
 def testChangeVerbositySettingsCall(mocker):
-    """Test if `changeVerbositySetting` correctly updates the setting.
+    """
+    Test if `changeVerbositySetting` correctly updates the setting.
 
     :param mocker: `pytest-mock` fixture
     """
@@ -181,7 +189,8 @@ def testChangeContainerSettingsCall(mocker):
         partial(mockArgs, setting={"container": "plain"}),
     )
     mocked_property = mocker.patch(
-        "pyzeal_settings.json_settings_service.JSONSettingsService.defaultContainer",
+        "pyzeal_settings.json_settings_service."
+        "JSONSettingsService.defaultContainer",
         new_callable=mocker.PropertyMock,
         return_value=ContainerTypes.ROUNDING_CONTAINER,
     )

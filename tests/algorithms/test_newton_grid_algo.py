@@ -1,13 +1,20 @@
+"""
+TODO
+"""
+
 import numpy as np
 import pytest
-from testing_estimator_resources import functions, generateRootContext
-
-from pyzeal_algorithms.newton_grid import NewtonGridAlgorithm
+from pyzeal.algorithms.newton_grid import NewtonGridAlgorithm
+from pyzeal.tests.resources.testing_estimator_resources import (
+    functions,
+    generateRootContext,
+)
 
 
 @pytest.mark.parametrize("testName", functions.keys())
 def testNewtonGridAlgo(testName: str):
-    """Test the NEWTON_GRID algorithm by checking if the found roots actually
+    """
+    Test the NEWTON_GRID algorithm by checking if the found roots actually
     have function values sufficiently close to zero.
     """
     rc = generateRootContext(testName, (-5, 5), (-5, 5))

@@ -17,8 +17,7 @@ echo ""
 echo "|--------------------------------------------------|"
 echo "|[running flake8 on sources, tests, and benchmarks]|"
 echo "|--------------------------------------------------|"
-flake8 src/ \
-    && flake8 tests/ \
+flake8 src/ tests/ \
     && echo "no linting errors with flake8!"
 echo ""
 
@@ -46,12 +45,12 @@ echo ""
 echo "|--------------------------|"
 echo "|[validating json schemata]|"
 echo "|--------------------------|"
-check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json \
-    src/pyzeal_settings/default_settings.json
-if [[ -e src/pyzeal_settings/custom_settings.json ]]
+check-jsonschema -v --schemafile src/settings/settings_schema.json \
+    src/settings/default_settings.json
+if [[ -e src/settings/custom_settings.json ]]
 then
-    check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json \
-        src/pyzeal_settings/custom_settings.json
+    check-jsonschema -v --schemafile src/settings/settings_schema.json \
+        src/settings/custom_settings.json
 fi
 echo ""
 
