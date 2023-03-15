@@ -3,9 +3,11 @@ TODO
 """
 
 from functools import partial
+from typing import Dict, Tuple
 
-from pyzeal.cli.cli_parser import PyZEALParser, PyZEALParserInterface
-from pyzeal.cli.parse_results import ParseResults
+from pyzeal.cli.cli_parser import PyZEALParser
+from pyzeal.cli.parse_results import PluginParseResults, SettingsParseResults
+from pyzeal.cli.parser_facade import PyZEALParserInterface
 from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
@@ -17,30 +19,32 @@ ServiceLocator.registerAsSingleton(PyZEALParserInterface, PyZEALParser())
 from pyzeal.cli.__main__ import PyZEALEntry
 
 
-def mockArgs(setting):
+def mockArgs(
+    setting: Dict[str, str]
+) -> Tuple[SettingsParseResults, PluginParseResults]:
     """
-    Generate `ParseResults` containing the settings given by `setting`.
+    Generate `SettingsParseResults` and `PluginParseResults` instances
+    containing the settings given by `setting`.
 
     :param setting: Dict of settings and values
     :type setting: Dict[str, str]
     :return: ParseResults with appropriate settings
     :rtype: ParseResults
     """
-    return ParseResults(
+    settingsParseResult = SettingsParseResults(
         doPrint=True,
-        container=setting["container"]
-        if "container" in setting.keys()
-        else "",
-        algorithm=setting["algorithm"]
-        if "algorithm" in setting.keys()
-        else "",
-        logLevel=setting["logLevel"] if "logLevel" in setting.keys() else "",
-        verbose=setting["verbose"] if "verbose" in setting.keys() else "",
+        container=setting.get("container", ""),
+        algorithm=setting.get("algorithm", ""),
+        logLevel=setting.get("logLevel", ""),
+        verbose=setting.get("verbose", ""),
+    )
+    pluginParseResult = PluginParseResults(
         listPlugins=False,
         listModules=False,
         install="",
         uninstall="",
     )
+    return settingsParseResult, pluginParseResult
 
 
 def testChangeAlgorithmCall(mocker):
@@ -129,7 +133,7 @@ def testChangeAlgorithmSettingsCall(mocker):
         "pyzeal_cli.cli_parser.PyZEALParser.parseArgs",
         partial(mockArgs, setting={"algorithm": "NEWTON_GRID"}),
     )
-    mocked_property = mocker.patch(
+    mockedProperty = mocker.patch(
         "pyzeal.settings.json_settings_service."
         "JSONSettingsService.defaultAlgorithm",
         new_callable=mocker.PropertyMock,
@@ -137,7 +141,7 @@ def testChangeAlgorithmSettingsCall(mocker):
     )
     dut = PyZEALEntry()
     dut.mainPyZEAL()
-    mocked_property.assert_called_with(AlgorithmTypes.NEWTON_GRID)
+    mockedProperty.assert_called_with(AlgorithmTypes.NEWTON_GRID)
 
 
 def testChangeVerbositySettingsCall(mocker):
@@ -150,14 +154,14 @@ def testChangeVerbositySettingsCall(mocker):
         "pyzeal_cli.cli_parser.PyZEALParser.parseArgs",
         partial(mockArgs, setting={"verbose": "True"}),
     )
-    mocked_property = mocker.patch(
+    mockedProperty = mocker.patch(
         "pyzeal_settings.json_settings_service.JSONSettingsService.verbose",
         new_callable=mocker.PropertyMock,
         return_value=False,
     )
     dut = PyZEALEntry()
     dut.mainPyZEAL()
-    mocked_property.assert_called_with(True)
+    mockedProperty.assert_called_with(True)
 
 
 def testChangeLogLevelSettingsCall(mocker):
@@ -169,14 +173,14 @@ def testChangeLogLevelSettingsCall(mocker):
         "pyzeal_cli.cli_parser.PyZEALParser.parseArgs",
         partial(mockArgs, setting={"logLevel": "INFO"}),
     )
-    mocked_property = mocker.patch(
+    mockedProperty = mocker.patch(
         "pyzeal_settings.json_settings_service.JSONSettingsService.logLevel",
         new_callable=mocker.PropertyMock,
         return_value=LogLevel.WARNING,
     )
     dut = PyZEALEntry()
     dut.mainPyZEAL()
-    mocked_property.assert_called_with(LogLevel.INFO)
+    mockedProperty.assert_called_with(LogLevel.INFO)
 
 
 def testChangeContainerSettingsCall(mocker):
@@ -188,7 +192,7 @@ def testChangeContainerSettingsCall(mocker):
         "pyzeal_cli.cli_parser.PyZEALParser.parseArgs",
         partial(mockArgs, setting={"container": "plain"}),
     )
-    mocked_property = mocker.patch(
+    mockedProperty = mocker.patch(
         "pyzeal_settings.json_settings_service."
         "JSONSettingsService.defaultContainer",
         new_callable=mocker.PropertyMock,
@@ -196,4 +200,4 @@ def testChangeContainerSettingsCall(mocker):
     )
     dut = PyZEALEntry()
     dut.mainPyZEAL()
-    mocked_property.assert_called_with(ContainerTypes.PLAIN_CONTAINER)
+    mockedProperty.assert_called_with(ContainerTypes.PLAIN_CONTAINER)

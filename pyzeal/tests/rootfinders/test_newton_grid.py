@@ -7,11 +7,18 @@ Authors:\n
 """
 
 from datetime import timedelta
+from typing import List
 
 import numpy as np
 import pytest
 from hypothesis import given, settings, strategies
 from numpy.polynomial import Polynomial
+
+from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
+from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.filter_types import FilterTypes
+from pyzeal.rootfinders import RootFinder
+from pyzeal.settings.json_settings_service import JSONSettingsService
 from pyzeal.tests.resources.testing_fixtures import newtonGridFinder
 from pyzeal.tests.resources.testing_resources import (
     IM_RAN,
@@ -19,12 +26,6 @@ from pyzeal.tests.resources.testing_resources import (
     testFunctions,
 )
 from pyzeal.tests.resources.testing_utils import rootsMatchClosely
-
-from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
-from pyzeal.pyzeal_types.container_types import ContainerTypes
-from pyzeal.pyzeal_types.filter_types import FilterTypes
-from pyzeal.rootfinders import RootFinder
-from pyzeal.settings.json_settings_service import JSONSettingsService
 
 # 20 is enough to pass all tests while still running faster than the default 50
 NUM_SAMPLE_POINTS = 20
@@ -62,7 +63,7 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testNewtonGridRootFinderHypothesis(roots) -> None:
+def testNewtonGridRootFinderHypothesis(roots: List[complex]) -> None:
     """Test the grid-based Newton rootfinder on polynomials whose roots are
     generated automatically using the hypothesis package.
 

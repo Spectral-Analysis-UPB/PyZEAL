@@ -7,19 +7,25 @@ from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.filter_context import FilterContext
 
 
-def testPlainContainer():
+def testRoundingContainer() -> None:
     """
-    Test the plain container implementation.
+    Test the rounding container implementation.
     """
     container = ContainerFactory.getConcreteContainer(
-        containerType=ContainerTypes.PLAIN_CONTAINER
+        containerType=ContainerTypes.ROUNDING_CONTAINER
     )
     filterContext = FilterContext(
         lambda x: (x - 1.23456789) * (x + 1.23456789), (-5, 5), (-5, 5), (3, 3)
     )
     container.addRoot((1.23456789, 0), filterContext)
-    assert container.getRoots() == [1.23456789]
+    assert container.getRoots() == [1.235]
     container.addRoot((1.2345678, 0), filterContext)
-    assert (container.getRoots() == [1.23456789, 1.2345678]).all()
+    assert container.getRoots() == [1.235]
+    filterContext = FilterContext(
+        lambda x: (x - 1.23456789) * (x + 1.23456789), (-5, 5), (-5, 5), (5, 5)
+    )
     container.addRoot((-1.23456789, 0), filterContext)
-    assert (container.getRoots() == [1.23456789, 1.2345678, -1.23456789]).all()
+    assert container.getRoots() == [-1.23457]
+    container.addRoot((1.2345678, 0), filterContext)
+    container.removeRoot((-1.23456789, 0))
+    assert container.getRoots() == [1.23457]

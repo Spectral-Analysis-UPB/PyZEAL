@@ -5,35 +5,36 @@ rectangular contour and along a line.
 """
 
 from functools import partial
-from typing import Tuple
+from typing import Tuple, cast
 
 import numpy as np
 
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.root_types import tVec
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.root_context import RootContext
 
 
-def f(n, x):
+def f(n: int, z: tVec) -> tVec:
     """
     Wrapper for test case functions.
     """
     if n == 1:
-        return 2 * x**2 + 3
+        return 2 * z**2 + 3
     if n == 2:
-        return np.sin(x)
-    return np.exp(1j * x)
+        return np.sin(z)
+    return cast(tVec, np.exp(1j * z))
 
 
-def df(n, x):
+def df(n: int, z: tVec) -> tVec:
     """
     Wrapper for test case derivatives.
     """
     if n == 1:
-        return 4 * x
+        return 4 * z
     if n == 2:
-        return np.cos(x)
-    return 1j * np.exp(1j * x)
+        return np.cos(z)
+    return cast(tVec, 1j * np.exp(1j * z))
 
 
 functions = {

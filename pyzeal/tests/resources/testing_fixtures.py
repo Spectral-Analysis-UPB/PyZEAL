@@ -2,8 +2,6 @@
 Provide rootfinder setup methods with common settings for testing purposes.
 """
 
-from pyzeal.tests.resources.testing_resources import testFunctions
-
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
@@ -13,6 +11,7 @@ from pyzeal.rootfinders import (
     RootFinder,
     RootFinderInterface,
 )
+from pyzeal.tests.resources.testing_resources import testFunctions
 
 
 def newtonGridFinder(

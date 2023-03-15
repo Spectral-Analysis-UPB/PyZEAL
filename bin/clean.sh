@@ -16,17 +16,17 @@ rm -rf htmlcov
 rm -rf pyzeal/__pycache__
 rm -rf pyzeal/*/__pycache__
 rm -rf pyzeal/*/*/__pycache__
-rm -rf tests/__pycache__
-rm -rf tests/*/__pycache__
-rm -rf tests/*/*/__pycache__
+rm -rf pyzeal/tests/__pycache__
+rm -rf pyzeal/tests/*/__pycache__
+rm -rf pyzeal/tests/*/*/__pycache__
 
 # remove all logging directories
 rm -rf logs/
 rm -rf pyzeal/logs
 rm -rf pyzeal/*/logs
 rm -rf pyzeal/*/*/logs
-rm -rf tests/logs
-rm -rf tests/*/logs
+rm -rf pyzeal/tests/logs
+rm -rf pyzeal/tests/*/logs
 
 # remove documentation build artifacts
 rm -rf docs/_build/html/
@@ -40,5 +40,5 @@ rm -rf pyzeal/*.egg-info/
 rm -rf *.egg-info/
 rm -rf .hypothesis/
 rm -rf pyzeal/*/.hypothesis/
-rm -rf tests/.hypothesis/
-rm -rf tests/*/.hypothesis/
+rm -rf pyzeal/tests/.hypothesis/
+rm -rf pyzeal/tests/*/.hypothesis/

@@ -7,13 +7,12 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
+from pyzeal.settings.json_settings_service import JSONSettingsService
 from pyzeal.tests.resources.testing_fixtures import (
     simpleArgumentNewtonRootFinder,
 )
 from pyzeal.tests.resources.testing_resources import IM_RAN, RE_RAN
-
-from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.settings.json_settings_service import JSONSettingsService
 
 benchmarkFunctions = [
     "x^2-1",

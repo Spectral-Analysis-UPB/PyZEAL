@@ -9,36 +9,31 @@ echo "|-----------------------------------------------------------|"
 echo "|[running black and isort on sources, tests, and benchmarks]|"
 echo "|-----------------------------------------------------------|"
 black pyzeal/
-black tests/
 isort pyzeal/
-isort tests/
 echo ""
 
 echo "|--------------------------------------------------|"
 echo "|[running flake8 on sources, tests, and benchmarks]|"
 echo "|--------------------------------------------------|"
-flake8 pyzeal/ tests/ \
-    && echo "no linting errors with flake8!"
+flake8 pyzeal/ && echo "no linting errors with flake8!"
 echo ""
 
 echo "|-------------------------------------|"
 echo "|[running pylint on tests and sources]|"
 echo "|-------------------------------------|"
-pylint pyzeal/ tests/
+pylint pyzeal/
 echo ""
 
 echo "|------------------------------------------------|"
 echo "|[running mypy on sources, tests, and benchmarks]|"
 echo "|------------------------------------------------|"
-mypy --explicit-package-bases pyzeal/ \
-    && mypy tests/ \
-    && echo "type hints look good!"
+mypy --explicit-package-bases pyzeal/ && echo "type hints look good!"
 echo ""
 
 echo "|--------------------------------------------------------------|"
 echo "|[running docstring coverage on sources, tests, and benchmarks]|"
 echo "|--------------------------------------------------------------|"
-docstr-coverage -b docs/_static/ -p pyzeal/ tests/
+docstr-coverage -b docs/_static/ -p pyzeal/
 echo ""
 
 echo "|--------------------------|"
@@ -58,7 +53,7 @@ then
     echo "|---------------------------|"
     echo "|[running tests with pytest]|"
     echo "|---------------------------|"
-    pytest --cov=pyzeal/ --cov-report=html tests/
+    pytest --cov=pyzeal/ --cov-report=html pyzeal/tests/
     echo ""
 fi
 

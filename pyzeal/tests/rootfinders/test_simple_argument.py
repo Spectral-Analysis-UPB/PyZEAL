@@ -1,17 +1,22 @@
 """
-This module contains tests of the SIMPLE_ARGUMENT_NEWTON implementation
+This module contains tests of the SIMPLE_ARGUMENT implementation
 of the root finding algorithm interface.
 """
 
 from datetime import timedelta
+from typing import List
 
 import numpy as np
 import pytest
 from hypothesis import given, settings, strategies
 from numpy.polynomial import Polynomial
-from pyzeal.tests.resources.testing_fixtures import (
-    simpleArgumentNewtonRootFinder,
-)
+
+from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
+from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.filter_types import FilterTypes
+from pyzeal.rootfinders import RootFinder
+from pyzeal.settings.json_settings_service import JSONSettingsService
+from pyzeal.tests.resources.testing_fixtures import simpleArgumentRootFinder
 from pyzeal.tests.resources.testing_resources import (
     IM_RAN,
     RE_RAN,
@@ -19,27 +24,20 @@ from pyzeal.tests.resources.testing_resources import (
 )
 from pyzeal.tests.resources.testing_utils import rootsMatchClosely
 
-from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
-from pyzeal.pyzeal_types.container_types import ContainerTypes
-from pyzeal.pyzeal_types.filter_types import FilterTypes
-from pyzeal.rootfinders import RootFinder
-from pyzeal.settings.json_settings_service import JSONSettingsService
-
 # disable progress bar by default for tests
 JSONSettingsService().verbose = False
 # some test functions do not work due to algorithmic limitations
 KNOWN_FAILURES = [
     "log and sin composition",  # see issue #12
-    "x^100",  # roots of very high orders require too much z-refinement
+    "x^100",  # very high root order requires too much z-refinement
     "1e6 * x^100",
 ]
 
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgumentNewton(testName, parallel) -> None:
-    """
-    Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by
+def testSimpleArgument(testName: str, parallel: bool) -> None:
+    """Test the SIMPLE_ARGUMENT RootFinder with the test case given by
     `testName`
 
     :param testName: Name of the test case
@@ -49,7 +47,7 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
-    hrf = simpleArgumentNewtonRootFinder(testName, parallel=parallel)
+    hrf = simpleArgumentRootFinder(testName, parallel=parallel)
     hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
@@ -62,21 +60,19 @@ def testSimpleArgumentNewton(testName, parallel) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testSimpleArgumentNewtonHypothesis(roots) -> None:
+def testSimpleArgumentFinderHypothesis(roots: List[complex]) -> None:
     """Test the root finder algorithm based on a simple partial integration of
-    the classical argument principle combined with a Newton algorithm upon
-    sufficient refinement of the subdivision into rectangles. The testfunctions
-    are polynomials whose roots are generated automatically using the
-    hypothesis package.
+    the classical argument principle on polynomials whose roots are generated
+    automatically using the hypothesis package.
 
-    :param roots: Roots of a polynomial
+    :param roots: List of roots of a polynomial
     :type roots: List[complex]
     """
     f = Polynomial.fromroots(roots)
     hrf = RootFinder(
         f,
         None,
-        algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
+        algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
         containerType=ContainerTypes.ROUNDING_CONTAINER,
         verbose=False,
     )

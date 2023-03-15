@@ -1,20 +1,24 @@
 """
 This module tests the behavior of the summation-based estimator.
 """
+
 import numpy as np
 import pytest
+
+from pyzeal.algorithms.estimators import EstimatorCache
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.tests.resources.testing_estimator_resources import (
     lineCases,
     rectangleCases,
 )
-
-from pyzeal.algorithms.estimators import EstimatorCache
-from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 
 
 @pytest.mark.parametrize("testName", rectangleCases.keys())
-def testSummationEstimatorRectangle(testName):
+def testSummationEstimatorRectangle(testName: str) -> None:
+    """
+    TODO
+    """
     context, order, reRan, imRan, expected = rectangleCases[testName]
     est = EstimatorFactory.getConcreteEstimator(
         EstimatorTypes.SUMMATION_ESTIMATOR,
@@ -28,7 +32,10 @@ def testSummationEstimatorRectangle(testName):
 
 
 @pytest.mark.parametrize("testName", lineCases.keys())
-def testSummationEstimatorLine(testName):
+def testSummationEstimatorLine(testName: str) -> None:
+    """
+    TODO
+    """
     context, order, zStart, zEnd, expected = lineCases[testName]
     est = EstimatorFactory.getConcreteEstimator(
         EstimatorTypes.SUMMATION_ESTIMATOR,
