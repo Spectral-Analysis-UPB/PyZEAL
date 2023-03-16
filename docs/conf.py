@@ -52,6 +52,26 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_material'
+# Set link name generated in the top bar.
+html_title = 'Python ZEros of AnaLytic Functions'
+
+# Material theme options (see theme.conf for more information)
+html_theme_options = {
+
+    # Set the name of the project to appear in the navigation.
+    'nav_title': 'The PyZEAL Project',
+
+    # Set the color and the accent color
+    'color_primary': 'blue-grey',
+    'color_accent': 'green',
+
+    # Set the repo location to get a badge with stats
+    'repo_url': 'https://github.com/Spectral-Analysis-UPB/PyZEAL',
+    'repo_name': 'PyZEAL',
+}
+html_sidebars = {
+    "**": ["logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"]
+}
 # html_theme = 'classic'
 # html_theme_options = {
 #     "relbarbgcolor": "green",
@@ -70,7 +90,7 @@ html_css_files = [
 ]
 
 # the name of the syntax highlighting style to use
-pygments_style = 'sphinx'
+pygments_style = 'material'
 
 # Add type of source files
 source_suffix = [".rst"]

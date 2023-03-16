@@ -2,7 +2,8 @@
 Class RootFinder from the package pyzeal.
 This module defines an implementation of the main root finding API as defined
 by the `RootFinderInterface` protocol. The class implemented here provides only
-the most basic context for a root finding strategy, i.e. no multiprocessing.
+the most basic context for a root finding strategy, e.g. no support for
+multiprocessing.
 
 Authors:\n
 - Philipp Schuette\n
