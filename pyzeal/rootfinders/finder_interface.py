@@ -45,11 +45,8 @@ class RootFinderInterface(ABC):
         digits in real and imaginary part.
 
         :param reRan: horizontal extend of the complex region to search in
-        :type reRan: Tuple[int, int]
         :param imRan: vertical extend of the complex region to search in
-        :type imRan: Tuple[int, int]
         :param precision: accuracy of the search in real and imaginary parts
-        :type precision: Optional[Tuple[int, int]]
         """
 
     @property
@@ -60,7 +57,6 @@ class RootFinderInterface(ABC):
         calls to `calculateRoots()`.
 
         :return: the set of roots calculated by this finder
-        :rtype: NDArray[np.complex128]
         """
 
     @property
@@ -71,14 +67,15 @@ class RootFinderInterface(ABC):
         is parallel to the return value of the `roots` property.
 
         :return: the orders of the roots calculated by this finder
-        :rtype: NDArray[np.int32]
         """
 
     @property
     @abstractmethod
     def container(self) -> RootContainer:
         """
-        Return the container attached to the finder.
+        Return the container instance managing the roots of this finder.
+
+        :return: the container of this finder
         """
 
     def setRootFilter(
@@ -89,9 +86,7 @@ class RootFinderInterface(ABC):
         found roots are checked against.
 
         :param filterType: the type of root filter to add
-        :type filterType: FilterTypes
         :param threshold: the threshold for function on root evaluation filters
-        :type threshold: int
         """
         ContainerFactory.registerPreDefinedFilter(
             self.container, filterType, threshold=threshold

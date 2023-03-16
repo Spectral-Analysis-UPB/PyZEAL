@@ -28,5 +28,4 @@ class FinderAlgorithm(ABC, Loggable):
         `context.container` upon the algorithms completion.
 
         :param context: context in which the algorithm operates
-        :type context: RootContext
         """
