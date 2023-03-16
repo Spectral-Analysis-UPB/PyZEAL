@@ -20,21 +20,21 @@ and :ref:`containers`.
 Rootfinder
 --------------------------------
 
-.. automodule:: pyzeal.rootfinder
+.. automodule:: pyzeal.rootfinders.rootfinder
     :members:
     :special-members:
     :exclude-members: __weakref__, __str__, __subclasshook__, main, suppressSig
 
 There is also a parallelized version of the rootfinder:
 
-.. automodule:: pyzeal.parallel_finder
+.. automodule:: pyzeal.rootfinders.parallel_finder
     :members:
     :special-members:
     :exclude-members: __weakref__, __str__, __subclasshook__, main, suppressSig
 
 Interface
 --------------------------------
-.. automodule:: pyzeal.finder_interface
+.. automodule:: pyzeal.rootfinders.finder_interface
     :members:
     :special-members:
     :exclude-members: __weakref__, __str__, main
