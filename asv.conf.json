@@ -12,5 +12,5 @@
     "env_dir": ".asv/env",
     "results_dir": ".asv/results",
     "html_dir": ".asv/html",
-    "benchmark_dir": "tests/benchmarks"
+    "benchmark_dir": "pyzeal/tests/benchmarks"
 }

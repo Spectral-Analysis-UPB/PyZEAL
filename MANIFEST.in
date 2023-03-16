@@ -1,5 +1,4 @@
 include README.rst
-include src/py.typed
-include tests/py.typed
-include src/pyzeal_settings/default_settings.json
-include src/pyzeal_settings/settings_schema.json
+include pyzeal/py.typed
+include pyzeal/settings/default_settings.json
+include src/settings/settings_schema.json
