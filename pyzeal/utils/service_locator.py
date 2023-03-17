@@ -24,6 +24,8 @@ class ServiceLocator:
 
     _singletonServices: Dict[Type[object], object] = {}
 
+    _sealed: bool = False
+
     @staticmethod
     def registerAsSingleton(serviceType: Type[T], instance: T) -> bool:
         """
@@ -36,6 +38,10 @@ class ServiceLocator:
         :return: _description_
         :rtype: _type_
         """
+        if ServiceLocator.isSealed():
+            raise ValueError(
+                f"cannot register singleton {serviceType} on sealed locator!"
+            )
         if isinstance(instance, serviceType):
             ServiceLocator._singletonServices[serviceType] = instance
             return True
@@ -55,6 +61,10 @@ class ServiceLocator:
         :return: _description_
         :rtype: _type_
         """
+        if ServiceLocator.isSealed():
+            raise ValueError(
+                f"cannot register transient {serviceType} on sealed locator!"
+            )
         ServiceLocator._transientServices[serviceType] = factory
         return True
 
@@ -80,6 +90,7 @@ class ServiceLocator:
             raise InvalidServiceConfiguration(serviceType)
         sig = signature(factory)
         arguments: Dict[str, object] = {}
+
         # try to instantiate an instance from the factory and given kwargs or
         # default parameters of the factory - additional kwargs are ignored
         for param in sig.parameters:
@@ -96,3 +107,19 @@ class ServiceLocator:
 
         # resolving failed
         raise InvalidServiceConfiguration(serviceType)
+
+    @staticmethod
+    def seal() -> None:
+        """
+        TODO
+        """
+        if ServiceLocator._sealed:
+            raise ValueError("cannot re-seal an already sealed locator!")
+        ServiceLocator._sealed = True
+
+    @staticmethod
+    def isSealed() -> bool:
+        """
+        TODO
+        """
+        return ServiceLocator._sealed

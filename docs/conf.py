@@ -21,6 +21,8 @@ version = importlib.metadata.version("pyzeal")
 # The full version, including alpha/beta/rc tags
 release = importlib.metadata.version("pyzeal")
 
+html_favicon = '_static/pyzeal_favicon.ico'
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -68,7 +70,12 @@ html_theme_options = {
     # Set the repo location to get a badge with stats
     'repo_url': 'https://github.com/Spectral-Analysis-UPB/PyZEAL',
     'repo_name': 'PyZEAL',
+
+    # 'logo_icon': '&#xeba5',
 }
+
+html_logo = '_static/rocket.svg'
+
 html_sidebars = {
     "**": ["logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"]
 }
