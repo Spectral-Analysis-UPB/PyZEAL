@@ -9,3 +9,6 @@ target-version = ['py38']
 [tool.isort]
 profile = "black"
 line_length = 79
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib --strict-markers -p no:logging"
