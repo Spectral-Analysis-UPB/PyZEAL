@@ -28,6 +28,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+docs = [
+	"sphinx",
+	"sphinx-material",
+	"nbsphinx",
+	"sphinxcontrib-bibtex",
+	"sphinx-autodoc-typehints",
+]
 dev = [
 	"mypy",
 	"mypy-extensions",
@@ -41,13 +48,6 @@ dev = [
 	"pylama",
 	"pylint",
 	"check-jsonschema",
-]
-docs = [
-	"sphinx",
-	"sphinx-material",
-	"nbsphinx",
-	"sphinxcontrib-bibtex",
-	"sphinx-autodoc-typehints",
 ]
 all = [
 	"mypy",
