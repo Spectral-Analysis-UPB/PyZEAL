@@ -72,10 +72,7 @@ class RoundingContainer(RootContainer):
             self.logger.debug(
                 "new accuracy detected - rounding container cleared!"
             )
-            self.precision = (
-                context.precision
-                or ServiceLocator.tryResolve(SettingsService).precision
-            )
+            self.precision = context.precision
         self.logger.debug(
             "attempting to add new root %f + %fi to rounding container!",
             root[0].real,

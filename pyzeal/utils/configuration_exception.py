@@ -1,6 +1,8 @@
 """
-Module service_configuration_exception.py from the package PyZEAL.
-TODO
+Module `service_configuration_exception.py` from the package `PyZEAL`.
+
+This module contains the generic exception signaling that an invalid
+configuration has been received.
 
 Authors:\n
 - Philipp Schuette\n

@@ -2,6 +2,87 @@
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "PyZEAL"
+version = "0.0.2"
+authors = [
+    {name = "Philipp Schuette", email = "pschuet2@mail.uni-paderborn.de"}
+]
+description = "Python successor to the ZEAL package calculating zeros of holomorphic functions."
+readme = "README.rst"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+keywords = ["root-finding", "numerical-analysis", "holomorphic-functions"]
+dependencies = [
+    "numpy>=1.21",
+    "cython",
+    "matplotlib",
+    "numba>=0.55",
+    "scipy>=1.9.1",
+    "rich>=12.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+	"mypy",
+	"mypy-extensions",
+	"hypothesis",
+	"pytest",
+	"pytest-cov",
+	"pytest-mock",
+	"black",
+	"isort",
+	"docstr-coverage",
+	"pylama",
+	"pylint",
+	"check-jsonschema",
+]
+docs = [
+	"sphinx",
+	"sphinx-material",
+	"nbsphinx",
+	"sphinxcontrib-bibtex",
+	"sphinx-autodoc-typehints",
+]
+all = [
+	"mypy",
+	"mypy-extensions",
+	"hypothesis",
+	"pytest",
+	"pytest-cov",
+	"pytest-mock",
+	"black",
+	"isort",
+	"docstr-coverage",
+	"pylama",
+	"pylint",
+	"check-jsonschema",
+	"sphinx",
+	"sphinx-material",
+	"nbsphinx",
+	"sphinxcontrib-bibtex",
+	"sphinx-autodoc-typehints",
+]
+
+[project.urls]
+homepage = "https://github.com/Spectral-Analysis-UPB/PyZEAL"
+documentation = "https://github.com/Spectral-Analysis-UPB/PyZEAL"
+
+[project.scripts]
+pyzeal = "pyzeal.cli.__main__:PyZEALEntry.mainPyZEAL"
+
+[tool.setuptools]
+packages = ["pyzeal", ]
+include-package-data = true
+
+[tool.setuptools.package-dir]
+pyzeal = "pyzeal"
+
 [tool.black]
 line-length = 79
 target-version = ['py38']
@@ -10,5 +91,40 @@ target-version = ['py38']
 profile = "black"
 line_length = 79
 
+[tool.pytest]
+junit_family = "legacy"
+filterwarnings = "ignore::DeprecationWarning"
+markers = [
+    {slow = "slow tests."},
+]
+
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib --strict-markers -p no:logging"
+
+[tool.mypy]
+python_version = "3.8"
+explicit_package_bases = true
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+show_error_codes = true
+ignore_missing_imports = false
+warn_unreachable = true
+warn_redundant_casts = true
+disable_error_code = ["type-abstract", "no-untyped-call", ]
+
+[tool.pylama]
+format = "pylint"
+linters = "pylint,mccabe,pyflakes,pycodestyle"
+
+[tool.pylama.linter.pycodestyle]
+max-complexity = 11
+ignore = "E203,W503"
+per-file-ignores = [
+    "pyzeal/pyzeal_settings/json_settings_service.py:C901",
+]
+count = true
+
+[tool.pylama.linter.pydocstyle]
+ignore = "D200,D203,D205,D212,D301,D400,D415"

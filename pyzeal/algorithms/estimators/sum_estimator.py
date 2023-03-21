@@ -1,8 +1,8 @@
 """
-TODO
+A concrete argument estimator using simple summation of phase changes.
 
 Authors:\n
-- Philipp Schuette
+- Philipp Schuette\n
 """
 
 from typing import Dict, Final, Literal, Tuple, Union, cast
@@ -85,10 +85,13 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         r"""
         Calculate the total complex argument along a line in the complex plane
         by summing incremental changes in the phase of the function values.
-        This coincides exactly with the integral of the logarithmic derivative
-        as long as the increments remain below the threshold of :math:`\pi`.
 
-        TODO
+        The result of this method coincides exactly with the integral of the
+        logarithmic derivative as long as the increments remain below the
+        threshold of :math:`\pi`. It can be proven that local function
+        information is not sufficient to verify this condition in general.
+
+        TODO.
         """
         # look for required function values in the internal caches
         x1, y1 = zStart.real, zStart.imag
@@ -154,7 +157,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         self, order: int, y1: float, y2: float, x: float, context: RootContext
     ) -> complex:
         """
-        TODO
+        TODO.
         """
         cache = self.cacheVertical
         sign = 1 if y1 < y2 else -1
@@ -209,15 +212,10 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         The number of support points on the line is adjusted dynamically.
 
         :param order:
-        :type order: int
         :param zStart:
-        :type zStart: complex
         :param zEnd:
-        :type zEnd: complex
         :param context:
-        :type context: RootContext
         :return:
-        :rtype: Tuple[NDArray[complex], NDArray[complex]]
         """
         if order != 0:
             raise NotImplementedError(
@@ -319,20 +317,14 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         newValue: Tuple[tVec, tVec],
     ) -> None:
         """
-        _summary_
+        TODO.
 
         :param z: _description_
-        :type z: float
         :param order: _description_
-        :type order: int
         :param start: _description_
-        :type start: float
         :param end: _description_
-        :type end: float
         :param cache: _description_
-        :type cache: tCache
         :param newValue: _description_
-        :type newValue: Tuple[tVec, tVec]
         """
         cache[(z, order)][(start, "start")] = newValue
         cache[(z, order)][(end, "end")] = newValue

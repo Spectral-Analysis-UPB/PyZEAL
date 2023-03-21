@@ -23,20 +23,19 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install .[dev]
         pyzeal
-    - name: Lint with flake8 and pylint
+    - name: Lint with pylama
       run: |
-        flake8 --count src tests
-        pylint --fail-under=8 src tests
+        pylama pyzeal
     - name: Type checking with mypy
       run: |
-        mypy src tests
+        mypy pyzeal
     - name: Check docstring coverage
       run: |
-        docstr-coverage -m -f -F 85.0 src tests
+        docstr-coverage -m -f -F 85.0 pyzeal
     - name: Check json schemata
       run: |
-        check-jsonschema -v --schemafile src/pyzeal_settings/settings_schema.json src/pyzeal_settings/default_settings.json
+        check-jsonschema -v --schemafile pyzeal/settings/settings_schema.json pyzeal/settings/default_settings.json
       if: ${{ matrix.os }} == 'ubuntu-latest'
     - name: Test with pytest
       run: |
-        pytest tests
+        pytest pyzeal/tests
