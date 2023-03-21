@@ -24,3 +24,13 @@ For more information on the theoretical underpinning of the algorithms currently
 ------------
 Installation
 ------------
+
+Coming soon!
+
+-----------
+Basic Usage
+-----------
+
+.. code-block:: python
+
+   from pyzeal.rootfinders import rootfinder

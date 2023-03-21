@@ -3,7 +3,7 @@ Welcome to PyZEAL's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Table of Contents:
+   :caption: Contents of PyZEAL's Documentation:
    :numbered:
 
    intro
