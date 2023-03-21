@@ -35,7 +35,7 @@ tCache = Dict[
 
 class SummationEstimator(ArgumentEstimator, Loggable):
     """
-    TODO
+    TODO.
     """
 
     __slots__ = (
