@@ -12,22 +12,16 @@ black pyzeal/
 isort pyzeal/
 echo ""
 
-echo "|--------------------------------------------------|"
-echo "|[running flake8 on sources, tests, and benchmarks]|"
-echo "|--------------------------------------------------|"
-flake8 pyzeal/ && echo "no linting errors with flake8!"
-echo ""
-
-echo "|-------------------------------------|"
-echo "|[running pylint on tests and sources]|"
-echo "|-------------------------------------|"
-pylint pyzeal/
+echo "|---------------------------------------------------|"
+echo "|[running linters on sources, tests, and benchmarks]|"
+echo "|---------------------------------------------------|"
+pylama pyzeal/ && echo "no linting errors!"
 echo ""
 
 echo "|------------------------------------------------|"
 echo "|[running mypy on sources, tests, and benchmarks]|"
 echo "|------------------------------------------------|"
-mypy --explicit-package-bases pyzeal/ && echo "type hints look good!"
+mypy pyzeal/ && echo "type hints look good!"
 echo ""
 
 echo "|--------------------------------------------------------------|"

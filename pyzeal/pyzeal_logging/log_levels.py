@@ -1,5 +1,8 @@
 """
-This class stores named constants for log levels.
+Module exposing named constants for log levels.
+
+The constants in this module just act as a facade to their counterparts in the
+standard library `logging` module.
 """
 
 import logging
