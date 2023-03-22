@@ -1,5 +1,6 @@
 """
 Class RootFinder from the package pyzeal.
+
 This module defines an implementation of the main root finding API as defined
 by the `RootFinderInterface` protocol. The class implemented here provides only
 the most basic context for a root finding strategy, e.g. no support for
@@ -104,7 +105,9 @@ class RootFinder(RootFinderInterface, Loggable):
         self.logger.debug("initialized the new root finder %s!", str(self))
 
     def __str__(self) -> str:
-        "Simple string representation of a `RootFinder`."
+        """
+        Return a simple string representation of a `RootFinder` instance.
+        """
         if self.df is not None:
             return (
                 f"RootFinder(f={getattr(self.f, '__name__', '<unnamed>')}, "
@@ -221,8 +224,13 @@ class RootFinder(RootFinderInterface, Loggable):
         imRan: Tuple[float, float],
         precision: Tuple[int, int],
     ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
-        """Desymmetrize the domain given by reRan and imRan to improve
-        numerical stability. This is automatically called by `calculateRoots`.
+        """
+        Desymmetrize the domain to improve numerical stability.
+
+        In practice one notices that target domains as given by `reRan x imRan`
+        often contain roots on/near their boundaries if given e.g. in terms of
+        integers. This method is automatically called by `calculateRoots` so a
+        user does not need to worry about (slightly) perturbing their domains.
 
         :param reRan: Search range for the real part
         :type reRan: Tuple[float, float]

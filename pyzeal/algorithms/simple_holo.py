@@ -38,7 +38,7 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     differences.
     """
 
-    __slots__ = ("numPts", "deltaPhi", "maxPrecision")
+    __slots__ = ("cache", "estimator")
 
     def __init__(
         self,

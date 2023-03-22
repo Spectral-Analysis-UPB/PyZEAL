@@ -3,7 +3,7 @@ This module provides a simple argument estimator based on summation of
 incremental changes in the phase of the argument.
 
 Authors:\n
-- Philipp Schuette
+- Philipp Schuette\n
 """
 
 from typing import Dict, Final, Literal, Tuple, Union, cast
@@ -90,10 +90,10 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         context: RootContext,
     ) -> complex:
         """
-        Calculate the total complex argument along a line in the complex plane
-        by summing incremental changes in the phase of the function values.
-        This coincides exactly with the integral of the logarithmic derivative
-        as long as the increments remain below the threshold of :math:`\pi`.
+        The result of this method coincides exactly with the integral of the
+        logarithmic derivative as long as the increments remain below the
+        threshold of :math:`\pi`. It can be proven that local function
+        information is not sufficient to verify this condition in general.
 
         :param order: Moment to calculate
         :param zStart: Starting point of the line
