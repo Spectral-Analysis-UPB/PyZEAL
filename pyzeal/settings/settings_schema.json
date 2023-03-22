@@ -19,7 +19,7 @@
         "precision": {
             "type": "array",
             "contains": {
-                "type": "number"
+                "type": "integer"
             },
             "minContains": 2,
             "maxContains": 2,
