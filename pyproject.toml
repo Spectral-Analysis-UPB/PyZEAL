@@ -41,7 +41,6 @@ dev = [
 	"hypothesis",
 	"pytest",
 	"pytest-cov",
-	"pytest-mock",
 	"black",
 	"isort",
 	"docstr-coverage",

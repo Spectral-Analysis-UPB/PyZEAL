@@ -41,7 +41,7 @@ class ArgumentEstimator(ABC, Loggable):
         :param reRan: Interval describing the real part of the rectangle
         :param imRan: Interval describing the imaginary part of the rectangle
         :param context: `RootContext` containing the necessary information.
-        :return: `order`-th moment of the logarithmic derivative of 
+        :return: `order`-th moment of the logarithmic derivative of
             `context.f` along the boundary of the specified rectangle.
         """
         x1, x2 = reRan
@@ -85,9 +85,10 @@ class ArgumentEstimator(ABC, Loggable):
         zEnd: complex,
         context: RootContext,
     ) -> complex:
-        """Calculate the `order`-th moment of the logarithmic derivative of
+        """
+        Calculate the `order`-th moment of the logarithmic derivative of
         the target function `context.f` along the line given by `zStart` and
-        `zEnd`. 
+        `zEnd`.
 
         :param order: Order of the moment to calculate
         :param zStart: Starting point of the line

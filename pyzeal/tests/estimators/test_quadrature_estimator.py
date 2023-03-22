@@ -18,7 +18,7 @@ def testQuadratueEstimatorRectangle(testName: str) -> None:
     """
     Test the quadrature-based estimator over a rectangular contour with the
     test case given by `testName`.
-    
+
     :param testName: Case to test.
     """
     context, order, reRan, imRan, expected = rectangleCases[testName]

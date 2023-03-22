@@ -80,6 +80,11 @@ class SummationEstimator(ArgumentEstimator, Loggable):
 
     @property
     def cache(self) -> EstimatorCache:
+        """
+        Returns the cache used by this argument estimator.
+
+        :return: Cache used by this argument estimator.
+        """
         return self._cache
 
     def calcMomentAlongLine(

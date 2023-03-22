@@ -15,12 +15,13 @@ from pyzeal.tests.resources.testing_estimator_resources import (
 
 @pytest.mark.parametrize("testName", functions.keys())
 def testSimpleArgumentAlgo(testName: str) -> None:
-    """Test the SIMPLE_HOLO algorithm by checking if the found roots actually
+    """
+    Test the SIMPLE_HOLO algorithm by checking if the found roots actually
     have function values sufficiently close to zero.
     """
     if testName == "sin(x)":
         pytest.skip()  # TODO: why does this fail?
-    rContext = generateRootContext(testName, (-5, 5), (-5, 5))
+    rContext = generateRootContext(testName, (-5.01, 5), (-5.01, 5))
     algo = SimpleArgumentAlgorithm(EstimatorTypes.SUMMATION_ESTIMATOR)
     algo.calcRoots(rContext)
     foundRootsAreRoots = True

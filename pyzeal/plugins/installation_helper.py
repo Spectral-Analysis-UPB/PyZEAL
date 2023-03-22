@@ -20,7 +20,7 @@ class InstallationHelper:
     def installPlugin(fullPath: str) -> bool:
         """
         Copies the plugin located at `fullPath` to the plugin directory to
-        install it. 
+        install it.
 
         :param fullPath: Current path of the to-be-installed plugin.
         :return: `True` if successful.

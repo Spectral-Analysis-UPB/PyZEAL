@@ -36,7 +36,8 @@ class ContainerFactory:
     def _func_value_zero(
         threshold: int, root: tRoot, context: FilterContext
     ) -> bool:
-        """Filter predicate to determine if a possible root has a function
+        """
+        Filter predicate to determine if a possible root has a function
         value sufficiently close to zero
 
         :param threshold: A function is considered zero if its absolute value
@@ -57,7 +58,8 @@ class ContainerFactory:
 
     @staticmethod
     def _zero_in_bounds(root: tRoot, context: FilterContext) -> bool:
-        """Filter predicate to determine if `root` is in bounds for `context`.
+        """
+        Filter predicate to determine if `root` is in bounds for `context`.
 
         :param root: Root to filter
         :type root: tRoot
