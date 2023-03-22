@@ -87,7 +87,7 @@ class PlainContainer(RootContainer):
 
     def _transferRootBuffer(self) -> None:
         """
-        TODO
+        Transfer roots from the root buffer to an internal list of roots.
         """
         while not self.rootBuffer.empty():
             self._roots.append(self.rootBuffer.get())

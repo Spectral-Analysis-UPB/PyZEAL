@@ -26,7 +26,7 @@ from pyzeal.utils.service_locator import ServiceLocator
 
 class PyZEALEntry:
     """
-    TODO
+    This class serves as the main PyZEAL entry class.
     """
 
     PyZEALInitializationHandler.initPyZEALServices(InitModes.CLI)

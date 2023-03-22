@@ -1,5 +1,6 @@
 """
-TODO
+This module contains tests for the command-line interface, apart from the
+parsing.
 """
 
 from functools import partial

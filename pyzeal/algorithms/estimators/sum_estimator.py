@@ -1,5 +1,6 @@
 """
-TODO
+This module provides a simple argument estimator based on summation of
+incremental changes in the phase of the argument.
 
 Authors:\n
 - Philipp Schuette
@@ -35,7 +36,9 @@ tCache = Dict[
 
 class SummationEstimator(ArgumentEstimator, Loggable):
     """
-    TODO
+    This class implements a simple argument estimator based on discretizing
+    the path of integration and summing the change of argument between these
+    points to compute the integral of the logarithmic derivative.
     """
 
     __slots__ = (
@@ -56,7 +59,14 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         cache: EstimatorCache,
     ) -> None:
         """
-        TODO
+        Initialize a `SummationEstimator` with given settings.
+
+        :param numPts: Number of points used for estimation.
+        :param deltaPhi: Threshold for argument change. When the change in
+            argument between two points exceeds this, it will be further
+            refined.
+        :param maxPrecision: Maximum precision for refinement
+        :param cache: Cache to store intermediate computation results.
         """
         self.numPts = numPts
         self.deltaPhi = deltaPhi
@@ -70,9 +80,6 @@ class SummationEstimator(ArgumentEstimator, Loggable):
 
     @property
     def cache(self) -> EstimatorCache:
-        """
-        TODO
-        """
         return self._cache
 
     def calcMomentAlongLine(
@@ -82,13 +89,19 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         zEnd: complex,
         context: RootContext,
     ) -> complex:
-        r"""
+        """
         Calculate the total complex argument along a line in the complex plane
         by summing incremental changes in the phase of the function values.
         This coincides exactly with the integral of the logarithmic derivative
         as long as the increments remain below the threshold of :math:`\pi`.
 
-        TODO
+        :param order: Moment to calculate
+        :param zStart: Starting point of the line
+        :param zEnd: End point of the line
+        :param context: `RootContext` containing the necessary information
+        :raises ValueError: An error is raised if the line is not
+            parallel to either the real or imaginary axis.
+        :return: The moment as calculated along the given line.
         """
         # look for required function values in the internal caches
         x1, y1 = zStart.real, zStart.imag
@@ -110,7 +123,15 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         self, order: int, x1: float, x2: float, y: float, context: RootContext
     ) -> complex:
         """
-        TODO
+        Try to retrieve the moment along a horizontal line from cache,
+        calculating it if necessary.
+
+        :param order: Moment to retrieve
+        :param x1: Starting point x-value
+        :param x2: End point x-value
+        :param y: y-value of the line
+        :param context: `RootContext` containing the necessary information
+        :return: The moment as calculated along the given line.
         """
         cache = self.cacheHorizontal
         # the internal caches only contain positively oriented lines
@@ -154,7 +175,15 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         self, order: int, y1: float, y2: float, x: float, context: RootContext
     ) -> complex:
         """
-        TODO
+        Try to retrieve the moment along a vertical line from cache,
+        calculating it if necessary.
+
+        :param order: Moment to retrieve
+        :param y1: Starting point y-value
+        :param y2: End point y-value
+        :param x: x-value of the line
+        :param context: `RootContext` containing the necessary information.
+        :return: The moment as calculated along the given line.
         """
         cache = self.cacheVertical
         sign = 1 if y1 < y2 else -1
@@ -208,16 +237,11 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         line is adjusted by translating into direction `pos` by a small offset.
         The number of support points on the line is adjusted dynamically.
 
-        :param order:
-        :type order: int
-        :param zStart:
-        :type zStart: complex
-        :param zEnd:
-        :type zEnd: complex
-        :param context:
-        :type context: RootContext
-        :return:
-        :rtype: Tuple[NDArray[complex], NDArray[complex]]
+        :param order: The moment which is to be calculated
+        :param zStart: Starting point of the line segment
+        :param zEnd: End point of the line segment
+        :param context: `RootContext` containing the necessary information.
+        :return: Points along with estimated change of argument between them.
         """
         if order != 0:
             raise NotImplementedError(
@@ -319,20 +343,17 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         newValue: Tuple[tVec, tVec],
     ) -> None:
         """
-        _summary_
+        Store a new value in cache.
 
-        :param z: _description_
-        :type z: float
-        :param order: _description_
-        :type order: int
-        :param start: _description_
-        :type start: float
-        :param end: _description_
-        :type end: float
-        :param cache: _description_
-        :type cache: tCache
-        :param newValue: _description_
-        :type newValue: Tuple[tVec, tVec]
+        :param z: Real or imaginary part of the line, depending on if the line
+            is horizontal or vertical.
+        :param order: Order of the moment to be calculated
+        :param start: Real or imaginary part of the starting point, depending
+            on line orientation
+        :param end: Real or imaginary part of the starting point, depending
+            on line orientation
+        :param cache: Cache to store the new value in.
+        :param newValue: New value to store.
         """
         cache[(z, order)][(start, "start")] = newValue
         cache[(z, order)][(end, "end")] = newValue

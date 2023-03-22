@@ -1,6 +1,6 @@
 """
 Module plugin_loader.py from the package PyZEAL.
-TODO
+This module handles discovering, loading and registering of plugins.
 
 Authors:\n
 - Philipp Schuette\n
@@ -26,7 +26,7 @@ PLUGIN_INSTALL_DIR: Final[str] = join(dirname(__file__), "custom_plugins")
 
 class PluginLoader(Loggable):
     """
-    _summary_
+    This class handles plugin discovery, loading and registration.
     """
 
     _instance: Optional[PluginLoader] = None
@@ -34,10 +34,10 @@ class PluginLoader(Loggable):
     @staticmethod
     def getInstance() -> PluginLoader:
         """
-        _summary_
+        Return the global `PluginLoader` instance. If no instance exists,
+        a new one is created and returned.
 
-        :return: _description_
-        :rtype: _type_
+        :return: `PluginLoader` instance.
         """
         return (
             PluginLoader._instance
@@ -50,12 +50,10 @@ class PluginLoader(Loggable):
         path: str = PLUGIN_INSTALL_DIR,
     ) -> List[PyZEALPlugin[tPluggable]]:
         """
-        _summary_
+        Load plugins present in `path`.
 
-        :param path: _description_, defaults to PLUGIN_INSTALL_DIR
-        :type path: str
-        :return: _description
-        :rtype: List[str]
+        :param path: Path to search for plugins, defaults to PLUGIN_INSTALL_DIR
+        :return: List of loaded plugins.
         """
         instance = PluginLoader.getInstance()
         plugins: List[PyZEALPlugin[tPluggable]] = []
@@ -71,12 +69,10 @@ class PluginLoader(Loggable):
         self, path: str = PLUGIN_INSTALL_DIR
     ) -> List[Type[PyZEALPlugin[tPluggable]]]:
         """
-        _summary_
+        Discover plugins at a given path and load them.
 
-        :param path: _description_
-        :type path: _type_
-        :return: _description_
-        :rtype: _type_
+        :param path: Path to search for plugins, defaults to PLUGIN_INSTALL_DIR
+        :return: List of found plugins.
         """
         plugins: List[Type[PyZEALPlugin[tPluggable]]] = []
         self.logger.info("starting plugin discovery in %s...", path)
@@ -98,12 +94,10 @@ class PluginLoader(Loggable):
         self, candidateModule: ModuleType
     ) -> Optional[Type[PyZEALPlugin[tPluggable]]]:
         """
-        _summary_
+        Try to load a candidate plugin and return it if successful.
 
-        :param pluginName: _description_
-        :type pluginName: _type_
-        :return: _description_
-        :rtype: _type_
+        :param candidateModule: Candidate plugin module
+        :return: Plugin if an implementation has been found, else `None`.
         """
         attributeNames = PluginLoader.discoverAttributes(candidateModule)
         self.logger.debug(
@@ -126,12 +120,10 @@ class PluginLoader(Loggable):
     @staticmethod
     def isPyFile(filename: str) -> str:
         """
-        _summary_
+        Returns `True` if `filename` corresponds to a python file.
 
-        :param filename: _description_
-        :type filename: _type_
-        :return: _description_
-        :rtype: _type_
+        :param filename: File to evaluate
+        :return: `True` if `filename` corresponds to a python file.
         """
         if filename == "__init__.py":
             return ""
@@ -142,12 +134,11 @@ class PluginLoader(Loggable):
     @staticmethod
     def discoverModules(path: str = PLUGIN_INSTALL_DIR) -> List[str]:
         """
-        _summary_
+        Discover all possible plugin files in `path`. Ignore files starting
+        with `__`.
 
-        :param path: _description_
-        :type path: _type_
-        :return: _description_
-        :rtype: _type_
+        :param path: Path to search, defaults to PLUGIN_INSTALL_DIR
+        :return: List of plugin candidates.
         """
         regex = compileRegex(r"__.*")
         candidates = [c for c in listdir(path) if not regex.match(c)]
@@ -156,12 +147,11 @@ class PluginLoader(Loggable):
     @staticmethod
     def discoverAttributes(candidateModule: ModuleType) -> List[str]:
         """
-        _summary_
+        Discover attributes of a candidate module. Ignores attributes
+        starting with `__`.
 
-        :param moduleType: _description_
-        :type moduleType: _type_
-        :return: _description_
-        :rtype: _type_
+        :param candidateModule: Candidate module
+        :return: List of attributes.
         """
         regex = compileRegex(r"__.*")
         candidates = [c for c in dir(candidateModule) if not regex.match(c)]

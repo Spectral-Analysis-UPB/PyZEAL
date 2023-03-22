@@ -1,5 +1,6 @@
 """
-TODO
+This module provides an argument estimator based on numerical integration
+using Romberg quadrature.
 
 Authors:\n
 - Philipp Schuette
@@ -24,14 +25,17 @@ EXP_SAMPLE_POINTS: Final[int] = 12  # number of sample points for integration
 
 class QuadratureEstimator(ArgumentEstimator):
     """
-    TODO
+    This class implements an argument estimator using numerical quadrature
+    to integrate the logarithmic derivative.
     """
 
     __slots__ = ("_cache",)
 
     def __init__(self, *, cache: EstimatorCache) -> None:
         """
-        TODO
+        Initialize a `QuadratureEstimator`.
+
+        :param cache: Cache to store intermediate values in.
         """
         self._cache = cache
 
@@ -43,7 +47,17 @@ class QuadratureEstimator(ArgumentEstimator):
         context: RootContext,
     ) -> complex:
         """
-        TODO
+        Calculate the `order`-th moment of the logarithmic derivative along
+        the line given by `zStart` and `zEnd`.
+
+        :param order: Moment to compute
+        :param zStart: Start z-value
+        :param zEnd: End z-value
+        :param context: `RootContext` containing the necessary information
+        :raises ValueError: An error is raised when no derivative is supplied,
+            as the `QuadratureEstimator` does not support derivative-free
+            argument estimation.
+        :return: The moment as calculated along the given line.
         """
         if context.df is None:
             raise ValueError(
@@ -69,7 +83,4 @@ class QuadratureEstimator(ArgumentEstimator):
 
     @property
     def cache(self) -> EstimatorCache:
-        """
-        TODO
-        """
         return self._cache

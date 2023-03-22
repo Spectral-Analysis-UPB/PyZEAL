@@ -1,6 +1,6 @@
 """
 Module installation_helper.py from the package PyZEAL.
-TODO
+This module contains various helper functions related to plugin installation.
 
 Authors:\n
 - Philipp Schuette\n
@@ -19,12 +19,11 @@ class InstallationHelper:
     @staticmethod
     def installPlugin(fullPath: str) -> bool:
         """
-        _summary_
+        Copies the plugin located at `fullPath` to the plugin directory to
+        install it. 
 
-        :param fullPath: _description_
-        :type fullPath: _type_
-        :return: _description_
-        :rtype: _type_
+        :param fullPath: Current path of the to-be-installed plugin.
+        :return: `True` if successful.
         """
         if not exists(fullPath):
             return False
@@ -34,12 +33,10 @@ class InstallationHelper:
     @staticmethod
     def uninstallPlugin(filename: str) -> bool:
         """
-        _summary_
+        Uninstall the plugin given by `filename`.
 
-        :param filename: _description_
-        :type filename: _type_
-        :return: _description_
-        :rtype: _type_
+        :param filename: Filename of plugin to remove
+        :return: `True` if successful.
         """
         try:
             remove(join(PLUGIN_INSTALL_DIR, filename))
@@ -52,11 +49,11 @@ class InstallationHelper:
         filename: str, fullPath: str = PLUGIN_INSTALL_DIR
     ) -> str:
         """
-        _summary_
+        Helper function to construct the full path to plugin data.
 
-        :param filename: _description_
-        :type filename: _type_
-        :return: _description_
-        :rtype: _type_
+        :param filename: Filename of plugin data.
+        :param fullPath: Full path to the directory in which the data is
+            located, defaults to PLUGIN_INSTALL_DIR
+        :return: Path to plugin data
         """
         return join(fullPath, filename)

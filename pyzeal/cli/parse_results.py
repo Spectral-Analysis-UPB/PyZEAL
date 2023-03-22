@@ -1,5 +1,5 @@
 """
-TODO
+This module contains dataclasses for storing results fof command-line parsing.
 
 Authors:\n
 - Philipp Schuette\n
@@ -11,7 +11,7 @@ from dataclasses import dataclass
 @dataclass
 class SettingsParseResults:
     """
-    TODO
+    Container for parsing results related to settings.
     """
 
     doPrint: bool
@@ -24,7 +24,7 @@ class SettingsParseResults:
 @dataclass
 class PluginParseResults:
     """
-    TODO
+    Container for parsing results related to plugins.
     """
 
     listPlugins: bool

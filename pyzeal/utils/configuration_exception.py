@@ -1,6 +1,5 @@
 """
-Module service_configuration_exception.py from the package PyZEAL.
-TODO
+Exception class for invalid service configurations.
 
 Authors:\n
 - Philipp Schuette\n

@@ -16,7 +16,10 @@ from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 @pytest.mark.parametrize("testName", rectangleCases.keys())
 def testQuadratueEstimatorRectangle(testName: str) -> None:
     """
-    TODO
+    Test the quadrature-based estimator over a rectangular contour with the
+    test case given by `testName`.
+    
+    :param testName: Case to test.
     """
     context, order, reRan, imRan, expected = rectangleCases[testName]
     est = EstimatorFactory.getConcreteEstimator(
@@ -33,7 +36,10 @@ def testQuadratueEstimatorRectangle(testName: str) -> None:
 @pytest.mark.parametrize("testName", lineCases.keys())
 def testQuadratureEstimatorLine(testName: str) -> None:
     """
-    TODO
+    Test the quadrature-based estimator over a line with the test case given
+    by `testName`.
+
+    :param testName: Case to test.
     """
     context, order, zStart, zEnd, expected = lineCases[testName]
     est = EstimatorFactory.getConcreteEstimator(

@@ -1,5 +1,5 @@
 """
-TODO
+This module contains tests for the SIMPLE_HOLO algorithm.
 """
 
 import numpy as np
