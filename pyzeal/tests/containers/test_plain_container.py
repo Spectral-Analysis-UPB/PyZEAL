@@ -1,5 +1,5 @@
 """
-TODO
+This module contains tests for the plain container implementation.
 """
 
 from pyzeal.pyzeal_types.container_types import ContainerTypes

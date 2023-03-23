@@ -1,5 +1,5 @@
 """
-TODO
+This module contains tests for the SIMPLE_HOLO_NEWTON algorithm.
 """
 
 import numpy as np

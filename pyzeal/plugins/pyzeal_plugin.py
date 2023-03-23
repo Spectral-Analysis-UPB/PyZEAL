@@ -1,6 +1,6 @@
 """
-Module pyzeal_plugin.py from the package PyZEAL.
-TODO
+This module contains the base interface for plugins. Its methods provide the
+necessary functions for plugin handling.
 
 Authors:\n
 - Philipp Schuette\n
@@ -24,10 +24,8 @@ T_co = TypeVar("T_co", bound=tPluggable, covariant=True)
 
 class PyZEALPlugin(ABC, Generic[T_co]):
     """
-    _summary_
-
-    :param ABC: _description_
-    :type ABC: _type_
+    Interface for plugins. Methods for instantiation and plugin information
+    need to be implemented.
     """
 
     def __str__(self) -> str:
@@ -44,30 +42,27 @@ class PyZEALPlugin(ABC, Generic[T_co]):
     @abstractmethod
     def initialize() -> Callable[..., T_co]:
         """
-        _summary_
+        Returns a constructor for the plugin's implementation of `T_co`.
 
-        :return: _description_
-        :rtype: _type_
+        :return: Constructor for plugin implementation of `T_co`.
         """
 
     @staticmethod
     @abstractmethod
     def getInstance() -> PyZEALPlugin[T_co]:
         """
-        _summary_
+        Return a `PyZEALPlugin` with type `T_co`.
 
-        :return: _description_
-        :rtype: _type_
+        :return: `PyZEALPlugin` with type `T_co`.
         """
 
     @property
     @abstractmethod
     def pluginType(self) -> Type[T_co]:
         """
-        _summary_
+        Return the type of plugin.
 
-        :return: _description_
-        :rtype: _type_
+        :return: Type of plugin.
         """
         ...
 
@@ -75,10 +70,9 @@ class PyZEALPlugin(ABC, Generic[T_co]):
     @abstractmethod
     def pluginName(self) -> str:
         """
-        _summary_
+        Return the plugin name.
 
-        :return: _description_
-        :rtype: _type_
+        :return: Plugin name
         """
         ...
 
@@ -86,9 +80,8 @@ class PyZEALPlugin(ABC, Generic[T_co]):
     @abstractmethod
     def pluginVersion(self) -> Tuple[int, int, int]:
         """
-        _summary_
+        Return the plugin version.
 
-        :return: _description_
-        :rtype: _type_
+        :return: Plugin version
         """
         ...

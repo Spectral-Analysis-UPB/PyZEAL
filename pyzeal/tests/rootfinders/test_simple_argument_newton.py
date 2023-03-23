@@ -14,6 +14,7 @@ from numpy.polynomial import Polynomial
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.filter_types import FilterTypes
+from pyzeal.pyzeal_types.root_types import tHoloFunc
 from pyzeal.rootfinders import RootFinder
 from pyzeal.settings.json_settings_service import JSONSettingsService
 from pyzeal.tests.resources.testing_fixtures import (
@@ -74,7 +75,7 @@ def testSimpleArgumentNewtonHypothesis(roots: List[complex]) -> None:
     :param roots: Roots of a polynomial
     :type roots: List[complex]
     """
-    f = Polynomial.fromroots(roots)
+    f: tHoloFunc = Polynomial.fromroots(roots)
     hrf = RootFinder(
         f,
         None,

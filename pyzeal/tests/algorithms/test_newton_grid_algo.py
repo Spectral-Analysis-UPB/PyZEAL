@@ -1,5 +1,5 @@
 """
-TODO
+This module contains tests for the NEWTON_GRID algorithm.
 """
 
 import numpy as np

@@ -20,7 +20,8 @@ def newtonGridFinder(
     parallel: bool = False,
     derivativeFree: bool = False,
 ) -> RootFinderInterface:
-    """Returns a NEWTON_GRID RootFinder for the test case `testName`
+    """
+    Returns a NEWTON_GRID RootFinder for the test case `testName`
 
     :param testName: Test case name
     :type testName: str
@@ -65,7 +66,8 @@ def simpleArgumentRootFinder(
     parallel: bool = False,
     estimatorType: EstimatorTypes = EstimatorTypes.SUMMATION_ESTIMATOR,
 ) -> RootFinderInterface:
-    """Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
+    """
+    Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
 
     :param testName: Test case name
     :type testName: str
@@ -106,7 +108,8 @@ def simpleArgumentNewtonRootFinder(
     parallel: bool = False,
     estimatorType: EstimatorTypes = EstimatorTypes.SUMMATION_ESTIMATOR,
 ) -> RootFinderInterface:
-    """Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
+    """
+    Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
 
     :param testName: Test case name
     :type testName: str

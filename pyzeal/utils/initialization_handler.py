@@ -1,6 +1,6 @@
 """
 Module initialization_handler.py from the package PyZEAL.
-TODO
+This module handles initialization for the default PyZEAL services.
 
 Authors:\n
 - Philipp Schuette\n

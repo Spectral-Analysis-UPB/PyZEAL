@@ -17,6 +17,7 @@ from numpy.polynomial import Polynomial
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.filter_types import FilterTypes
+from pyzeal.pyzeal_types.root_types import tHoloFunc
 from pyzeal.rootfinders import RootFinder
 from pyzeal.settings.json_settings_service import JSONSettingsService
 from pyzeal.tests.resources.testing_fixtures import newtonGridFinder
@@ -39,7 +40,8 @@ KNOWN_FAILURES = ["log and sin composition", "x^100", "1e6 * x^100"]
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
 def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
-    """Test the Newton-Grid-Rootfinder with the function given by `testName`
+    """
+    Test the Newton-Grid-Rootfinder with the function given by `testName`
 
     :param testName: Name of the test case
     :type testName: str
@@ -64,14 +66,16 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
 def testNewtonGridRootFinderHypothesis(roots: List[complex]) -> None:
-    """Test the grid-based Newton rootfinder on polynomials whose roots are
+    """
+    Test the grid-based Newton rootfinder on polynomials whose roots are
     generated automatically using the hypothesis package.
 
     :param roots: Roots of a polynomial
     :type roots: List[complex]
     """
-    f = Polynomial.fromroots(roots)
-    df = f.deriv()
+    polynomial = Polynomial.fromroots(roots)
+    f: tHoloFunc = polynomial
+    df: tHoloFunc = polynomial.deriv()
     gridRF = RootFinder(
         f,
         df=df,
