@@ -116,7 +116,7 @@ disable_error_code = ["type-abstract", "no-untyped-call", ]
 
 [tool.pylama]
 format = "pylint"
-linters = "pylint,mccabe,pyflakes,pycodestyle"
+linters = "mccabe,pyflakes,pycodestyle"
 
 [tool.pylama.linter.pycodestyle]
 max-complexity = 11
