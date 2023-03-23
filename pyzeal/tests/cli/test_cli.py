@@ -131,7 +131,8 @@ def testChangeAlgorithmSettingsCall() -> None:
             mockArgs, setting={"algorithm": "NEWTON_GRID"}
         )
         with patch(
-            "pyzeal.settings.json_settings_service.JSONSettingsService.defaultAlgorithm",
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.defaultAlgorithm",
             new_callable=PropertyMock,
         ) as mockedProp:
             mockedProp.return_value = AlgorithmTypes.SIMPLE_ARGUMENT
@@ -147,7 +148,8 @@ def testChangeVerbositySettingsCall() -> None:
     with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
         mockParse.side_effect = partial(mockArgs, setting={"verbose": "True"})
         with patch(
-            "pyzeal.settings.json_settings_service.JSONSettingsService.verbose",
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.verbose",
             new_callable=PropertyMock,
         ) as mockedProp:
             mockedProp.return_value = False
@@ -163,7 +165,8 @@ def testChangeLogLevelSettingsCall() -> None:
     with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
         mockParse.side_effect = partial(mockArgs, setting={"logLevel": "INFO"})
         with patch(
-            "pyzeal.settings.json_settings_service.JSONSettingsService.logLevel",
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.logLevel",
             new_callable=PropertyMock,
         ) as mockedProp:
             mockedProp.return_value = LogLevel.WARNING
@@ -181,7 +184,8 @@ def testChangeContainerSettingsCall() -> None:
             mockArgs, setting={"container": "plain"}
         )
         with patch(
-            "pyzeal.settings.json_settings_service.JSONSettingsService.defaultContainer",
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.defaultContainer",
             new_callable=PropertyMock,
         ) as mockedProp:
             mockedProp.return_value = ContainerTypes.ROUNDING_CONTAINER
