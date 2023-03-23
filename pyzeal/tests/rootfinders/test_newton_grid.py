@@ -73,8 +73,9 @@ def testNewtonGridRootFinderHypothesis(roots: List[complex]) -> None:
     :param roots: Roots of a polynomial
     :type roots: List[complex]
     """
-    f: tHoloFunc = Polynomial.fromroots(roots)
-    df = Polynomial.fromroots(roots).deriv()
+    polynomial = Polynomial.fromroots(roots)
+    f: tHoloFunc = polynomial
+    df: tHoloFunc = polynomial.deriv()
     gridRF = RootFinder(
         f,
         df=df,

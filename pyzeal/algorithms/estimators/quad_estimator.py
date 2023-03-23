@@ -81,11 +81,7 @@ class QuadratureEstimator(ArgumentEstimator):
             (zEnd - zStart) * (-1j * realResult + imagResult) / distance
         )
 
+    # docstr-coverage:inherited
     @property
     def cache(self) -> EstimatorCache:
-        """
-        Returns the cache used by this argument estimator.
-
-        :return: Cache used by this argument estimator.
-        """
         return self._cache

@@ -78,13 +78,9 @@ class SummationEstimator(ArgumentEstimator, Loggable):
 
         self.logger.info("initialized new phase summation based estimator...")
 
+    # docstr-coverage:inherited
     @property
     def cache(self) -> EstimatorCache:
-        """
-        Returns the cache used by this argument estimator.
-
-        :return: Cache used by this argument estimator.
-        """
         return self._cache
 
     def calcMomentAlongLine(
@@ -94,7 +90,7 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         zEnd: complex,
         context: RootContext,
     ) -> complex:
-        """
+        r"""
         The result of this method coincides exactly with the integral of the
         logarithmic derivative as long as the increments remain below the
         threshold of :math:`\pi`. It can be proven that local function
