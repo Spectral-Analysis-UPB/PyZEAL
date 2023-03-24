@@ -12,6 +12,7 @@ from typing import Dict, Final, Tuple, Union
 from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.core_settings_service import CoreSettingsService
 from pyzeal.settings.invalid_setting_exception import InvalidSettingException
 from pyzeal.settings.json_core_settings import JSONCoreSettingsService
@@ -103,6 +104,15 @@ class JSONSettingsService(SettingsService):
     @defaultAlgorithm.setter
     def defaultAlgorithm(self, value: AlgorithmTypes) -> None:
         self._coreSettings.defaultAlgorithm = value
+
+    # docstr-coverage:inherited
+    @property
+    def defaultEstimator(self) -> EstimatorTypes:
+        return self._coreSettings.defaultEstimator
+
+    @defaultEstimator.setter
+    def defaultEstimator(self, value: EstimatorTypes) -> None:
+        self._coreSettings.defaultEstimator = value
 
     # docstr-coverage:inherited
     @property

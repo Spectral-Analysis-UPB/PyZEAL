@@ -11,11 +11,14 @@ from typing import Dict, Literal, Set, Tuple, Type, Union
 from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.invalid_setting_exception import InvalidSettingException
 
 # admissible keys when changing settings
 tCoreSettingsKey = Union[
-    Literal["defaultContainer"], Literal["defaultAlgorithm"]
+    Literal["defaultContainer"],
+    Literal["defaultAlgorithm"],
+    Literal["defaultEstimator"],
 ]
 tSettingsKey = Union[
     Literal["logLevel"],
@@ -23,7 +26,9 @@ tSettingsKey = Union[
     Literal["precision"],
 ]
 # admissible types when assigning to settings properties
-tCoreSettingsPropertyType = Union[ContainerTypes, AlgorithmTypes]
+tCoreSettingsPropertyType = Union[
+    ContainerTypes, AlgorithmTypes, EstimatorTypes
+]
 tSettingsPropertyType = Union[LogLevel, bool, Tuple[int, int]]
 
 
@@ -34,10 +39,13 @@ class JSONHelper:
 
     _coreSettings: Dict[
         tCoreSettingsKey,
-        Union[Type[AlgorithmTypes], Type[ContainerTypes]],
+        Union[
+            Type[AlgorithmTypes], Type[ContainerTypes], Type[EstimatorTypes]
+        ],
     ] = {
         "defaultAlgorithm": AlgorithmTypes,
         "defaultContainer": ContainerTypes,
+        "defaultEstimator": EstimatorTypes,
     }
     _settings: Set[tSettingsKey] = {"logLevel", "verbose", "precision"}
 

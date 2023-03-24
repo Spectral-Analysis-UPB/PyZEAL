@@ -1,6 +1,7 @@
 {
    "defaultContainer": "RoundingContainer",
    "defaultAlgorithm": "SimpleArgument",
+   "defaultEstimator": "SummationEstimator",
    "logLevel": "WARNING",
    "verbose": true,
    "precision": [5, 5]

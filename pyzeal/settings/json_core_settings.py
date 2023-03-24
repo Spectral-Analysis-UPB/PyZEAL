@@ -13,6 +13,7 @@ from typing import Dict, Final
 
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.core_settings_service import CoreSettingsService
 from pyzeal.settings.invalid_setting_exception import InvalidSettingException
 from pyzeal.settings.json_helper import JSONHelper
@@ -30,7 +31,7 @@ class JSONCoreSettingsService(CoreSettingsService):
     access to (core) settings must happen through a service like this one.
     """
 
-    __slots__ = ("_container", "_algorithm")
+    __slots__ = ("_container", "_algorithm", "_estimator")
 
     def __init__(self) -> None:
         """
@@ -38,7 +39,6 @@ class JSONCoreSettingsService(CoreSettingsService):
         properties are the currently persisted (user or default) settings.
         """
         currentSettings: Dict[str, str] = {}
-        # TODO: include estimator settings here!
         # first load default settings (must always exist)...
         JSONHelper.loadCoreSettingsFromFile(DEFAULT_SETTINGS, currentSettings)
         # ...then try to load custom settings (might not exist)
@@ -56,6 +56,12 @@ class JSONCoreSettingsService(CoreSettingsService):
                 self._algorithm = algorithm
                 break
 
+        # set default estimator
+        for estimator in EstimatorTypes:
+            if estimator.value == currentSettings["defaultEstimator"]:
+                self._estimator = estimator
+                break
+
         # check if required defaults were loaded successfully
         for attr in self.__slots__:
             if not hasattr(self, attr):
@@ -71,6 +77,7 @@ class JSONCoreSettingsService(CoreSettingsService):
         return (
             f"-> default container:   {self.defaultContainer.value}\n"
             f"-> default algorithm:   {self.defaultAlgorithm.value}\n"
+            f"-> default estimator:   {self.defaultEstimator.value}\n"
         )
 
     # docstr-coverage:inherited
@@ -95,4 +102,16 @@ class JSONCoreSettingsService(CoreSettingsService):
         self._algorithm = value
         JSONHelper.createOrUpdateCoreSetting(
             CUSTOM_SETTINGS, "defaultAlgorithm", value
+        )
+
+    # docstr-coverage:inherited
+    @property
+    def defaultEstimator(self) -> EstimatorTypes:
+        return self._estimator
+
+    @defaultEstimator.setter
+    def defaultEstimator(self, value: EstimatorTypes) -> None:
+        self._estimator = value
+        JSONHelper.createOrUpdateCoreSetting(
+            CUSTOM_SETTINGS, "defaultEstimator", value
         )

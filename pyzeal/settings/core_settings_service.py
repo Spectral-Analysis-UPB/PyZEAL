@@ -11,6 +11,7 @@ from typing import Protocol, runtime_checkable
 
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 
 
 @runtime_checkable
@@ -47,7 +48,6 @@ class CoreSettingsService(Protocol):
         Get the default algorithm type.
 
         :return: Default algorithm type.
-        :rtype: AlgorithmTypes
         """
         ...
 
@@ -56,7 +56,24 @@ class CoreSettingsService(Protocol):
         """
         Set the default algorithm type to `value`.
 
-        :param value: New default algorithm type
-        :type value: AlgorithmTypes
+        :param value: New default algorithm type.
+        """
+        ...
+
+    @property
+    def defaultEstimator(self) -> EstimatorTypes:
+        """
+        Get the default estimator type.
+
+        :return: Default estimator type.
+        """
+        ...
+
+    @defaultEstimator.setter
+    def defaultEstimator(self, value: EstimatorTypes) -> None:
+        """
+        Set the default estimator type.
+
+        :param value: New default estimator type.
         """
         ...

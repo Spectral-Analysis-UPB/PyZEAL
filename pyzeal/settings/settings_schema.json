@@ -10,6 +10,9 @@
         "defaultAlgorithm": {
             "enum": ["NewtonGrid", "SimpleArgument", "SimpleArgumentNewton"]
         },
+        "defaultEstimator": {
+            "enum": ["SummationEstimator", "QuadratureEstimator"]
+        },
         "logLevel": {
             "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         },
