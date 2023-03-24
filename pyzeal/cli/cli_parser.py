@@ -110,6 +110,9 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             help="change current default algorithm",
         )
         changeParser.add_argument(
+            "--estimator", choices=["summation", "quadrature"]
+        )
+        changeParser.add_argument(
             "--log-level",
             choices=["debug", "info", "warning", "error", "critical"],
             help="change current default log level",
@@ -165,6 +168,7 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             doPrint=getattr(args, "print", None) or False,
             container=getattr(args, "container", None) or "",
             algorithm=getattr(args, "algorithm", None) or "",
+            estimator=getattr(args, "estimator", None) or "",
             logLevel=getattr(args, "log_level", None) or "",
             verbose=getattr(args, "verbose", None) or "",
         )

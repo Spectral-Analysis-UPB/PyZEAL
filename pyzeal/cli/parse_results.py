@@ -17,6 +17,7 @@ class SettingsParseResults:
     doPrint: bool
     container: str
     algorithm: str
+    estimator: str
     logLevel: str
     verbose: str
 

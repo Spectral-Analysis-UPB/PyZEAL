@@ -18,6 +18,7 @@ from pyzeal.plugins.plugin_loader import PluginLoader
 from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.pyzeal_types.init_modes import InitModes
 from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.initialization_handler import PyZEALInitializationHandler
@@ -59,8 +60,7 @@ class PyZEALEntry:
         """
         Check if the 'view' subcommand was selected and print current settings.
 
-        :param args: _description_
-        :type args: _type_
+        :param args: Parsed settings values
         """
         if args.doPrint:
             print(PyZEALEntry.settingsService)
@@ -71,8 +71,7 @@ class PyZEALEntry:
         Check if the 'change' subcommand was selected and change settings
         accordingly.
 
-        :param args: _description_
-        :type args: _type_
+        :param args: Parsed settings values
         """
         settingsService = PyZEALEntry.settingsService
         if args.container:
@@ -81,6 +80,10 @@ class PyZEALEntry:
             )
         if args.algorithm:
             PyZEALEntry.changeAlgorithmSetting(args.algorithm, settingsService)
+        if args.estimator:
+            PyZEALEntry.changeEstimatorSetting(
+                args.estimator + "_estimator", settingsService
+            )
         if args.logLevel:
             PyZEALEntry.changeLogLevelSetting(args.logLevel, settingsService)
         if args.verbose:
@@ -187,6 +190,36 @@ class PyZEALEntry:
                 + oldAlgorithm.value
                 + " --> "
                 + newAlgorithm.value
+            )
+
+    @staticmethod
+    def changeEstimatorSetting(
+        estimator: str, service: SettingsService
+    ) -> None:
+        """
+        Try to change the default estimator setting in `service` to
+        `estimator`. If the estimator name is invalid, `SystemExit(2)` is
+        raised.
+
+        :param estimator: New default estimator name (case-insensitive)
+        :param service: Settings service to update.
+        :raises SystemExit: Raised when no matching algorithm can be found.
+        """
+        oldEstimator = service.defaultEstimator
+        newEstimator: Optional[EstimatorTypes] = None
+        for estimatorType in EstimatorTypes:
+            if estimatorType.name == estimator.upper():
+                newEstimator = estimatorType
+                break
+        if newEstimator is None:
+            raise SystemExit(2)
+        if newEstimator != oldEstimator:
+            service.defaultEstimator = newEstimator
+            print(
+                "changed default estimator:   "
+                + oldEstimator.value
+                + " --> "
+                + newEstimator.value
             )
 
     @staticmethod
