@@ -9,7 +9,7 @@ Authors:\n
 
 from os.path import abspath
 from sys import argv
-from typing import Optional
+from typing import Optional, Tuple
 
 from pyzeal.cli.parse_results import PluginParseResults, SettingsParseResults
 from pyzeal.cli.parser_facade import PyZEALParserInterface
@@ -47,6 +47,8 @@ class PyZEALEntry:
         if len(argv) < 2:
             print("this is the CLI of the PyZEAL package. use '-h' for help.")
 
+        # TODO: move handle*Subcommand to controller
+        # TODO: make change*Setting generic and move to controller
         PyZEALEntry.handleViewSubcommand(settingsArgs)
         PyZEALEntry.handleChangeSubcommand(settingsArgs)
         PyZEALEntry.handlePluginSubcommand(pluginArgs)
@@ -88,6 +90,8 @@ class PyZEALEntry:
             PyZEALEntry.changeLogLevelSetting(args.logLevel, settingsService)
         if args.verbose:
             PyZEALEntry.changeVerbositySetting(args.verbose, settingsService)
+        if args.precision:
+            PyZEALEntry.changePrecisionSetting(args.precision, settingsService)
 
     @staticmethod
     def handlePluginSubcommand(args: PluginParseResults) -> None:
@@ -272,4 +276,22 @@ class PyZEALEntry:
                 + str(oldVerbosity)
                 + " --> "
                 + str(newVerbosity)
+            )
+
+    @staticmethod
+    def changePrecisionSetting(
+        precision: Tuple[int, int], service: SettingsService
+    ) -> None:
+        """
+        TODO.
+        """
+        oldPrecision = service.precision
+        newPrecision: Tuple[int, int] = precision
+        if newPrecision != oldPrecision:
+            service.precision = newPrecision
+            print(
+                "changed default precision:   "
+                + str(oldPrecision)
+                + " --> "
+                + str(newPrecision)
             )
