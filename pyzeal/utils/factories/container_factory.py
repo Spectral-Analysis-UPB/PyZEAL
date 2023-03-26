@@ -18,12 +18,12 @@ from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.filter_types import FilterTypes
 from pyzeal.pyzeal_types.parallel_types import tQueue
 from pyzeal.pyzeal_types.root_types import tRoot
-from pyzeal.pyzeal_types.settings_types import SettingsServicesTypes
+from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.containers.plain_container import PlainContainer
 from pyzeal.utils.containers.root_container import RootContainer
 from pyzeal.utils.containers.rounding_container import RoundingContainer
-from pyzeal.utils.factories.settings_factory import SettingsServiceFactory
 from pyzeal.utils.filter_context import FilterContext
+from pyzeal.utils.service_locator import ServiceLocator
 
 
 class ContainerFactory:
@@ -86,11 +86,9 @@ class ContainerFactory:
         parts.
 
         :param containerType: type of container to construct
-        :type containerType: ContainerTypes
         :param precision: the accuracy of the given container
-        :type precision: Tuple[int, int]
         :param queue: an existing queue instance as base for a plain container
-        :type queue: pyzeal_types.parallel_types.tQueue
+        :return: a concrete `RootContainer` instance
         """
         if containerType == ContainerTypes.ROUNDING_CONTAINER:
             ContainerFactory.logger.debug(
@@ -103,10 +101,9 @@ class ContainerFactory:
 
         # return the current default container
         ContainerFactory.logger.debug("requested a new default container...")
+        settings = ServiceLocator.tryResolve(SettingsService)
         return ContainerFactory.getConcreteContainer(
-            SettingsServiceFactory.getConcreteSettings(
-                SettingsServicesTypes.DEFAULT
-            ).defaultContainer,
+            settings.defaultContainer,
             precision=precision,
             queue=queue,
         )
