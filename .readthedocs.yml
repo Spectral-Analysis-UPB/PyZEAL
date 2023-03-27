@@ -7,8 +7,8 @@ build:
 
 python:
   install:
-    - method: pip
-      path: -e .[docs]
+    - method: pip -e
+      path: .[docs]
 
 formats:
     - pdf
