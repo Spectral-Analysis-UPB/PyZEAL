@@ -25,6 +25,7 @@ dependencies = [
     "numba>=0.55",
     "scipy>=1.9.1",
     "rich>=12.2.0",
+    "typing-extensions",
 ]
 
 [project.optional-dependencies]
@@ -121,9 +122,9 @@ linters = "mccabe,pyflakes,pycodestyle"
 [tool.pylama.linter.pycodestyle]
 max-complexity = 11
 ignore = "E203,W503"
-per-file-ignores = [
-    "pyzeal/pyzeal_settings/json_settings_service.py:C901",
-]
+#per-file-ignores = [
+#    "pyzeal/pyzeal_settings/json_settings_service.py:C901",
+#]
 count = true
 
 [tool.pylama.linter.pydocstyle]
@@ -139,76 +140,38 @@ suggestion-mode = true
 
 [tool.pylint.basic]
 argument-naming-style = "camelCase"
-# argument-rgx =
-
 attr-naming-style = "camelCase"
-# attr-rgx =
-
 bad-names = ["foo", "bar", "baz", "toto", "tutu", "tata"]
-# bad-names-rgxs =
-
 class-attribute-naming-style = "camelCase"
-# class-attribute-rgx =
-
 class-const-naming-style = "UPPER_CASE"
-# class-const-rgx =
-
 class-naming-style = "PascalCase"
-# class-rgx =
-
 const-naming-style = "UPPER_CASE"
-# const-rgx =
-
 docstring-min-length = -1
-
 function-naming-style = "camelCase"
-# function-rgx =
-
-good-names = ["i", "j", "k", "n", "s", "x", "y", "z", "x0", "x1", "x2", "y0", "y1", "y2", "z0", "z1", "z2", "xx", "yy", "zz", "g", "ax", "cT", "aZ", "bZ", "cZ", "dZ", "a", "a1", "a2", "b", "b1", "b2", "c", "c1", "c2", "d", "d0", "r", "t", "u", "v", "m", "ud", "md", "td", "f", "df", "p", "ex", "Run", "_"]
+good-names = [
+    "i", "j", "k", "n", "s", "x", "y", "z", "x0", "x1", "x2", "y0", "y1", "y2",
+    "z0", "z1", "z2", "aZ", "bZ", "cZ", "dZ", "a", "a1", "a2", "b", "b1", "b2",
+    "c", "c1", "c2", "d", "d0", "r", "t", "u", "v", "m", "ud", "md", "td", "f",
+    "df", "p", "ex", "_"
+]
 good-names-rgxs = ["_.", "Time*", "t."]
-
 inlinevar-naming-style = "any"
-# inlinevar-rgx =
-
 method-naming-style = "camelCase"
-# method-rgx =
-
 module-naming-style = "snake_case"
-# module-rgx =
-
 no-docstring-rgx = ["^_"]
-
-# List of decorators that produce properties, such as abc.abstractproperty.
 property-classes = ["abc.abstractproperty"]
-
 typealias-rgx = ["t."]
 # typevar-rgx = ["T"]
-
 variable-naming-style = "camelCase"
-# variable-rgx =
 
 [tool.pylint.classes]
-# check-protected-access-in-special-methods =
-
-# List of method names used to declare (i.e. assign) instance attributes.
 defining-attr-methods = ["__init__", "__new__", "setUp", "__post_init__"]
-
-# List of member names, which should be excluded from the protected access
-# warning.
 exclude-protected = ["_asdict", "_fields", "_replace", "_source", "_make"]
-
-# List of valid names for the first argument in a class method.
 valid-classmethod-first-arg = ["cls"]
-
-# List of valid names for the first argument in a metaclass class method.
 valid-metaclass-classmethod-first-arg = ["cls"]
 
 [tool.pylint.design]
 # exclude-too-few-public-methods = ["ToggleCollection"]
-
-# List of qualified class names to ignore when counting class parents (see R0901)
-# ignored-parents =
-
 max-args = 8
 max-attributes = 8
 max-bool-expr = 5
@@ -224,134 +187,47 @@ min-public-methods = 1
 overgeneral-exceptions = ["builtins.BaseException", "builtins.Exception"]
 
 [tool.pylint.format]
-# Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
-# expected-line-ending-format =
-
-# Regexp for a line that is allowed to be longer than the limit.
-ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
-
-# Number of spaces of indent required inside a hanging or continued line.
+# ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
 indent-after-paren = 4
-
 indent-string = "    "
 max-line-length = 79
 max-module-lines = 800
 
-# Allow the body of a class to be on the same line as the declaration if body
-# contains single statement.
-# single-line-class-stmt =
-
-# Allow the body of an if to be on the same line as the test if there is no else.
-# single-line-if-stmt =
-
 [tool.pylint.imports]
-# List of modules that can be imported at any level, not just the top level one.
-# allow-any-import-level =
-
-# Allow explicit reexports by alias from a package __init__.
-# allow-reexport-from-package =
-
-# Allow wildcard imports from modules that define __all__.
-# allow-wildcard-with-all =
-
-# Deprecated modules which should not be used, separated by a comma.
-# deprecated-modules =
-
-# Output a graph (.gv or any supported image format) of external dependencies to
-# the given file (report RP0402 must not be disabled).
-# ext-import-graph =
-
-# Output a graph (.gv or any supported image format) of all (i.e. internal and
-# external) dependencies to the given file (report RP0402 must not be disabled).
-# import-graph =
-
-# Output a graph (.gv or any supported image format) of internal dependencies to
-# the given file (report RP0402 must not be disabled).
-# int-import-graph =
-
-# Force import order to recognize a module as part of the standard compatibility
-# libraries.
-# known-standard-library =
-
-# Force import order to recognize a module as part of a third party library.
 known-third-party = ["enchant"]
 
-# Couples of modules and preferred modules, separated by a comma.
-# preferred-modules =
-
 [tool.pylint.logging]
-# The type of string formatting that logging methods do. `old` means using %
-# formatting, `new` is for `{}` formatting.
 logging-format-style = "old"
-
-# Logging modules to check that the string format arguments are in logging
-# function parameter format.
 logging-modules = ["logging"]
 
 [tool.pylint."messages control"]
-# Only show warnings with the listed confidence levels. Leave empty to show all.
-# Valid levels: HIGH, CONTROL_FLOW, INFERENCE, INFERENCE_FAILURE, UNDEFINED.
 confidence = ["HIGH", "CONTROL_FLOW", "INFERENCE", "INFERENCE_FAILURE", "UNDEFINED"]
 
-# Disable the message, report, category or checker with the given id(s). You can
-# either give multiple identifiers separated by comma (,) or put this option
-# multiple times (only on the command line, not in the configuration file where
-# it should appear only once). You can also use "--disable=all" to disable
-# everything first and then re-enable specific checks. For example, if you want
-# to run only the similarities checker, you can use "--disable=all
-# --enable=similarities". If you want to run only the classes checker, but have
-# no Warning level messages displayed, use "--disable=all --enable=classes
-# --disable=W".
-disable = ["raw-checker-failed", "bad-inline-option", "locally-disabled", "file-ignored", "suppressed-message", "useless-suppression", "deprecated-pragma", "use-symbolic-message-instead", "unnecessary-ellipsis", "global-statement", "wrong-import-order"]
+disable = [
+    "raw-checker-failed", "bad-inline-option", "locally-disabled", "file-ignored",
+    "suppressed-message", "useless-suppression", "deprecated-pragma",
+    "use-symbolic-message-instead", "unnecessary-ellipsis", "global-statement",
+    "wrong-import-order"
+]
 
-# Enable the message, report, category or checker with the given id(s). You can
-# either give multiple identifier separated by comma (,) or put this option
-# multiple time (only on the command line, not in the configuration file where it
-# should appear only once). See also the "--disable" option for examples.
 enable = ["c-extension-no-member"]
 
 [tool.pylint.method_args]
-# List of qualified names (i.e., library.method) which require a timeout
-# parameter e.g. 'requests.api.get,requests.api.post'
-timeout-methods = ["requests.api.delete", "requests.api.get", "requests.api.head", "requests.api.options", "requests.api.patch", "requests.api.post", "requests.api.put", "requests.api.request"]
+timeout-methods = [
+    "requests.api.delete", "requests.api.get", "requests.api.head",
+    "requests.api.options", "requests.api.patch", "requests.api.post",
+    "requests.api.put", "requests.api.request"
+]
 
 [tool.pylint.miscellaneous]
-# List of note tags to take in consideration, separated by a comma.
 notes = ["FIXME", "XXX", "TODO"]
 
-# Regular expression of note tags to take in consideration.
-# notes-rgx =
-
 [tool.pylint.refactoring]
-# Maximum number of nested blocks for function / method body
 max-nested-blocks = 5
-
-# Complete name of functions that never returns. When checking for inconsistent-
-# return-statements if a never returning function is called then it will be
-# considered as an explicit return statement and no message will be printed.
 never-returning-functions = ["sys.exit", "argparse.parse_error"]
 
 [tool.pylint.reports]
-# Python expression which should return a score less than or equal to 10. You
-# have access to the variables 'fatal', 'error', 'warning', 'refactor',
-# 'convention', and 'info' which contain the number of messages in each category,
-# as well as 'statement' which is the total number of statements analyzed. This
-# score is used by the global evaluation report (RP0004).
 evaluation = "10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)"
-
-# Template used to display messages. This is a python new-style format string
-# used to format the message information. See doc for all details.
-# msg-template =
-
-# Set the output format. Available formats are text, parseable, colorized, json
-# and msvs (visual studio). You can also give a reporter class, e.g.
-# mypackage.mymodule.MyReporterClass.
-# output-format =
-
-# Tells whether to display a full report or only the messages.
-# reports =
-
-# Activate the evaluation score.
 score = true
 
 [tool.pylint.similarities]
@@ -362,55 +238,29 @@ ignore-docstrings = true
 min-similarity-lines = 10
 
 [tool.pylint.spelling]
-# Limits count of emitted suggestions for spelling mistakes.
 max-spelling-suggestions = 2
-
-# List of comma separated words that should be considered directives if they
-# appear at the beginning of a comment and should not be checked.
 spelling-ignore-comment-directives = "fmt: on,fmt: off,noqa:,noqa,nosec,isort:skip,mypy:"
 
 [tool.pylint.typecheck]
-# List of decorators that produce context managers, such as
-# contextlib.contextmanager. Add to this list to register other decorators that
-# produce valid context managers.
 contextmanager-decorators = ["contextlib.contextmanager"]
-
-# List of members which are set dynamically and missed by pylint inference
-# system, and so shouldn't trigger E1101 when accessed.
 generated-members = "Progress"
-
-# Tells whether missing members accessed in mixin class should be ignored.
 ignore-none = true
-
 ignore-on-opaque-inference = true
-
-# List of symbolic message names to ignore for Mixin members.
-ignored-checks-for-mixins = ["no-member", "not-async-context-manager", "not-context-manager", "attribute-defined-outside-init"]
-
-# List of class names for which member attributes should not be checked (useful
-# for classes with dynamically set attributes). This supports the use of
-# qualified names.
+ignored-checks-for-mixins = [
+    "no-member", "not-async-context-manager", "not-context-manager",
+    "attribute-defined-outside-init"
+]
 ignored-classes = ["optparse.Values", "thread._local", "_thread._local"]
-
 missing-member-hint = true
 missing-member-hint-distance = 1
 missing-member-max-choices = 1
-
-# Regex pattern to define which classes are considered mixins.
 mixin-class-rgx = ".*[Mm]ixin"
 
 [tool.pylint.variables]
 allow-global-unused-variables = true
-
-# List of strings which can identify a callback function by name. A callback name
-# must start or end with one of those strings.
 callbacks = ["cb_", "_cb"]
-
-# A regular expression matching the name of dummy variables (i.e. expected to not
-# be used).
 dummy-variables-rgx = "_+$|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_"
-
-# Argument names that match this expression will be ignored.
 ignored-argument-names = "_.*|^ignored_|^unused_"
-
-redefining-builtins-modules = ["six.moves", "past.builtins", "future.builtins", "builtins", "io"]
+redefining-builtins-modules = [
+    "six.moves", "past.builtins", "future.builtins", "builtins", "io"
+]

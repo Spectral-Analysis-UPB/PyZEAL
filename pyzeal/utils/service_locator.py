@@ -68,6 +68,8 @@ class ServiceLocator:
         ServiceLocator._transientServices[serviceType] = factory
         return True
 
+    # TODO: resolve remaining constructor parameters from locator itself
+    # TODO: test by removing explicit argument from controller in init
     @staticmethod
     def tryResolve(serviceType: Type[T], **kwargs: object) -> T:
         """
