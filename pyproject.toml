@@ -76,11 +76,8 @@ documentation = "https://github.com/Spectral-Analysis-UPB/PyZEAL"
 pyzeal = "pyzeal.cli.__main__:PyZEALEntry.mainPyZEAL"
 
 [tool.setuptools]
-packages = ["pyzeal", ]
 include-package-data = true
-
-[tool.setuptools.package-dir]
-pyzeal = "pyzeal"
+package-dir = {pyzeal = "pyzeal"}
 
 [tool.black]
 line-length = 79

@@ -7,7 +7,7 @@ build:
 
 python:
   install:
-    - method: pip -e
+    - method: pip
       path: .[docs]
 
 formats:
