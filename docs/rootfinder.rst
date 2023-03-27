@@ -4,7 +4,8 @@ Rootfinder Package Documentation
 .. py:module:: rootfinder
 
 Usage
---------------------------------
+-----
+
 The usage principle of all rootfinders is that they are initialized with a
 target function and, depending on the type of rootfinder, additional 
 requirements such as the derivative. An initialized rootfinder can then 
@@ -18,7 +19,7 @@ information on the different algorithms and containers, visit :ref:`algorithms`
 and :ref:`containers`.
 
 Rootfinder
---------------------------------
+----------
 
 .. automodule:: pyzeal.rootfinders.rootfinder
     :members:
@@ -33,7 +34,8 @@ There is also a parallelized version of the rootfinder:
     :exclude-members: __weakref__, __str__, __subclasshook__, main, suppressSig
 
 Interface
---------------------------------
+---------
+
 .. automodule:: pyzeal.rootfinders.finder_interface
     :members:
     :special-members:
