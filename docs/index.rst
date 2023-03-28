@@ -41,7 +41,7 @@ Welcome to PyZEAL's documentation!
 --------------------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents of PyZEAL's Documentation:
    :numbered:
 
@@ -49,8 +49,9 @@ Welcome to PyZEAL's documentation!
    usage
    theory
    rootfinder
-   containers
    algorithms
+   estimators
+   containers
    auto_diff
 
 --------------------------------

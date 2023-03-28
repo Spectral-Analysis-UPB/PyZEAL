@@ -3,14 +3,34 @@
 Containers
 ==========
 
-Available container types are ``ROUNDING_CONTAINER`` and ``PLAIN_CONTAINER``.
+Currently the following container types are supported:
 
+1. ``ROUNDING_CONTAINER``,
+#. ``PLAIN_CONTAINER``.
+
+---------
+Interface
+---------
+
+.. automodule:: pyzeal.utils.containers.root_container
+    :members:
+    :special-members:
+    :exclude-members: __weakref__, __str__, __subclasshook__
+
+------------------
 Rounding container
 ------------------
 
-.. autoclass:: pyzeal.utils.containers.rounding_container.RoundingContainer
+.. automodule:: pyzeal.utils.containers.rounding_container
+    :members:
+    :special-members:
+    :exclude-members: __weakref__, __str__, __subclasshook__
 
+---------------
 Plain container
 ---------------
 
-.. autoclass:: pyzeal.utils.containers.plain_container.PlainContainer
+.. automodule:: pyzeal.utils.containers.plain_container
+    :members:
+    :special-members:
+    :exclude-members: __weakref__, __str__, __subclasshook__

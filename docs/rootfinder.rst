@@ -1,5 +1,7 @@
-Rootfinder Package Documentation
-================================
+.. _rootfinders:
+
+Rootfinders
+===========
 
 .. py:module:: rootfinders
 
