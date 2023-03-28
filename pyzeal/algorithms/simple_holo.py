@@ -24,13 +24,12 @@ from pyzeal.algorithms.constants import (
 from pyzeal.algorithms.estimators import EstimatorCache
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.finder_algorithm import FinderAlgorithm
-from pyzeal.pyzeal_logging.loggable import Loggable
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.utils.root_context import RootContext
 from pyzeal.utils.service_locator import ServiceLocator
 
 
-class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
+class SimpleArgumentAlgorithm(FinderAlgorithm):
     """
     Class representation of a simple root finding algorithm for holomorphic
     functions based on the argument principle and the approximation of

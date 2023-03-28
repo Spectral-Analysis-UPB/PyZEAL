@@ -46,29 +46,11 @@ dev = [
 	"black",
 	"isort",
 	"docstr-coverage",
-	"pylama",
-	"pylint",
-	"check-jsonschema",
-]
-all = [
-	"mypy",
-	"mypy-extensions",
-	"hypothesis",
-	"pytest",
-	"pytest-cov",
-	"pytest-mock",
-	"black",
-	"isort",
-	"docstr-coverage",
 	"pylama[toml]",
 	"pylint",
 	"check-jsonschema",
-	"sphinx",
-	"sphinx-material",
-	"nbsphinx",
-	"sphinxcontrib-bibtex",
-	"sphinx-autodoc-typehints",
 ]
+all = ["pyzeal[docs]", "pyzeal[dev]", ]
 
 [project.urls]
 homepage = "https://github.com/Spectral-Analysis-UPB/PyZEAL"

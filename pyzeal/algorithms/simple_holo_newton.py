@@ -15,11 +15,10 @@ from scipy.optimize import newton  # type: ignore
 
 from pyzeal.algorithms.constants import FOUR_PI, TWO_PI
 from pyzeal.algorithms.simple_holo import SimpleArgumentAlgorithm
-from pyzeal.pyzeal_logging.loggable import Loggable
 from pyzeal.utils.root_context import RootContext
 
 
-class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
+class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm):
     """
     Class representation of a root finding algorithm combining the phase
     interpretation of the argument principle used in `SimpleArgumentAlgorithm`

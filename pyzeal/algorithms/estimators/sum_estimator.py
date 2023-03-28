@@ -12,7 +12,6 @@ import numpy as np
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.estimators.estimator_cache import EstimatorCache
-from pyzeal.pyzeal_logging.loggable import Loggable
 from pyzeal.pyzeal_types.root_types import tVec
 from pyzeal.utils.root_context import RootContext
 
@@ -34,7 +33,7 @@ tCache = Dict[
 ]
 
 
-class SummationEstimator(ArgumentEstimator, Loggable):
+class SummationEstimator(ArgumentEstimator):
     """
     Class implementation of a simple argument estimator.
 
