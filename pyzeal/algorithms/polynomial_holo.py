@@ -1,5 +1,6 @@
 """
 Class AssociatedPolynomialAlgorithm from the package pyzeal_algorithms.
+
 This module defines a root finding algorithm based on associated polynomials
 whose coefficients are calculated from higher moments of the logarithmic
 derivative using Newton's identities. Our implementation follows the original
@@ -43,13 +44,9 @@ class AssociatedPolynomialAlgorithm(SimpleArgumentAlgorithm, Loggable):
         or (4) subdivide further if too many roots present.
 
         :param reRan: Real part of current search Range
-        :type reRan: Tuple[float, float]
         :param imRan: Imaginary part of current search range
-        :type imRan: Tuple[float, float]
         :param phi: Change in argument along the boundary of the current range
-        :type phi: float
         :param context: `RootContext` in which the algorithm operates
-        :type context: RootContext
         """
         if context.df is None:
             raise ValueError(

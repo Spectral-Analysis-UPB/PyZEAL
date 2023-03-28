@@ -50,15 +50,16 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     ) -> None:
         """
         Initialize a root finding algorithm that employs a straightforward,
-        simple adaptation of the argument principle which does not require
-        numerical quadrature.
+        simple adaptation of the argument principle by refining an initial
+        bounding rectangle until it either contains no further roots or it is
+        smaller in size than the requested accuracy.
 
-        :param numPts:
-        :type numPts: int
-        :param deltaPhi:
-        :type deltaPhi: float
-        :param maxPrecision:
-        :type maxPrecision: float
+        :param numPts: the default number of support points on rectangle edges
+            at the start of dynamic refinement
+        :param deltaPhi: the maximal phase shift between neighboring points on
+            rectangle edges before dynamic refinement starts
+        :param maxPrecision: the minimal distance between neighboring points on
+            rectangle edges during dynamic refinement
         """
         self.cache = EstimatorCache()
         self.estimator = ServiceLocator.tryResolve(
@@ -76,14 +77,14 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     def calcRoots(self, context: RootContext) -> None:
         """
         Start a root calculation using a straightforward argument principle
-        based refinement strategy. This routine calculates the initially
-        expected number of roots by delegating the argument calculation to its
-        `ArgumentEstimator` instance. Then it delegates the actual
-        work of recursive refinement to the routines `decideRefinement` and
-        `calcRootsRecursion`.
+        based refinement strategy.
+
+        This routine calculates the initially expected number of roots by
+        delegating the argument calculation to its `ArgumentEstimator`
+        instance. Then it delegates the actual work of recursive refinement to
+        the routines `decideRefinement` and `calcRootsRecursion`.
 
         :param context: context in which the algorithm operates
-        :type context: RootContext
         """
         self.logger.info(
             "starting simple argument search for %s",
@@ -124,13 +125,9 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         (3) subdivide further if roots present but accuracy not yet attained.
 
         :param reRan: Real part of current search Range
-        :type reRan: Tuple[float, float]
         :param imRan: Imaginary part of current search range
-        :type imRan: Tuple[float, float]
         :param phi: Change in argument along the boundary of the current range
-        :type phi: float
         :param context: `RootContext` in which the algorithm operates
-        :type context: RootContext
         """
         # calculate difference between right/left and top/bottom
         x1, x2 = reRan
@@ -202,11 +199,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         `context`.
 
         :param reRan: Real part of current search range
-        :type reRan: Tuple[float, float]
         :param imRan: Imaginary part of current search range
-        :type imRan: Tuple[float, float]
         :param context: `RootContext` in which the algorithm operates
-        :type context: RootContext
         """
         # check if the given rectangle contains at least one zero
         phi: float = self.estimator.calcMoment(
@@ -230,20 +224,14 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     ) -> None:
         """
         Compute the location of a root in a sufficiently small rectangle and
-        update the progress bar
+        update the progress bar accordingly.
 
-        :param right: _description_
-        :type right: complex
-        :param left: _description_
-        :type left: complex
-        :param top: _description_
-        :type top: complex
-        :param bottom: _description_
-        :type bottom: complex
-        :param phi: _description_
-        :type phi: float
-        :param context: _description_
-        :type context: RootContext
+        :param right: right boundary of the rectangle
+        :param left: left boundary of the rectangle
+        :param top: top boundary of the rectangle
+        :param bottom: bottom boundary of the rectangle
+        :param phi: the total argument within the rectangle
+        :param context: overall context of the current calculation
         """
         newZero = (left + right + 1j * (bottom + top)) / 2.0
         zOrder = int(np.round(phi / (2 * np.pi)))

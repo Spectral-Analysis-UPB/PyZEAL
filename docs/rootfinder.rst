@@ -1,8 +1,9 @@
 Rootfinder Package Documentation
 ================================
 
-.. py:module:: rootfinder
+.. py:module:: rootfinders
 
+-----
 Usage
 -----
 
@@ -18,6 +19,16 @@ the ``SIMPLE_ARGUMENT`` algorithm is used with a ``ROUNDING_CONTAINER``. For mor
 information on the different algorithms and containers, visit :ref:`algorithms`
 and :ref:`containers`.
 
+---------
+Interface
+---------
+
+.. automodule:: pyzeal.rootfinders.finder_interface
+    :members:
+    :special-members:
+    :exclude-members: __weakref__, __str__, main
+
+----------
 Rootfinder
 ----------
 
@@ -32,11 +43,3 @@ There is also a parallelized version of the rootfinder:
     :members:
     :special-members:
     :exclude-members: __weakref__, __str__, __subclasshook__, main, suppressSig
-
-Interface
----------
-
-.. automodule:: pyzeal.rootfinders.finder_interface
-    :members:
-    :special-members:
-    :exclude-members: __weakref__, __str__, main

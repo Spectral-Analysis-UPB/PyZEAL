@@ -36,8 +36,7 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         Initialize a root finding algorithm which searches for roots using the
         Newton algorithm with starting points on an evenly spaced grid.
 
-        :param numSamplePoints: number of support points in grid rows/columns
-        :type numSamplePoints: int
+        :param numSamplePoints: Number of support points in grid rows/columns.
         """
         self.numSamplePoints = numSamplePoints
         self.logger.debug("initialized a new NewtonGridAlgorithm!")
@@ -47,8 +46,7 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         Calculate roots in a given context based on the Newton algorithm on a
         grid of support points in the complex plane.
 
-        :param context: context in which the algorithm operates
-        :type context: RootContext
+        :param context: Context in which the algorithm operates.
         """
         self.logger.info(
             "starting newton grid search for %s",

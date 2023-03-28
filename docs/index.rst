@@ -46,18 +46,17 @@ Welcome to PyZEAL's documentation!
    :numbered:
 
    intro
-   theoretical_background
+   usage
+   theory
    rootfinder
    containers
    algorithms
-   automaticDifferentiation
+   auto_diff
 
 --------------------------------
 
-.. index:: index_test
-
-The Origin of the PyZEAL Project
-================================
+The Origins of the PyZEAL Project
+=================================
 
 This is the introduction to the PyZEAL numerics project dealing with the calculation
 of zeros of holomorphic functions. With this project we plan on porting much of the functionality
@@ -75,12 +74,11 @@ The following is an example of resonances for a dynamical system called a *Schot
 (and significantly more complex numerical experiments) are straightforward to calculating by combining basic features
 of **PyZEAL** and **PyZeta**:
 
-.. image:: ./_static/images/pic1.png
+.. image:: ./_static/images/resonance_example.png
    :align: center
 
 For more information on the philosophy and aims of this project check out :ref:`intro`, for details on the
-theoretical background see :ref:`theoretical_background`. A list of references relevant to **PyZEAL** can be
-found below.
+theoretical background see :ref:`theory`. A list of references relevant to **PyZEAL** can be found below.
 
 --------------------------------
 
