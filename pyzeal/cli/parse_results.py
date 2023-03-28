@@ -1,30 +1,33 @@
 """
-TODO
+This module contains dataclasses for storing results fof command-line parsing.
 
 Authors:\n
 - Philipp Schuette\n
 """
 
 from dataclasses import dataclass
+from typing import Optional, Tuple
 
 
 @dataclass
 class SettingsParseResults:
     """
-    TODO
+    Container for parsing results related to settings.
     """
 
     doPrint: bool
     container: str
     algorithm: str
+    estimator: str
     logLevel: str
     verbose: str
+    precision: Optional[Tuple[int, int]]
 
 
 @dataclass
 class PluginParseResults:
     """
-    TODO
+    Container for parsing results related to plugins.
     """
 
     listPlugins: bool

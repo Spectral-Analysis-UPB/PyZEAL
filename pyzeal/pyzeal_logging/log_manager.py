@@ -20,7 +20,8 @@ from pyzeal.utils.factories.settings_factory import SettingsServiceFactory
 
 class LogManager:
     """
-    _summary_
+    This class handles basic logging functionalities to be used by
+    PyZEAL-related modules.
     """
 
     DATE: Final[datetime] = datetime.now()

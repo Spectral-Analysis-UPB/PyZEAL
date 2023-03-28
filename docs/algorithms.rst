@@ -1,4 +1,5 @@
 .. _algorithms:
+
 Algorithms
 ================================
 Currently, there are three algorithms implemented: ``NEWTON_GRID``,

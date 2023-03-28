@@ -17,6 +17,8 @@ from pyzeal.algorithms.estimators import (
 )
 from pyzeal.pyzeal_logging.log_manager import LogManager
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
+from pyzeal.settings.settings_service import SettingsService
+from pyzeal.utils.service_locator import ServiceLocator
 
 
 class EstimatorFactory:
@@ -39,18 +41,12 @@ class EstimatorFactory:
         of estimator `estimatorType`.
 
         :param estimatorType: Type of estimator to return
-        :type estimatorType: EstimatorTypes
         :param numPts: Number of sampling points
-        :type numPts: Optional[int]
         :param deltaPhi: Threshold for argument change in a single step
-        :type deltaPhi: Optional[float]
         :param maxPrecision: Maximum precision, after which no more refinement
             takes place
-        :type maxPrecision: Optional[float]
         :param cache: Cache to store argument changes
-        :type cache: EstimatorCache
         :return: Estimator instance with given parameters
-        :rtype: ArgumentEstimator
         """
         if estimatorType == EstimatorTypes.SUMMATION_ESTIMATOR:
             EstimatorFactory.logger.debug(
@@ -76,9 +72,9 @@ class EstimatorFactory:
         EstimatorFactory.logger.debug(
             "requested a new default argument estimator..."
         )
-        # TODO: implement default estimator in settings
+        settings = ServiceLocator.tryResolve(SettingsService)
         return EstimatorFactory.getConcreteEstimator(
-            EstimatorTypes.SUMMATION_ESTIMATOR,
+            settings.defaultEstimator,
             numPts=numPts,
             deltaPhi=deltaPhi,
             maxPrecision=maxPrecision,

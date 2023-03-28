@@ -15,7 +15,8 @@ class PyZEALLogger(Protocol):
     "The logging interface used throughout the PyZEAL project."
 
     def debug(self, msg: str, *args: Union[str, int, float]) -> None:
-        """Log `msg` with severity DEBUG.
+        """
+        Log `msg` with severity DEBUG.
 
         :param msg: Messageto log
         :type msg: str
@@ -23,7 +24,8 @@ class PyZEALLogger(Protocol):
         ...
 
     def info(self, msg: str, *args: Union[str, int, float]) -> None:
-        """Log `msg` with severity INFO.
+        """
+        Log `msg` with severity INFO.
 
         :param msg: Messageto log
         :type msg: str
@@ -31,7 +33,8 @@ class PyZEALLogger(Protocol):
         ...
 
     def warning(self, msg: str, *args: Union[str, int, float]) -> None:
-        """Log `msg` with severity WARNING.
+        """
+        Log `msg` with severity WARNING.
 
         :param msg: Messageto log
         :type msg: str
@@ -39,7 +42,8 @@ class PyZEALLogger(Protocol):
         ...
 
     def error(self, msg: str, *args: Union[str, int, float]) -> None:
-        """Log `msg` with severity ERROR.
+        """
+        Log `msg` with severity ERROR.
 
         :param msg: Messageto log
         :type msg: str
@@ -47,7 +51,8 @@ class PyZEALLogger(Protocol):
         ...
 
     def critical(self, msg: str, *args: Union[str, int, float]) -> None:
-        """Log `msg` with severity CRITICAL.
+        """
+        Log `msg` with severity CRITICAL.
 
         :param msg: Messageto log
         :type msg: str
@@ -55,7 +60,8 @@ class PyZEALLogger(Protocol):
         ...
 
     def setLevel(self, level: int) -> None:
-        """Set the logging level to `level`
+        """
+        Set the logging level to `level`
 
         :param level: `LogLevel` to set
         :type level: int
@@ -63,7 +69,8 @@ class PyZEALLogger(Protocol):
         ...
 
     def isEnabledFor(self, level: int) -> bool:
-        """Test if logging is enabled for level `level`.
+        """
+        Test if logging is enabled for level `level`.
 
         :param level: Level to test
         :type level: int

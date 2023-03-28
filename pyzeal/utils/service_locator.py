@@ -1,6 +1,7 @@
 """
 Module service_locator.py from the package PyZEAL.
-TODO
+This module provides a way to register and locate services used throughout
+the project, to enable loading additional services for the plugin system.
 
 Authors:\n
 - Philipp Schuette\n
@@ -17,7 +18,7 @@ T = TypeVar("T")
 
 class ServiceLocator:
     """
-    _summary_
+    Static locator class used to add and resolve services.
     """
 
     _transientServices: Dict[Type[object], Callable[..., object]] = {}
@@ -29,14 +30,14 @@ class ServiceLocator:
     @staticmethod
     def registerAsSingleton(serviceType: Type[T], instance: T) -> bool:
         """
-        _summary_
+        Register service `instance` as a singleton service, meaning only one
+        instance exists.
 
-        :param serviceType: _description_
-        :type serviceType: _type_
-        :param instance: _description_
-        :type instance: _type_
-        :return: _description_
-        :rtype: _type_
+        :param serviceType: Type of service
+        :param instance: Service instance
+        :raises ValueError: If the service locator is sealed, no new services
+            can be registered.
+        :return: `True` if the service has been successfully registered.
         """
         if ServiceLocator.isSealed():
             raise ValueError(
@@ -52,14 +53,13 @@ class ServiceLocator:
         serviceType: Type[T], factory: Callable[..., T]
     ) -> bool:
         """
-        _summary_
+        Register a transient service.
 
-        :param serviceType: _description_
-        :type serviceType: _type_
-        :param factory: _description_
-        :type factory: _type_
-        :return: _description_
-        :rtype: _type_
+        :param serviceType: Type of service to register.
+        :param factory: Factory for the given service
+        :raises ValueError: If the service locator is sealed, no new services
+            can be registered.
+        :return: `True` if the service has been successfully registered.
         """
         if ServiceLocator.isSealed():
             raise ValueError(
@@ -68,16 +68,20 @@ class ServiceLocator:
         ServiceLocator._transientServices[serviceType] = factory
         return True
 
+    # TODO: resolve remaining constructor parameters from locator itself
+    # TODO: test by removing explicit argument from controller in init
     @staticmethod
     def tryResolve(serviceType: Type[T], **kwargs: object) -> T:
         """
         Try to resolve the requested service type by first searching registered
         singleton and then registered transient configurations.
 
-        :param serviceType: _description_
-        :type serviceType: _type_
-        :return: _description_
-        :rtype: _type_
+        :param serviceType: Type of service to resolve
+        :raises InvalidServiceConfiguration: If the given `serviceType` can
+            not be resolved, an exception is raised
+        :return: An instance of the given service. If the service is
+            transient, the factory is called with the parameters given
+            by `**kwargs`.
         """
         # try to resolve as singleton
         instance = ServiceLocator._singletonServices.get(serviceType, None)
@@ -111,7 +115,11 @@ class ServiceLocator:
     @staticmethod
     def seal() -> None:
         """
-        TODO
+        Seal the service locator to prevent additional services from
+        being registered.
+
+        :raises ValueError: Raises an exception if the service locator
+            has already been sealed.
         """
         if ServiceLocator._sealed:
             raise ValueError("cannot re-seal an already sealed locator!")
@@ -120,6 +128,8 @@ class ServiceLocator:
     @staticmethod
     def isSealed() -> bool:
         """
-        TODO
+        Return `True` if the service locator is sealed.
+
+        :return: `True` if the service locator is sealed.
         """
         return ServiceLocator._sealed

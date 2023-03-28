@@ -6,6 +6,9 @@ src/pyzeal_plugins/custom_plugins/*
 # VSCode configuration file
 .vscode
 
+# (private) flake8 config file
+.flake8
+
 # asv files which can be reproduced from the database
 .asv/html/
 

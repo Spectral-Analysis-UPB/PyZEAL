@@ -1,5 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "PersistedSettings",
+    "description": "A persisted image of user defined settings.",
     "type": "object",
     "properties": {
         "defaultContainer": {
@@ -7,6 +9,9 @@
         },
         "defaultAlgorithm": {
             "enum": ["NewtonGrid", "SimpleArgument", "SimpleArgumentNewton"]
+        },
+        "defaultEstimator": {
+            "enum": ["SummationEstimator", "QuadratureEstimator"]
         },
         "logLevel": {
             "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
@@ -17,7 +22,7 @@
         "precision": {
             "type": "array",
             "contains": {
-                "type": "number"
+                "type": "integer"
             },
             "minContains": 2,
             "maxContains": 2,

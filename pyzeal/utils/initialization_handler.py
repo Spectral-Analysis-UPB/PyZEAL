@@ -1,6 +1,6 @@
 """
 Module initialization_handler.py from the package PyZEAL.
-TODO
+This module handles initialization for the default PyZEAL services.
 
 Authors:\n
 - Philipp Schuette\n
@@ -8,7 +8,9 @@ Authors:\n
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.finder_algorithm import FinderAlgorithm
+from pyzeal.cli.cli_controller import CLIController
 from pyzeal.cli.cli_parser import PyZEALParser
+from pyzeal.cli.controller_facade import CLIControllerFacade
 from pyzeal.cli.parser_facade import PyZEALParserInterface
 from pyzeal.plugins.plugin_loader import PluginLoader
 from pyzeal.pyzeal_logging.log_manager import LogManager
@@ -72,8 +74,12 @@ class PyZEALInitializationHandler:
             ServiceLocator.registerAsSingleton(
                 PyZEALParserInterface, PyZEALParser()
             )
+            settings = ServiceLocator.tryResolve(SettingsService)
+            ServiceLocator.registerAsSingleton(
+                CLIControllerFacade, CLIController(settings)
+            )
 
-        # plugins cannot be loader in cli mode (plugins might be broken...)!
+        # plugins cannot be loaded in cli mode (plugins might be broken, ...)!
         if mode not in InitModes.CLI:
             PyZEALInitializationHandler.logger.info("loading plugins...")
             PluginLoader.loadPlugins()

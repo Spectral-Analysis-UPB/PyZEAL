@@ -1,5 +1,6 @@
 """
-TODO
+This module provides a simple cache to store and retrieve intermediate
+results during computation.
 
 Authors:\n
 - Philipp Schuette
@@ -21,7 +22,7 @@ class EstimatorCache(Loggable):
 
     def __init__(self) -> None:
         """
-        TODO
+        Initializes a new `EstimatorCache`.
         """
         self._cache: Dict[int, Dict[Tuple[complex, complex], complex]] = {}
         self.logger.info("initialized a new argument estimator cache...")
@@ -40,7 +41,10 @@ class EstimatorCache(Loggable):
         Store the total argument change associated with a horizontally or
         vertically oriented range of complex numbers.
 
-        TODO
+        :param order: Order of the moment to be stored
+        :param zStart: Starting point of the line
+        :param zEnd: End point of the line
+        :param argument: Total argument change
         """
         if (orderCache := self._cache.get(order, None)) is None:
             self._cache[order] = {(zStart, zEnd): argument}
@@ -63,7 +67,11 @@ class EstimatorCache(Loggable):
         vertically oriented range of complex numbers. Returns `None` if the
         requested entry is not present.
 
-        TODO
+        :param order: Order of the moment to be retrieved
+        :param zStart: Starting point of the line
+        :param zEnd: End point of the line
+        :return: Total argument change if the cache contains a value, else
+            None is returned.
         """
         if (orderCache := self._cache.get(order, None)) is None:
             value = None
@@ -89,7 +97,9 @@ class EstimatorCache(Loggable):
         Remove the total argument change associated with a horizontally or
         vertically oriented range of complex numbers.
 
-        TODO
+        :param order: Order of the moment to remove
+        :param zStart: Starting point of the line
+        :param zEnd: End point of the line
         """
         if order in self._cache:
             value = self._cache[order].pop((zStart, zEnd), None)
@@ -101,13 +111,16 @@ class EstimatorCache(Loggable):
 
     def dirty(self) -> bool:
         """
-        TODO
+        Returns `True` if the cache contains anything.
+
+        :return: `True` if the cache contains anything.
         """
         return len(self._cache) > 0
 
     def reset(self) -> None:
         """
-        TODO
+        Resets the cache by clearing all stored values and resetting
+        the hit and miss counters.
         """
         self._cache.clear()
         self.cacheHits = 0

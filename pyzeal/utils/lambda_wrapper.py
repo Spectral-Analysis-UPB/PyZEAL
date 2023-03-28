@@ -1,6 +1,7 @@
 """
 Module lambda_wrapper.py from the package PyZEAL.
-TODO
+This module wraps lambda functions to allow for multiprocessing, as normally
+lambda functions can not be pickled.
 
 Authors:\n
 - Philipp Schuette\n
@@ -31,7 +32,7 @@ def wrappedDerivative(z: tVec) -> tVec:
 
 class LambdaWrapper:
     """
-    _summary_
+    Static wrapper class for lambda functions.
     """
 
     @staticmethod
@@ -40,15 +41,15 @@ class LambdaWrapper:
         mode: Union[Literal["save"], Literal["unsave"]] = "save",
     ) -> tHoloFunc:
         """
-        _summary_
+        Wrap a lambda function by passing it to `func`.
 
-        :param func: _description_
-        :type func: _type_
-        :param mode: _description_, defaults to "save"
-        :type mode: _type_, optional
-        :raises ValueError: _description_
-        :return: _description_
-        :rtype: _type_
+        :param func: Function to wrap
+        :param mode: Wrapping mode, defaults to "save". "unsave" mode will
+            overwrite any pre-existing functions, while "save" mode will
+            raise an error if one attempts to overwrite the wrapped function.
+        :raises ValueError: Raises an error if one tries to wrap a function
+            in "save" mode, while another function is already being wrapped.
+        :return: The wrapped function.
         """
         global _func
 
@@ -66,15 +67,15 @@ class LambdaWrapper:
         mode: Union[Literal["save"], Literal["unsave"]] = "save",
     ) -> tHoloFunc:
         """
-        _summary_
+        Wrap a lambda derivative function by passing it to `func`.
 
-        :param derivative: _description_
-        :type derivative: _type_
-        :param mode: _description_, defaults to "save"
-        :type mode: _type_, optional
-        :raises ValueError: _description_
-        :return: _description_
-        :rtype: _type_
+        :param func: Derivative function to wrap
+        :param mode: Wrapping mode, defaults to "save". "unsave" mode will
+            overwrite any pre-existing functions, while "save" mode will
+            raise an error if one attempts to overwrite the wrapped function.
+        :raises ValueError: Raises an error if one tries to wrap a function
+            in "save" mode, while another function is already being wrapped.
+        :return: The wrapped derivative.
         """
         global _derivative
 
