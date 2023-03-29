@@ -65,16 +65,17 @@ class QuadratureEstimator(ArgumentEstimator):
             )
 
         # TODO: caching of function evaluations!
-        # TODO: adjust line if zero on line found!
-        zArr = np.linspace(zStart, zEnd, 2**EXP_SAMPLE_POINTS + 1)
-        funcValues: tVec = context.df(zArr) * zArr**order / context.f(zArr)
+        zArr, funcArr = self.genFuncArr(
+            zStart, zEnd, context, 2**EXP_SAMPLE_POINTS + 1
+        )
+        funcArr = context.df(zArr) * zArr**order / funcArr
         distance = abs(zEnd - zStart)
 
         realResult = romb(
-            np.real(funcValues), distance / (2**EXP_SAMPLE_POINTS)
+            np.real(funcArr), distance / (2**EXP_SAMPLE_POINTS)
         )
         imagResult = romb(
-            np.imag(funcValues), distance / (2**EXP_SAMPLE_POINTS)
+            np.imag(funcArr), distance / (2**EXP_SAMPLE_POINTS)
         )
         # result (divided by 1j) is only necessarily real if order=0!
         return complex(
