@@ -13,7 +13,6 @@ from scipy.integrate import romb  # type: ignore
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.estimators.estimator_cache import EstimatorCache
-from pyzeal.pyzeal_types.root_types import tVec
 from pyzeal.utils.root_context import RootContext
 
 ####################

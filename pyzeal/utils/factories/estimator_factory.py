@@ -9,12 +9,9 @@ Authors:\n
 
 from typing import Optional
 
-from pyzeal.algorithms.estimators import (
-    ArgumentEstimator,
-    EstimatorCache,
-    QuadratureEstimator,
-    SummationEstimator,
-)
+from pyzeal.algorithms.estimators import ArgumentEstimator, EstimatorCache
+from pyzeal.algorithms.estimators.quad_estimator import QuadratureEstimator
+from pyzeal.algorithms.estimators.sum_estimator import SummationEstimator
 from pyzeal.pyzeal_logging.log_manager import LogManager
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.settings_service import SettingsService

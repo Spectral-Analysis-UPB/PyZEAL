@@ -48,17 +48,16 @@ Overview
 
 The project can roughly be divided into the user-facing API (supporting the first use case mentioned
 above) and the framework elements (supporting both the first and second use cases). In this section
-we give a rough description of the packages which make up *PyZEAL*. More detailed information can be
-found in the respective sections of the package- and module-level documentation.
+we give a rough description of the components making up *PyZEAL* through class and package diagrams.
+More detailed information can be found in the respective sections of the class-level documentation.
 
-1. ``RootFinders``:
-#. ``Algorithms``:
-#. ``Estimators``:
-#. ``Utilities``:
-#. ``Logging``:
-#. ``CommandLineInterface``:
-#. ``Settings``:
-#. ``Plugins``:
+- **API**: ``rootfinders``, ``algorithms``, ``algorithms.estimators``, ``plugins``
+  (`api classes <./_static/api_classes.pdf>`_, `api packages <./_static/api_packages.pdf>`_)
+- **Framework**: ``utils``, ``pyzeal_logging``, ``settings``, ``pyzeal_types``
+  (`framework classes <./_static/framework_classes.pdf>`_, `framework packages <./_static/framework_packages.pdf>`_)
+- **Command line interface**: ``cli``
+  (`cli classes <./_static/cli_classes.pdf>`_, `cli packages <./_static/cli_packages.pdf>`_)
+
 
 For more information on the theoretical underpinning of the algorithms currently implemented, see
 the :ref:`theory` page.
