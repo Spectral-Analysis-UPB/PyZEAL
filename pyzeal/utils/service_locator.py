@@ -68,8 +68,7 @@ class ServiceLocator:
         ServiceLocator._transientServices[serviceType] = factory
         return True
 
-    # TODO: resolve remaining constructor parameters from locator itself
-    # TODO: test by removing explicit argument from controller in init
+    # TODO: create dedicated locator tests
     @staticmethod
     def tryResolve(serviceType: Type[T], **kwargs: object) -> T:
         """
@@ -100,11 +99,13 @@ class ServiceLocator:
         for param in sig.parameters:
             try:
                 arguments[param] = kwargs[param]
-            except KeyError as exc:
+            except KeyError:
                 if (arg := sig.parameters[param].default) != Parameter.empty:
                     arguments[param] = arg
                 else:
-                    raise InvalidServiceConfiguration(serviceType) from exc
+                    arguments[param] = ServiceLocator.tryResolve(
+                        sig.parameters[param].annotation
+                    )
         instance = factory(**arguments)
         if isinstance(instance, serviceType):
             return instance
