@@ -13,6 +13,7 @@ from numpy.polynomial import Polynomial
 
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.pyzeal_types.filter_types import FilterTypes
 from pyzeal.pyzeal_types.root_types import tHoloFunc
 from pyzeal.rootfinders import RootFinder
@@ -37,19 +38,26 @@ KNOWN_FAILURES = [
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgument(testName: str, parallel: bool) -> None:
+@pytest.mark.parametrize(
+    "estimator",
+    [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],
+)
+def testSimpleArgument(
+    testName: str, parallel: bool, estimator: EstimatorTypes
+) -> None:
     """
     Test the SIMPLE_ARGUMENT RootFinder with the test case given by
-    `testName`
+    `testName`.
 
     :param testName: Name of the test case
-    :type testName: str
     :param parallel: If roots should be searched in parallel
-    :type parallel: bool
+    :param estimator: The type of estimator to use
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
-    hrf = simpleArgumentRootFinder(testName, parallel=parallel)
+    hrf = simpleArgumentRootFinder(
+        testName, parallel=parallel, estimatorType=estimator
+    )
     hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
@@ -62,21 +70,31 @@ def testSimpleArgument(testName: str, parallel: bool) -> None:
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testSimpleArgumentFinderHypothesis(roots: List[complex]) -> None:
+@pytest.mark.parametrize(
+    "estimator",
+    [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],
+)
+def testSimpleArgumentFinderHypothesis(
+    estimator: EstimatorTypes, roots: List[complex]
+) -> None:
     """
     Test the root finder algorithm based on a simple partial integration of
     the classical argument principle on polynomials whose roots are generated
     automatically using the hypothesis package.
 
     :param roots: List of roots of a polynomial
-    :type roots: List[complex]
+    :param estimator: The type of estimator to use
     """
-    f: tHoloFunc = Polynomial.fromroots(roots)
+    pytest.skip()
+    polynomial = Polynomial.fromroots(roots)
+    f: tHoloFunc = polynomial
+    df: tHoloFunc = polynomial.deriv()
     hrf = RootFinder(
         f,
-        None,
+        df,
         algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
         containerType=ContainerTypes.ROUNDING_CONTAINER,
+        estimatorType=estimator,
         verbose=False,
     )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)

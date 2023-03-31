@@ -19,7 +19,8 @@ from pyzeal.utils.root_context import RootContext
 # Global Constants #
 ####################
 
-EXP_SAMPLE_POINTS: Final[int] = 12  # number of sample points for integration
+# TODO: adjust this value dynamically (controlled by integral convergence)
+EXP_SAMPLE_POINTS: Final[int] = 20  # number of sample points for integration
 
 
 class QuadratureEstimator(ArgumentEstimator):
@@ -64,6 +65,7 @@ class QuadratureEstimator(ArgumentEstimator):
             )
 
         # TODO: caching of function evaluations!
+        # TODO: dynamically adjust number of sample points!
         zArr, funcArr = self.genFuncArr(
             zStart, zEnd, context, 2**EXP_SAMPLE_POINTS + 1
         )

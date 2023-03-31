@@ -52,6 +52,7 @@ def rootsMatchClosely(roots1: tVec, roots2: tVec, atol: float) -> bool:
     :return: indicates if `roots1` and `roots2` are the same (up to `atol`)
     :rtype: bool
     """
+    assert len(roots1) == len(roots2)
     try:
         numpyMatch = np.allclose(roots1, roots2, atol=atol)
     except ValueError:
