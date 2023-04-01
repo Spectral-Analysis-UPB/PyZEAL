@@ -6,3 +6,9 @@ A `FinderAlgorithm` accepts a request to calculate roots in some given
 with a concrete `ArgumentEstimator`. The algorithm produces its results by
 using the latter's results as an informational basis for the former.
 """
+
+from pyzeal.algorithms.finder_algorithm import FinderAlgorithm
+
+__all__ = [
+    "FinderAlgorithm",
+]

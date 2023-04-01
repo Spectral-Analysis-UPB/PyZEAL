@@ -18,8 +18,8 @@ from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_logging.log_manager import LogManager
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.pyzeal_types.settings_types import SettingsServicesTypes
-from pyzeal.utils.factories.settings_factory import SettingsServiceFactory
+from pyzeal.settings.settings_service import SettingsService
+from pyzeal.utils.service_locator import ServiceLocator
 
 
 class AlgorithmFactory:
@@ -43,6 +43,7 @@ class AlgorithmFactory:
         :param algoType: type of algorithm to construct
         :param estimatorType: type of argument estimator to use
         :param numSamplePoints: sample point configuration for NewtonGridAlgo
+        :return: a concrete `FinderAlgorithm` instance
         """
         if algoType == AlgorithmTypes.NEWTON_GRID:
             AlgorithmFactory.logger.debug(
@@ -71,10 +72,9 @@ class AlgorithmFactory:
         AlgorithmFactory.logger.debug(
             "requested usage of the default algorithm..."
         )
+        settings = ServiceLocator.tryResolve(SettingsService)
         return AlgorithmFactory.getConcreteAlgorithm(
-            SettingsServiceFactory.getConcreteSettings(
-                SettingsServicesTypes.DEFAULT
-            ).defaultAlgorithm,
+            settings.defaultAlgorithm,
             numSamplePoints=numSamplePoints,
             estimatorType=estimatorType,
         )

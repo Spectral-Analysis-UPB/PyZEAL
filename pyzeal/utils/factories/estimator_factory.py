@@ -9,14 +9,13 @@ Authors:\n
 
 from typing import Optional
 
-from pyzeal.algorithms.estimators import (
-    ArgumentEstimator,
-    EstimatorCache,
-    QuadratureEstimator,
-    SummationEstimator,
-)
+from pyzeal.algorithms.estimators import ArgumentEstimator, EstimatorCache
+from pyzeal.algorithms.estimators.quad_estimator import QuadratureEstimator
+from pyzeal.algorithms.estimators.sum_estimator import SummationEstimator
 from pyzeal.pyzeal_logging.log_manager import LogManager
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
+from pyzeal.settings.settings_service import SettingsService
+from pyzeal.utils.service_locator import ServiceLocator
 
 
 class EstimatorFactory:
@@ -70,9 +69,9 @@ class EstimatorFactory:
         EstimatorFactory.logger.debug(
             "requested a new default argument estimator..."
         )
-        # TODO: implement default estimator in settings
+        settings = ServiceLocator.tryResolve(SettingsService)
         return EstimatorFactory.getConcreteEstimator(
-            EstimatorTypes.SUMMATION_ESTIMATOR,
+            settings.defaultEstimator,
             numPts=numPts,
             deltaPhi=deltaPhi,
             maxPrecision=maxPrecision,

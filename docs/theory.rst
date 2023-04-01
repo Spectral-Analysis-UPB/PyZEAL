@@ -1,4 +1,4 @@
-.. _theoretical_background:
+.. _theory:
 
 Theoretical Background
 ======================

@@ -37,7 +37,7 @@ class PluginLoader(Loggable):
         Return the global `PluginLoader` instance. If no instance exists,
         a new one is created and returned.
 
-        :return: `PluginLoader` instance.
+        :return: `PluginLoader` singleton instance.
         """
         return (
             PluginLoader._instance

@@ -1,7 +1,8 @@
 """
 Class FinderAlgorithm from the package pyzeal_algorithms.
-This module defines a refined version of the `SimpleArgumentAlgorithm`
-by supplementing the argument principle with a Newton algorithm once a starting
+
+This module defines a refined version of the `SimpleArgumentAlgorithm` by
+supplementing the argument principle with a Newton algorithm once a starting
 point has been identified with sufficient accuracy.
 
 Authors:\n
@@ -14,11 +15,10 @@ from scipy.optimize import newton  # type: ignore
 
 from pyzeal.algorithms.constants import FOUR_PI, TWO_PI
 from pyzeal.algorithms.simple_holo import SimpleArgumentAlgorithm
-from pyzeal.pyzeal_logging.loggable import Loggable
 from pyzeal.utils.root_context import RootContext
 
 
-class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
+class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm):
     """
     Class representation of a root finding algorithm combining the phase
     interpretation of the argument principle used in `SimpleArgumentAlgorithm`

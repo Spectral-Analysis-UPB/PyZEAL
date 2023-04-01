@@ -13,6 +13,7 @@ import numpy as np
 
 from pyzeal.algorithms.estimators.estimator_cache import EstimatorCache
 from pyzeal.pyzeal_logging.loggable import Loggable
+from pyzeal.pyzeal_types.root_types import tVec
 from pyzeal.utils.root_context import RootContext
 
 
@@ -105,3 +106,36 @@ class ArgumentEstimator(ABC, Loggable):
 
         :return: Cache used by this argument estimator.
         """
+
+    def genFuncArr(
+        self, zStart: complex, zEnd: complex, context: RootContext, size: int
+    ) -> Tuple[tVec, tVec]:
+        """
+        TODO.
+        """
+        pos = "horizontal" if zStart.imag == zEnd.imag else "vertical"
+        zArr = np.linspace(zStart, zEnd, size)
+        funcArr = context.f(zArr)
+        zerosOnLine = np.where(funcArr == 0)[0]
+
+        while zerosOnLine.size > 0:
+            self.logger.debug(
+                "simple argument found %d roots on the line [%s, %s]",
+                zerosOnLine.size,
+                str(zArr[0]),
+                str(zArr[-1]),
+            )
+            # order of these zeros is not determined further, so put 0
+            for newRoot in zArr[zerosOnLine]:
+                context.container.addRoot(
+                    (newRoot, 0), context.toFilterContext()
+                )
+            # adjust line according to 'pos'
+            if pos == "vertical":
+                zArr += 2 * 10 ** (-context.precision[0])
+            else:
+                zArr += 2j * 10 ** (-context.precision[1])
+            funcArr = context.f(zArr)
+            zerosOnLine = np.where(funcArr == 0)[0]
+
+        return zArr, funcArr

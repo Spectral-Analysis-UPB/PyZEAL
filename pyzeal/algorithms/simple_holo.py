@@ -24,13 +24,12 @@ from pyzeal.algorithms.constants import (
 from pyzeal.algorithms.estimators import EstimatorCache
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.finder_algorithm import FinderAlgorithm
-from pyzeal.pyzeal_logging.loggable import Loggable
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.utils.root_context import RootContext
 from pyzeal.utils.service_locator import ServiceLocator
 
 
-class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
+class SimpleArgumentAlgorithm(FinderAlgorithm):
     """
     Class representation of a simple root finding algorithm for holomorphic
     functions based on the argument principle and the approximation of
@@ -50,12 +49,16 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     ) -> None:
         """
         Initialize a root finding algorithm that employs a straightforward,
-        simple adaptation of the argument principle which does not require
-        numerical quadrature.
+        simple adaptation of the argument principle by refining an initial
+        bounding rectangle until it either contains no further roots or it is
+        smaller in size than the requested accuracy.
 
-        :param numPts:
-        :param deltaPhi:
-        :param maxPrecision:
+        :param numPts: the default number of support points on rectangle edges
+            at the start of dynamic refinement
+        :param deltaPhi: the maximal phase shift between neighboring points on
+            rectangle edges before dynamic refinement starts
+        :param maxPrecision: the minimal distance between neighboring points on
+            rectangle edges during dynamic refinement
         """
         self.cache = EstimatorCache()
         self.estimator = ServiceLocator.tryResolve(
@@ -73,11 +76,12 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     def calcRoots(self, context: RootContext) -> None:
         """
         Start a root calculation using a straightforward argument principle
-        based refinement strategy. This routine calculates the initially
-        expected number of roots by delegating the argument calculation to its
-        `ArgumentEstimator` instance. Then it delegates the actual
-        work of recursive refinement to the routines `decideRefinement` and
-        `calcRootsRecursion`.
+        based refinement strategy.
+
+        This routine calculates the initially expected number of roots by
+        delegating the argument calculation to its `ArgumentEstimator`
+        instance. Then it delegates the actual work of recursive refinement to
+        the routines `decideRefinement` and `calcRootsRecursion`.
 
         :param context: context in which the algorithm operates
         """
@@ -219,14 +223,14 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
     ) -> None:
         """
         Compute the location of a root in a sufficiently small rectangle and
-        update the progress bar
+        update the progress bar accordingly.
 
-        :param right: _description_
-        :param left: _description_
-        :param top: _description_
-        :param bottom: _description_
-        :param phi: _description_
-        :param context: _description_
+        :param right: right boundary of the rectangle
+        :param left: left boundary of the rectangle
+        :param top: top boundary of the rectangle
+        :param bottom: bottom boundary of the rectangle
+        :param phi: the total argument within the rectangle
+        :param context: overall context of the current calculation
         """
         newZero = (left + right + 1j * (bottom + top)) / 2.0
         zOrder = int(np.round(phi / (2 * np.pi)))

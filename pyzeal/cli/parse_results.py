@@ -6,6 +6,7 @@ Authors:\n
 """
 
 from dataclasses import dataclass
+from typing import Optional, Tuple
 
 
 @dataclass
@@ -17,8 +18,10 @@ class SettingsParseResults:
     doPrint: bool
     container: str
     algorithm: str
+    estimator: str
     logLevel: str
     verbose: str
+    precision: Optional[Tuple[int, int]]
 
 
 @dataclass

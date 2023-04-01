@@ -1,5 +1,6 @@
 """
 Module finder_interface of the package pyzeal.
+
 This module contains the base interface for all rootfinder implementations. Its
 methods provide the main root finding API for end users. Internally its
 implementations should build up an appropriate root finding context and then

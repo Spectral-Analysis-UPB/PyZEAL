@@ -52,7 +52,7 @@ class LogManager:
         logger.setLevel(
             SettingsServiceFactory.getConcreteSettings(
                 settingsType=SettingsServicesTypes.DEFAULT
-            ).logLevel.value,
+            ).logLevel.value
         )
 
         if not logger.hasHandlers():

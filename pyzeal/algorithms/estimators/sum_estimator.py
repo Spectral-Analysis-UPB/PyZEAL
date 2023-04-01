@@ -12,7 +12,6 @@ import numpy as np
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.estimators.estimator_cache import EstimatorCache
-from pyzeal.pyzeal_logging.loggable import Loggable
 from pyzeal.pyzeal_types.root_types import tVec
 from pyzeal.utils.root_context import RootContext
 
@@ -34,11 +33,13 @@ tCache = Dict[
 ]
 
 
-class SummationEstimator(ArgumentEstimator, Loggable):
+class SummationEstimator(ArgumentEstimator):
     """
-    This class implements a simple argument estimator based on discretizing
-    the path of integration and summing the change of argument between these
-    points to compute the integral of the logarithmic derivative.
+    Class implementation of a simple argument estimator.
+
+    It is based on discretizing the path of integration and summing the change
+    of argument between these points to compute the integral of the logarithmic
+    derivative.
     """
 
     __slots__ = (
@@ -238,48 +239,26 @@ class SummationEstimator(ArgumentEstimator, Loggable):
         line is adjusted by translating into direction `pos` by a small offset.
         The number of support points on the line is adjusted dynamically.
 
-        :param order: The moment which is to be calculated
-        :param zStart: Starting point of the line segment
-        :param zEnd: End point of the line segment
-        :param context: `RootContext` containing the necessary information.
+        :param order: The moment which is to be calculated.
+        :param zStart: Starting point of the line segment.
+        :param zEnd: End point of the line segment.
+        :param context: Context of the current calculation.
         :return: Points along with estimated change of argument between them.
         """
         if order != 0:
             raise NotImplementedError(
                 f"summation estimator is not implemented for order={order}>0!"
             )
-        pos = "horizontal" if zStart.imag == zEnd.imag else "vertical"
-        zArr = np.linspace(zStart, zEnd, self.numPts)
-        funcArr = context.f(zArr)
-        zerosOnLine = np.where(funcArr == 0)[0]
-        while zerosOnLine.size > 0:
-            self.logger.debug(
-                "simple argument found %d roots on the line [%s, %s]",
-                zerosOnLine.size,
-                str(zArr[0]),
-                str(zArr[-1]),
-            )
-            # order of these zeros is not determined further, so put 0
-            for newRoot in zArr[zerosOnLine]:
-                context.container.addRoot(
-                    (newRoot, 0), context.toFilterContext()
-                )
-            # adjust line according to 'pos'
-            if pos == "vertical":
-                zArr += 2 * 10 ** (-context.precision[0])
-            else:
-                zArr += 2j * 10 ** (-context.precision[1])
-            funcArr = context.f(zArr)
-            zerosOnLine = np.where(funcArr == 0)[0]
 
         # build the array f(z_{k+1})/f(z_k) of quotients of successive values
+        zArr, funcArr = self.genFuncArr(zStart, zEnd, context, self.numPts)
         funcArr = funcArr[1:] / funcArr[:-1]
         # compute change in argument between two points on the line
         phiArr = np.arctan2(funcArr.imag, funcArr.real)
 
-        # loop over entries in phiArr larger than deltaPhi
+        # loop over entries in phiArr larger than deltaPhi with dynamically
+        # increasing refinement size
         idxPhi = np.where(abs(phiArr) >= self.deltaPhi)[0]
-        # increase the refinement size periodically
         idx = 0
         while idxPhi.size > 0:
             idx += 1
@@ -300,25 +279,9 @@ class SummationEstimator(ArgumentEstimator, Loggable):
             refinementFactor = int(
                 idx * Z_REFINE * abs(phiArr[k]) / self.deltaPhi
             )
-            zArrRefinement = np.linspace(
-                cast(complex, zArr[k]),
-                cast(complex, zArr[k + 1]),
-                refinementFactor,
+            zArrRefinement, funcArr = self.genFuncArr(
+                zArr[k], zArr[k + 1], context, refinementFactor
             )
-            funcArr = context.f(zArrRefinement)
-            zerosOnLine = np.where(funcArr == 0)[0]
-            while zerosOnLine.size > 0:
-                for newZero in zArrRefinement[zerosOnLine]:
-                    context.container.addRoot(
-                        (newZero, 0), context.toFilterContext()
-                    )
-                if pos == "vertical":
-                    zArrRefinement += 2 * 10 ** (-context.precision[0])
-                else:
-                    zArrRefinement += 2j * 10 ** (-context.precision[1])
-                funcArr = context.f(zArrRefinement)
-                zerosOnLine = np.where(funcArr == 0)[0]
-
             funcArr = funcArr[1:] / funcArr[:-1]
             phiArrRefinement = np.arctan2(funcArr.imag, funcArr.real)
 

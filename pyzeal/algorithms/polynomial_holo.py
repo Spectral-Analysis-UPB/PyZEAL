@@ -1,5 +1,6 @@
 """
 Class AssociatedPolynomialAlgorithm from the package pyzeal_algorithms.
+
 This module defines a root finding algorithm based on associated polynomials
 whose coefficients are calculated from higher moments of the logarithmic
 derivative using Newton's identities. Our implementation follows the original
@@ -15,11 +16,10 @@ import numpy as np
 
 from pyzeal.algorithms.constants import FOUR_PI, TWO_PI
 from pyzeal.algorithms.simple_holo import SimpleArgumentAlgorithm
-from pyzeal.pyzeal_logging.loggable import Loggable
 from pyzeal.utils.root_context import RootContext
 
 
-class AssociatedPolynomialAlgorithm(SimpleArgumentAlgorithm, Loggable):
+class AssociatedPolynomialAlgorithm(SimpleArgumentAlgorithm):
     """
     Class representation of a root finding algorithm which uses numerical
     quadrature to calculate higher moments. Then Newton's identities can be

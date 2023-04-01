@@ -15,7 +15,8 @@ echo ""
 echo "|---------------------------------------------------|"
 echo "|[running linters on sources, tests, and benchmarks]|"
 echo "|---------------------------------------------------|"
-pylama pyzeal/ && echo "no linting errors!"
+pylama pyzeal/ && echo "no linting errors with pylama!"
+pylint pyzeal/
 echo ""
 
 echo "|------------------------------------------------|"

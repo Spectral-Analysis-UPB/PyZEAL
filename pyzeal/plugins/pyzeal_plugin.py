@@ -9,16 +9,21 @@ Authors:\n
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Generic, Tuple, Type, TypeVar, Union
+from typing import Callable, Generic, Tuple, Type, TypeVar, Union
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.finder_algorithm import FinderAlgorithm
+from pyzeal.cli.parser_facade import PyZEALParserInterface
+from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.containers.root_container import RootContainer
 
-# adding Any to the Union (effectively rendering it an Any-expression) allows
-# the injection of arbitrary objects via Plugins
-# TODO: remove Any before release!
-tPluggable = Union[Any, FinderAlgorithm, ArgumentEstimator, RootContainer]
+tPluggable = Union[
+    FinderAlgorithm,
+    ArgumentEstimator,
+    RootContainer,
+    SettingsService,
+    PyZEALParserInterface,
+]
 T_co = TypeVar("T_co", bound=tPluggable, covariant=True)
 
 

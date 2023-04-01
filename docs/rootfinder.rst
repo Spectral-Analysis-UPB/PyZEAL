@@ -1,10 +1,14 @@
-Rootfinder Package Documentation
-================================
+.. _rootfinders:
 
-.. py:module:: rootfinder
+Rootfinders
+===========
 
+.. py:module:: rootfinders
+
+-----
 Usage
---------------------------------
+-----
+
 The usage principle of all rootfinders is that they are initialized with a
 target function and, depending on the type of rootfinder, additional 
 requirements such as the derivative. An initialized rootfinder can then 
@@ -17,8 +21,18 @@ the ``SIMPLE_ARGUMENT`` algorithm is used with a ``ROUNDING_CONTAINER``. For mor
 information on the different algorithms and containers, visit :ref:`algorithms`
 and :ref:`containers`.
 
+---------
+Interface
+---------
+
+.. automodule:: pyzeal.rootfinders.finder_interface
+    :members:
+    :special-members:
+    :exclude-members: __weakref__, __str__, main
+
+----------
 Rootfinder
---------------------------------
+----------
 
 .. automodule:: pyzeal.rootfinders.rootfinder
     :members:
@@ -31,10 +45,3 @@ There is also a parallelized version of the rootfinder:
     :members:
     :special-members:
     :exclude-members: __weakref__, __str__, __subclasshook__, main, suppressSig
-
-Interface
---------------------------------
-.. automodule:: pyzeal.rootfinders.finder_interface
-    :members:
-    :special-members:
-    :exclude-members: __weakref__, __str__, main

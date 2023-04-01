@@ -108,6 +108,11 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             help="change current default algorithm",
         )
         changeParser.add_argument(
+            "--estimator",
+            choices=["summation", "quadrature"],
+            help="change current default estimator",
+        )
+        changeParser.add_argument(
             "--log-level",
             choices=["debug", "info", "warning", "error", "critical"],
             help="change current default log level",
@@ -117,6 +122,12 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             choices=["true", "True", "false", "False"],
             help="change current default verbosity level",
         )
+        changeParser.add_argument(
+            "--precision",
+            nargs=2,
+            type=int,
+            help="change current default root finding precision",
+        )
 
     def addPluginSubcommand(
         self, subParsers: _SubParsersAction[ArgumentParser]
@@ -124,7 +135,7 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         """
         Add plugin subcommand and its options to the cli.
 
-        :param subParsers: _description_
+        :param subParsers: The subparser to add Plugin commands to
         """
         pluginParser = subParsers.add_parser("plugin")
         pluginParser.add_argument(
@@ -161,8 +172,12 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             doPrint=getattr(args, "print", None) or False,
             container=getattr(args, "container", None) or "",
             algorithm=getattr(args, "algorithm", None) or "",
+            estimator=getattr(args, "estimator", None) or "",
             logLevel=getattr(args, "log_level", None) or "",
             verbose=getattr(args, "verbose", None) or "",
+            precision=tuple(precision)  # type: ignore
+            if (precision := getattr(args, "precision", None))
+            else None,
         )
         pluginArgs = PluginParseResults(
             listPlugins=getattr(args, "list", None) or False,
