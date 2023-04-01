@@ -45,9 +45,7 @@ def testSimpleArgumentNewton(testName: str, parallel: bool) -> None:
     `testName`
 
     :param testName: Name of the test case
-    :type testName: str
     :param parallel: If roots should be searched in parallel
-    :type parallel: bool
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
@@ -73,7 +71,6 @@ def testSimpleArgumentNewtonHypothesis(roots: List[complex]) -> None:
     hypothesis package.
 
     :param roots: Roots of a polynomial
-    :type roots: List[complex]
     """
     f: tHoloFunc = Polynomial.fromroots(roots)
     hrf = RootFinder(

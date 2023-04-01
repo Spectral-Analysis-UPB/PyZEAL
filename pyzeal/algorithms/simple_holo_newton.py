@@ -43,13 +43,9 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm, Loggable):
         or attained accuracy insufficient for Newton algorithm.
 
         :param reRan: Real part of current search Range
-        :type reRan: Tuple[float, float]
         :param imRan: Imaginary part of current search range
-        :type imRan: Tuple[float, float]
         :param phi: Change in argument along the boundary of the current range
-        :type phi: float
         :param context: `RootContext` in which the algorithm operates
-        :type context: RootContext
         """
         # calculate difference between right/left and top/bottom
         x1, x2 = reRan

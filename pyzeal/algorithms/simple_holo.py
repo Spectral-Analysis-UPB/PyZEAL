@@ -54,11 +54,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         numerical quadrature.
 
         :param numPts:
-        :type numPts: int
         :param deltaPhi:
-        :type deltaPhi: float
         :param maxPrecision:
-        :type maxPrecision: float
         """
         self.cache = EstimatorCache()
         self.estimator = ServiceLocator.tryResolve(
@@ -83,7 +80,6 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         `calcRootsRecursion`.
 
         :param context: context in which the algorithm operates
-        :type context: RootContext
         """
         self.logger.info(
             "starting simple argument search for %s",
@@ -124,13 +120,9 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         (3) subdivide further if roots present but accuracy not yet attained.
 
         :param reRan: Real part of current search Range
-        :type reRan: Tuple[float, float]
         :param imRan: Imaginary part of current search range
-        :type imRan: Tuple[float, float]
         :param phi: Change in argument along the boundary of the current range
-        :type phi: float
         :param context: `RootContext` in which the algorithm operates
-        :type context: RootContext
         """
         # calculate difference between right/left and top/bottom
         x1, x2 = reRan
@@ -202,11 +194,8 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         `context`.
 
         :param reRan: Real part of current search range
-        :type reRan: Tuple[float, float]
         :param imRan: Imaginary part of current search range
-        :type imRan: Tuple[float, float]
         :param context: `RootContext` in which the algorithm operates
-        :type context: RootContext
         """
         # check if the given rectangle contains at least one zero
         phi: float = self.estimator.calcMoment(
@@ -233,17 +222,11 @@ class SimpleArgumentAlgorithm(FinderAlgorithm, Loggable):
         update the progress bar
 
         :param right: _description_
-        :type right: complex
         :param left: _description_
-        :type left: complex
         :param top: _description_
-        :type top: complex
         :param bottom: _description_
-        :type bottom: complex
         :param phi: _description_
-        :type phi: float
         :param context: _description_
-        :type context: RootContext
         """
         newZero = (left + right + 1j * (bottom + top)) / 2.0
         zOrder = int(np.round(phi / (2 * np.pi)))

@@ -39,7 +39,6 @@ class RoundingContainer(RootContainer):
         default precision is used.
 
         :param precision: expected accuracy of roots to be added
-        :type precision: Optional[Tuple[int, int]]
         """
         self.precision = (
             precision or ServiceLocator.tryResolve(SettingsService).precision
@@ -55,9 +54,7 @@ class RoundingContainer(RootContainer):
         roots are removed.
 
         :param root: the root to be added to the container
-        :type root: tRoot
         :param context: the context of the new root, required for filtering
-        :type context: FilterContext
         """
         for filterPredicate in self.filters.values():
             if not filterPredicate(root, context):
@@ -94,9 +91,7 @@ class RoundingContainer(RootContainer):
         Remove a given root from the container. Return value indicates success.
 
         :param root: the root to be removed from the container
-        :type root: tRoot
         :return: a boolean flag indicating if a removal happened
-        :rtype: bool
         """
         try:
             self.rootSet.remove(
@@ -121,7 +116,6 @@ class RoundingContainer(RootContainer):
         Returns all roots currently held in this container as a vector.
 
         :return: a vector of complex roots
-        :rtype: NDArray[complex128]
         """
         result = np.empty((len(self.rootSet)), dtype=np.complex128)
         for i, root in enumerate(self.rootSet):
@@ -134,7 +128,6 @@ class RoundingContainer(RootContainer):
         vector which is parallel to the vector returned by `getRoots`.
 
         :return: a vector of integer root orders (multiplicities)
-        :rtype: NDArray[int32]
         """
         result = np.empty((len(self.rootSet)), dtype=np.int32)
         for i, root in enumerate(self.rootSet):
@@ -151,11 +144,8 @@ class RoundingContainer(RootContainer):
         Round a given root to a given number of decimal places.
 
         :param root: a root to be rounded
-        :type root: tRoot
         :param precision: the number of decimal places to round to
-        :type precision: int
         :return: the rounded root (multiplicity stays constant)
-        :rtype: tRoot
         """
         x, y = root[0].real, root[0].imag
         return complex(round(x, precision[0]), round(y, precision[1])), root[1]
@@ -165,9 +155,7 @@ class RoundingContainer(RootContainer):
         Register a new filter to check possible roots against
 
         :param filterPredicate: New filter to register
-        :type filterPredicate: tRootFilter
         :param key: A key to identify this filter
-        :type key: str
         """
         self.filters[key] = filterPredicate
 
@@ -176,7 +164,6 @@ class RoundingContainer(RootContainer):
         Remove the filter identified by `key`.
 
         :param key: Filter key
-        :type key: str
         """
         try:
             self.filters.pop(key)

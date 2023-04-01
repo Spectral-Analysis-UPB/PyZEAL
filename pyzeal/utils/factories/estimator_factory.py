@@ -39,18 +39,12 @@ class EstimatorFactory:
         of estimator `estimatorType`.
 
         :param estimatorType: Type of estimator to return
-        :type estimatorType: EstimatorTypes
         :param numPts: Number of sampling points
-        :type numPts: Optional[int]
         :param deltaPhi: Threshold for argument change in a single step
-        :type deltaPhi: Optional[float]
         :param maxPrecision: Maximum precision, after which no more refinement
             takes place
-        :type maxPrecision: Optional[float]
         :param cache: Cache to store argument changes
-        :type cache: EstimatorCache
         :return: Estimator instance with given parameters
-        :rtype: ArgumentEstimator
         """
         if estimatorType == EstimatorTypes.SUMMATION_ESTIMATOR:
             EstimatorFactory.logger.debug(

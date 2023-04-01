@@ -26,6 +26,5 @@ class PyZEALParserInterface(Protocol):
         line arguments.
 
         :return: the wrapped parsing results
-        :rtype: Tuple[SettingsParseResults, PluginParseResults]
         """
         ...

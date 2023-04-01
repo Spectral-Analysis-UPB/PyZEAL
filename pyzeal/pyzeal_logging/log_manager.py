@@ -43,9 +43,7 @@ class LogManager:
         creation of a module logger within a session).
 
         :param logName: the name of the logger, should equal the module name
-        :type logName: str
         :return: the (module-level) logger
-        :rtype: pyzeal_logging.logging_facade.PyZEALLogger
         """
         if not os.path.exists(LogManager.LOG_DIR):
             os.mkdir(LogManager.LOG_DIR)
@@ -73,7 +71,6 @@ class LogManager:
         logging naming convention.
 
         :return: convention compliant log file name
-        :rtype: str
         """
         date = LogManager.DATE
         fileName = (

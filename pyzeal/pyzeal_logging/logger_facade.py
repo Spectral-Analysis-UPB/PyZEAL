@@ -19,7 +19,6 @@ class PyZEALLogger(Protocol):
         Log `msg` with severity DEBUG.
 
         :param msg: Messageto log
-        :type msg: str
         """
         ...
 
@@ -28,7 +27,6 @@ class PyZEALLogger(Protocol):
         Log `msg` with severity INFO.
 
         :param msg: Messageto log
-        :type msg: str
         """
         ...
 
@@ -37,7 +35,6 @@ class PyZEALLogger(Protocol):
         Log `msg` with severity WARNING.
 
         :param msg: Messageto log
-        :type msg: str
         """
         ...
 
@@ -46,7 +43,6 @@ class PyZEALLogger(Protocol):
         Log `msg` with severity ERROR.
 
         :param msg: Messageto log
-        :type msg: str
         """
         ...
 
@@ -55,7 +51,6 @@ class PyZEALLogger(Protocol):
         Log `msg` with severity CRITICAL.
 
         :param msg: Messageto log
-        :type msg: str
         """
         ...
 
@@ -64,7 +59,6 @@ class PyZEALLogger(Protocol):
         Set the logging level to `level`
 
         :param level: `LogLevel` to set
-        :type level: int
         """
         ...
 
@@ -73,8 +67,6 @@ class PyZEALLogger(Protocol):
         Test if logging is enabled for level `level`.
 
         :param level: Level to test
-        :type level: int
         :return: If logging is enabled for level `level`
-        :rtype: bool
         """
         ...

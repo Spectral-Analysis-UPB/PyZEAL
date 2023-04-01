@@ -44,9 +44,7 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     Test the Newton-Grid-Rootfinder with the function given by `testName`
 
     :param testName: Name of the test case
-    :type testName: str
     :param parallel: If roots should be searched in parallel
-    :type parallel: bool
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
@@ -71,7 +69,6 @@ def testNewtonGridRootFinderHypothesis(roots: List[complex]) -> None:
     generated automatically using the hypothesis package.
 
     :param roots: Roots of a polynomial
-    :type roots: List[complex]
     """
     polynomial = Polynomial.fromroots(roots)
     f: tHoloFunc = polynomial

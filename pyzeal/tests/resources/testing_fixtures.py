@@ -24,18 +24,13 @@ def newtonGridFinder(
     Returns a NEWTON_GRID RootFinder for the test case `testName`
 
     :param testName: Test case name
-    :type testName: str
     :param numSamplePoints: `numSamplePoints` passed to the RootFinder,
         defaults to 20
-    :type numSamplePoints: int, optional
     :param parallel: Set to `True` if the RootFinder should search in
         parallel, defaults to False
-    :type parallel: bool, optional
     :param derivativeFree: Set to `True` if the RootFinder should operate
         without the derivative, defaults to False
-    :type derivativeFree: bool, optional
     :return: Initialized RootFinder
-    :rtype: RootFinderInterface
     """
     f = testFunctions[testName][0]
     df = testFunctions[testName][1] if not derivativeFree else None
@@ -70,12 +65,9 @@ def simpleArgumentRootFinder(
     Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
 
     :param testName: Test case name
-    :type testName: str
     :param parallel: Set to `True` if the RootFinder should search in parallel,
         defaults to False
-    :type parallel: bool, optional
     :return: Initialized RootFinder
-    :rtype: RootFinderInterface
     """
     holoRF: RootFinderInterface
     f = testFunctions[testName][0]
@@ -112,12 +104,9 @@ def simpleArgumentNewtonRootFinder(
     Returns a SIMPLE_ARGUMENT RootFinder for the test case `testName`
 
     :param testName: Test case name
-    :type testName: str
     :param parallel: Set to `True` if the RootFinder should search in parallel,
         defaults to False
-    :type parallel: bool, optional
     :return: Initialized RootFinder
-    :rtype: RootFinderInterface
     """
     holoNewtonRF: RootFinderInterface
     f = testFunctions[testName][0]

@@ -41,11 +41,8 @@ class AlgorithmFactory:
         arguments are optional.
 
         :param algoType: type of algorithm to construct
-        :type algoType: AlgorithmType
         :param estimatorType: type of argument estimator to use
-        :type estimatorType: EstimatorTypes
         :param numSamplePoints: sample point configuration for NewtonGridAlgo
-        :type numSamplePoints: int
         """
         if algoType == AlgorithmTypes.NEWTON_GRID:
             AlgorithmFactory.logger.debug(
@@ -88,6 +85,5 @@ class AlgorithmFactory:
         Set the log level.
 
         :param level: the new log level
-        :type level: pyzeal_logging.log_levels.LogLevel
         """
         AlgorithmFactory.logger.setLevel(level=level.value)

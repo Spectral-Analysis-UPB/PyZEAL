@@ -18,13 +18,9 @@ def _compareRootSets(roots1: tVec, roots2: tVec, atol: float) -> bool:
     sizes.
 
     :param roots1: first vector of roots
-    :type roots1: tVec
     :param roots2: second vector of roots
-    :type roots2: tVec
     :param atol: tolerance up to which roots are considered the same
-    :type atol: float
     :return: indicates if `roots1` and `roots2` are the same (up to `atol`)
-    :rtype: bool
     """
     for root1 in roots1:
         foundEqualRoot: bool = False
@@ -44,13 +40,9 @@ def rootsMatchClosely(roots1: tVec, roots2: tVec, atol: float) -> bool:
     precision `atol`.
 
     :param roots1: first vector of roots
-    :type roots1: tVec
     :param roots2: second vector of roots
-    :type roots2: tVec
     :param atol: tolerance up to which roots are considered the same
-    :type atol: float
     :return: indicates if `roots1` and `roots2` are the same (up to `atol`)
-    :rtype: bool
     """
     try:
         numpyMatch = np.allclose(roots1, roots2, atol=atol)

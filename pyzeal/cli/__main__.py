@@ -60,7 +60,6 @@ class PyZEALEntry:
         Check if the 'view' subcommand was selected and print current settings.
 
         :param args: _description_
-        :type args: _type_
         """
         if args.doPrint:
             print(PyZEALEntry.settingsService)
@@ -72,7 +71,6 @@ class PyZEALEntry:
         accordingly.
 
         :param args: _description_
-        :type args: _type_
         """
         settingsService = PyZEALEntry.settingsService
         if args.container:
@@ -93,7 +91,6 @@ class PyZEALEntry:
         accordingly.
 
         :param args: _description_
-        :type args: _type_
         :raises SystemExit: _description_
         :raises SystemExit: _description_
         """
@@ -135,9 +132,7 @@ class PyZEALEntry:
         raised.
 
         :param container: New default container name (case-insensitive).
-        :type container: str
         :param service: Settings service to update.
-        :type service: SettingsService
         :raises SystemExit: Raised when no matching container can be found.
         """
         oldContainer = service.defaultContainer
@@ -167,9 +162,7 @@ class PyZEALEntry:
         raised.
 
         :param algorithm: New default algorithm name (case-insensitive)
-        :type algorithm: str
         :param service: Settings service to update.
-        :type service: SettingsService
         :raises SystemExit: Raised when no matching algorithm can be found.
         """
         oldAlgorithm = service.defaultAlgorithm
@@ -196,9 +189,7 @@ class PyZEALEntry:
         If the logLevel is invalid, `SystemExit(2)` is raised.
 
         :param logLevel: New log level (case-insensitive)
-        :type logLevel: str
         :param service: Settings service to update.
-        :type service: SettingsService
         :raises SystemExit: Raised when the log level is invalid.
         """
         oldLevel = service.logLevel
@@ -225,9 +216,7 @@ class PyZEALEntry:
         "true" or "false", `SystemExit(2)` is raised.
 
         :param verbose: New verbosity setting
-        :type verbose: str
         :param service: Setting service to update
-        :type service: SettingsService
         :raises SystemExit: Raised when an invalid verbosity setting is given.
         """
         oldVerbosity = service.verbose

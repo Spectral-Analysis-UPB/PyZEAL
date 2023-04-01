@@ -42,13 +42,9 @@ class ContainerFactory:
 
         :param threshold: A function is considered zero if its absolute value
             is below 10^-(threshold)
-        :type threshold: int
         :param root: Root candidate
-        :type root: tRoot
         :param context: Context containing information about the search
-        :type context: FilterContext
         :return: `True` if the function is close enough to zero
-        :rtype: bool
         """
         return cast(
             bool,
@@ -62,11 +58,8 @@ class ContainerFactory:
         Filter predicate to determine if `root` is in bounds for `context`.
 
         :param root: Root to filter
-        :type root: tRoot
         :param context: Context containing information about the search
-        :type context: FilterContext
         :return: `True` if root is in bounds
-        :rtype: bool
         """
         return (
             context.reRan[0] <= root[0].real <= context.reRan[1]
@@ -86,11 +79,8 @@ class ContainerFactory:
         parts.
 
         :param containerType: type of container to construct
-        :type containerType: ContainerTypes
         :param precision: the accuracy of the given container
-        :type precision: Tuple[int, int]
         :param queue: an existing queue instance as base for a plain container
-        :type queue: pyzeal_types.parallel_types.tQueue
         """
         if containerType == ContainerTypes.ROUNDING_CONTAINER:
             ContainerFactory.logger.debug(
@@ -124,13 +114,9 @@ class ContainerFactory:
         a concrete `FilterContext` and discards the root otherwise.
 
         :param container: the container which receives a new filter
-        :type container: RootContainer
         :param filterType: one of the predefined filters
-        :type filterType: FilterTypes
         :param threshold: the threshold for evaluation of `f` on roots
-        :type threshold: int
         :return: the enhanced container
-        :rtype: RootContainer
         """
         predicate: Callable[[tRoot, FilterContext], bool]
         if filterType == FilterTypes.FUNCTION_VALUE_ZERO:
@@ -149,6 +135,5 @@ class ContainerFactory:
         Set the log level.
 
         :param level: the new log level
-        :type level: pyzeal_logging.log_levels.LogLevel
         """
         ContainerFactory.logger.setLevel(level=level.value)

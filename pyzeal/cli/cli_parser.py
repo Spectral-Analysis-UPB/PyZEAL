@@ -77,7 +77,6 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         Add view subcommand and its options to the cli.
 
         :param subParsers: _description_
-        :type subParsers: _type_
         """
         viewParser = subParsers.add_parser("view")
         viewParser.add_argument(
@@ -91,7 +90,6 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         Add change subcommand and its options to the cli.
 
         :param subParsers: _description_
-        :type subParsers: _type_
         """
         changeParser = subParsers.add_parser("change")
         changeParser.add_argument(
@@ -127,7 +125,6 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         Add plugin subcommand and its options to the cli.
 
         :param subParsers: _description_
-        :type subParsers: _type_
         """
         pluginParser = subParsers.add_parser("plugin")
         pluginParser.add_argument(
@@ -155,7 +152,6 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         line arguments.
 
         :return: the wrapped parsing results
-        :rtype: Tuple[SettingsParseResults, PluginParseResults]
         """
         # fetch cli arguments
         args = super().parse_args()

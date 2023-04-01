@@ -51,19 +51,12 @@ class ParallelRootFinder(RootFinder):
         Initialize a parallel (multiprocessing) root finder.
 
         :param f: the function whose roots should be calculated
-        :type f: Callable[[comlex], complex]
         :param df: the derivative of `f`
-        :type df: Optional[Callable[[complex], complex]]
         :param containerType: the type of container found roots are stored in
-        :type containerType: ContainerTypes
         :param algorithmType: the type of algorithm used for root finding
-        :type algorithmType: AlgorithmTypes
         :param precision: the accuracy at which roots are considered exact
-        :type precision: Optional[Tuple[int, int]]
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
-        :type numSamplePoints: Optional[int]
         :param verbose: flag that toggles the command line progress bar
-        :type verbose: Optional[bool]
         """
         # every algorithm invocation uses numSamplePoints on its subgrid!
         numSamplePoints = (
@@ -107,11 +100,8 @@ class ParallelRootFinder(RootFinder):
         `RootFinderInterface`.
 
         :param reRan: horizontal extend of the complex region to search in
-        :type reRan: Tuple[int, int]
         :param imRan: vertical extend of the complex region to search in
-        :type imRan: Tuple[int, int]
         :param precision: accuracy of the search in real and imaginary parts
-        :type precision: Optional[Tuple[int, int]]
         """
         # if no precision was given, use default precision from constructor
         precision = precision or self.precision
@@ -190,21 +180,13 @@ class ParallelRootFinder(RootFinder):
 
         :param numProcesses: The number of processes, which determines the
             amount of contexts that are returned
-        :type numProcesses: int
         :param reRan: Search range for the real part
-        :type reRan: Tuple[float, float]
         :param imRan: Search range for the imaginary part
-        :type imRan: Tuple[float, float]
         :param rootQueue: Queue in which new roots are added
-        :type rootQueue: tQueue
         :param precision: accuracy of search in real and imaginary parts
-        :type precision: Tuple[int, int]
         :param progress: Progress bar handle
-        :type progress: Optional[FinderProgressBar]
         :param task: TaskID for the progress bar
-        :type task: Optional[TaskID]
         :return: List of RootContexts on which child processes can operate
-        :rtype: List[RootContext]
         """
         self.logger.debug(
             "initializing context jobs for %d child processes...", numProcesses
@@ -237,7 +219,6 @@ class ParallelRootFinder(RootFinder):
         process.
 
         :param context: Context object on which roots are searched
-        :type context: RootContext
         """
         self.logger.info("starting root job in pid=%d!", getpid())
         self.algorithm.calcRoots(context)

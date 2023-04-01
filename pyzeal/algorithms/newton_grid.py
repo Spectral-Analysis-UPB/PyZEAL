@@ -37,7 +37,6 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         Newton algorithm with starting points on an evenly spaced grid.
 
         :param numSamplePoints: number of support points in grid rows/columns
-        :type numSamplePoints: int
         """
         self.numSamplePoints = numSamplePoints
         self.logger.debug("initialized a new NewtonGridAlgorithm!")
@@ -48,7 +47,6 @@ class NewtonGridAlgorithm(FinderAlgorithm):
         grid of support points in the complex plane.
 
         :param context: context in which the algorithm operates
-        :type context: RootContext
         """
         self.logger.info(
             "starting newton grid search for %s",

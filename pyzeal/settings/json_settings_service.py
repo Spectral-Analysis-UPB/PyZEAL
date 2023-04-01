@@ -109,7 +109,6 @@ class JSONSettingsService(SettingsService):
         configuration.
 
         :return: string representation of current setting
-        :rtype: str
         """
         return (
             "Currently active settings configuration:\n"
@@ -178,12 +177,7 @@ class JSONSettingsService(SettingsService):
         yet.
 
         :param setting: setting to create/update
-        :type setting: Union[ Literal["defaultContainer"],
-                              Literal["defaultAlgorithm"],
-                              Literal["logLevel"],
-                              Literal["verbose"], ]
         :param value: New setting value
-        :type value: Union[ContainerTypes, AlgorithmTypes, LogLevel, bool]
         :raises InvalidSettingException: If the given value is invalid for the
             specified setting, an `InvalidSettingException` is raised.
         """
@@ -242,9 +236,7 @@ class JSONSettingsService(SettingsService):
         Load the settings stored in `filename` into `settings`.
 
         :param filename: File to load
-        :type filename: str
         :param settings: Dict to store the read settings in
-        :type settings: Dict[str, Union[str, bool, Tuple[int, int]]]
         """
         try:
             with open(filename, "r", encoding="utf-8") as settingsFile:

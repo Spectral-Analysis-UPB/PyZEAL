@@ -43,13 +43,9 @@ class AssociatedPolynomialAlgorithm(SimpleArgumentAlgorithm, Loggable):
         or (4) subdivide further if too many roots present.
 
         :param reRan: Real part of current search Range
-        :type reRan: Tuple[float, float]
         :param imRan: Imaginary part of current search range
-        :type imRan: Tuple[float, float]
         :param phi: Change in argument along the boundary of the current range
-        :type phi: float
         :param context: `RootContext` in which the algorithm operates
-        :type context: RootContext
         """
         if context.df is None:
             raise ValueError(

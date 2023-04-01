@@ -38,7 +38,6 @@ class FinderProgressBar(Progress):
         task description.
 
         :param total: the total amount of work contained in the added task
-        :type total: float
         """
         return super().add_task(
             description=(f"[magenta]{getpid()}: " + "[g]getting roots..."),

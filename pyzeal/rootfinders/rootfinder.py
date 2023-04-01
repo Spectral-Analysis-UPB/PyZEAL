@@ -64,21 +64,13 @@ class RootFinder(RootFinderInterface, Loggable):
         Initialize a simple, non-parallel root finder.
 
         :param f: the function whose roots should be calculated
-        :type f: Callable[[tVec], tVec]
         :param df: the derivative of `f`
-        :type df: Optional[Callable[[tVec], tVec]]
         :param containerType: the type of container found roots are stored in
-        :type containerType: ContainerTypes
         :param algorithmType: the type of algorithm used for root finding
-        :type algorithmType: AlgorithmTypes
         :param estimatorType: the type of argument estimator used
-        :type estimatorType: EstimatorTypes
         :param precision: the accuracy at which roots are considered exact
-        :type precision: Optional[Tuple[int, int]]
         :param numSamplePoints: determines grid size for `NewtonGridAlgorithm`
-        :type numSamplePoints: Optional[int]
         :param verbose: flag that toggles the command line progress bar
-        :type verbose: Optional[bool]
         """
         self.f = f
         self.df = df
@@ -130,11 +122,8 @@ class RootFinder(RootFinderInterface, Loggable):
         real and imaginary part.
 
         :param reRan: horizontal extend of the complex region to search in
-        :type reRan: Tuple[int, int]
         :param imRan: vertical extend of the complex region to search in
-        :type imRan: Tuple[int, int]
         :param precision: accuracy of the search in real and imaginary parts
-        :type precision: Optional[Tuple[int, int]]
         """
         # if no precision was given, use default precision from constructor
         precision = precision or self.precision
@@ -184,7 +173,6 @@ class RootFinder(RootFinderInterface, Loggable):
         calls to `calculateRoots()`.
 
         :return: the set of roots calculated by this finder
-        :rtype: NDArray[np.complex128]
         """
         return self.container.getRoots()
 
@@ -195,7 +183,6 @@ class RootFinder(RootFinderInterface, Loggable):
         is parallel to the return value of the `roots` property.
 
         :return: the orders of the roots calculated by this finder
-        :rtype: NDArray[np.int32]
         """
         return self.container.getRootOrders()
 
@@ -205,7 +192,6 @@ class RootFinder(RootFinderInterface, Loggable):
         like containers and algorithms.
 
         :param level: the new logging level
-        :type level: pyzeal_logging.log_levels.LogLevel
         """
         super().setLevel(level)
         self.container.setLevel(level)
@@ -233,13 +219,9 @@ class RootFinder(RootFinderInterface, Loggable):
         user does not need to worry about (slightly) perturbing their domains.
 
         :param reRan: Search range for the real part
-        :type reRan: Tuple[float, float]
         :param imRan: Search range for the imaginary part
-        :type imRan: Tuple[float, float]
         :param precision: Accuracy in real and imaginary part
-        :type precision: Tuple[int, int]
         :return: New bounds for real and imaginary parts
-        :rtype: Tuple[Tuple[float, float], Tuple[float, float]]
         """
         (x1, x2), (y1, y2) = sorted(reRan), sorted(imRan)
         x1 = x1 - 1 * 10 ** (-1 * precision[0])

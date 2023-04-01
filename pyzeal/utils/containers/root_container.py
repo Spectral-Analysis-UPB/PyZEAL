@@ -30,9 +30,7 @@ class RootContainer(Loggable, Protocol):
         Add a root to the container.
 
         :param root: the root to be added to the container
-        :type root: tRoot
         :param context: the number of valid decimal places of `root`
-        :type context: FilterContext
         """
         ...
 
@@ -41,7 +39,6 @@ class RootContainer(Loggable, Protocol):
         Returns all roots currently held in this container as a vector.
 
         :return: a vector of complex roots
-        :rtype: NDArray[complex128]
         """
         ...
 
@@ -51,7 +48,6 @@ class RootContainer(Loggable, Protocol):
         vector which is parallel to the vector returned by `getRoots`.
 
         :return: a vector of integer root orders (multiplicities)
-        :rtype: NDArray[int32]
         """
         ...
 
@@ -61,9 +57,7 @@ class RootContainer(Loggable, Protocol):
         actually happened via the return value.
 
         :param root: the root to be removed from the container
-        :type root: tRoot
         :return: a boolean flag indicating if a removal happened
-        :rtype: bool
         """
         ...
 
@@ -79,9 +73,7 @@ class RootContainer(Loggable, Protocol):
         root buffer before/after registering a filter.
 
         :param filterPredicate: the predicate used to filter roots
-        :type filterPredicate: Callable[[tRoot, RootContext], bool]
         :param key: a (unique) key under which the filter is registered
-        :type key: str
         """
         ...
 
@@ -90,6 +82,5 @@ class RootContainer(Loggable, Protocol):
         Remove a previously registered filter by key.
 
         :param key: key value for the filter to remove
-        :type key: str
         """
         ...

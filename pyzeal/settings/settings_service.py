@@ -27,7 +27,6 @@ class SettingsService(Protocol):
         Get the default container type.
 
         :return: Default container type
-        :rtype: ContainerTypes
         """
         ...
 
@@ -37,7 +36,6 @@ class SettingsService(Protocol):
         Set the default container type to `value`.
 
         :param value: New default container type.
-        :type value: ContainerTypes
         """
         ...
 
@@ -47,7 +45,6 @@ class SettingsService(Protocol):
         Get the default algorithm type.
 
         :return: Default algorithm type.
-        :rtype: AlgorithmTypes
         """
         ...
 
@@ -57,7 +54,6 @@ class SettingsService(Protocol):
         Set the default algorithm type to `value`.
 
         :param value: New default algorithm type
-        :type value: AlgorithmTypes
         """
         ...
 
@@ -67,7 +63,6 @@ class SettingsService(Protocol):
         Get the current LogLevel setting.
 
         :return: Current LogLevel
-        :rtype: LogLevel
         """
         ...
 
@@ -77,7 +72,6 @@ class SettingsService(Protocol):
         Set the LogLevel to `value`.
 
         :param value: New LogLevel to use
-        :type value: LogLevel
         """
         ...
 
@@ -87,7 +81,6 @@ class SettingsService(Protocol):
         Get current verbosity setting.
 
         :return: True if verbose mode is enabled.
-        :rtype: bool
         """
         ...
 
@@ -97,7 +90,6 @@ class SettingsService(Protocol):
         Set the default verbosity setting.
 
         :param value: New verbosity setting
-        :type value: bool
         """
         ...
 
@@ -109,7 +101,6 @@ class SettingsService(Protocol):
         to a precision level of (3, 3).
 
         :return: Current precision level
-        :rtype: Tuple[int, int]
         """
         ...
 
@@ -119,6 +110,5 @@ class SettingsService(Protocol):
         Set the default precision level to `value`.
 
         :param value: New precision level
-        :type value: Tuple[int, int]
         """
         ...
