@@ -13,7 +13,6 @@ from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.settings.core_settings_service import CoreSettingsService
 from pyzeal.settings.invalid_setting_exception import InvalidSettingException
 from pyzeal.settings.json_core_settings import JSONCoreSettingsService
 from pyzeal.settings.json_helper import JSONHelper
@@ -39,7 +38,7 @@ class JSONSettingsService(SettingsService):
         Create an instance of a new `SettingsService`. The basis for its
         properties are the currently persisted (user or default) settings.
         """
-        self._coreSettings: CoreSettingsService = JSONCoreSettingsService()
+        self._coreSettings = JSONCoreSettingsService()
         currentSettings: Dict[str, Union[str, bool, Tuple[int, int]]] = {}
         # first load default settings (must always exist)...
         JSONHelper.loadSettingsFromFile(DEFAULT_SETTINGS, currentSettings)

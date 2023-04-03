@@ -64,6 +64,7 @@ class SimpleArgumentNewtonAlgorithm(SimpleArgumentAlgorithm):
 
         # check if the current box contains a simple root - Newton's algorithm
         # does not perform well enough to start within large rectangles
+        # TODO: keep on refining if Newton's algorithm finds no (valid) root!
         if TWO_PI < phi < FOUR_PI and deltaRe < 0.1 and deltaIm < 0.1:
             try:
                 self.logger.debug(
