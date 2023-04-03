@@ -19,8 +19,8 @@ from pyzeal.utils.root_context import RootContext
 # Global Constants #
 ####################
 
-# TODO: adjust this value dynamically (controlled by integral convergence)
-EXP_SAMPLE_POINTS: Final[int] = 20  # number of sample points for integration
+EXP_SAMPLE_POINTS: Final[int] = 10  # number of sample points for integration
+MAX_SAMPLE_POINTS: Final[int] = 21  # maximal sample points for integration
 
 
 class QuadratureEstimator(ArgumentEstimator):
@@ -65,19 +65,32 @@ class QuadratureEstimator(ArgumentEstimator):
             )
 
         # TODO: caching of function evaluations!
-        # TODO: dynamically adjust number of sample points!
+        samplePts = EXP_SAMPLE_POINTS
         zArr, funcArr = self.genFuncArr(
-            zStart, zEnd, context, 2**EXP_SAMPLE_POINTS + 1
+            zStart, zEnd, context, 2**samplePts + 1
         )
         funcArr = context.df(zArr) * zArr**order / funcArr
         distance = abs(zEnd - zStart)
 
-        realResult = romb(
-            np.real(funcArr), distance / (2**EXP_SAMPLE_POINTS)
-        )
-        imagResult = romb(
-            np.imag(funcArr), distance / (2**EXP_SAMPLE_POINTS)
-        )
+        realResult = romb(np.real(funcArr), distance / (2**samplePts))
+        imagResult = romb(np.imag(funcArr), distance / (2**samplePts))
+        # TODO: do not recalculate the whole array?
+        while (samplePts := samplePts + 1) <= MAX_SAMPLE_POINTS:
+            zArr, funcArr = self.genFuncArr(
+                zStart, zEnd, context, 2**samplePts + 1
+            )
+            funcArr = context.df(zArr) * zArr**order / funcArr
+
+            newRealResult = romb(np.real(funcArr), distance / (2**samplePts))
+            newImagResult = romb(np.imag(funcArr), distance / (2**samplePts))
+            if (
+                abs(newRealResult - realResult) < 1e-3
+                and abs(newImagResult - imagResult) < 1e-3
+            ):
+                break
+            realResult = newRealResult
+            imagResult = newImagResult
+
         # result (divided by 1j) is only necessarily real if order=0!
         return complex(
             (zEnd - zStart) * (-1j * realResult + imagResult) / distance
