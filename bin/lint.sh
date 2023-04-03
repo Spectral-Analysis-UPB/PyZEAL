@@ -48,7 +48,12 @@ then
     echo "|---------------------------|"
     echo "|[running tests with pytest]|"
     echo "|---------------------------|"
-    pytest --cov=pyzeal/ --cov-report=html pyzeal/tests/
+    if [[ "$2" == "--slow" ]]
+    then
+        pytest --cov=pyzeal/ --cov-report=html pyzeal/tests/
+    else
+        pytest --cov=pyzeal/ --cov-report=html -m "not slow" pyzeal/tests/
+    fi
     echo ""
 fi
 

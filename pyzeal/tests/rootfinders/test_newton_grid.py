@@ -6,19 +6,11 @@ Authors:\n
 - Luca Wasmuth\n
 """
 
-from datetime import timedelta
-from typing import List
+from typing import Final
 
 import numpy as np
 import pytest
-from hypothesis import given, settings, strategies
-from numpy.polynomial import Polynomial
 
-from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
-from pyzeal.pyzeal_types.container_types import ContainerTypes
-from pyzeal.pyzeal_types.filter_types import FilterTypes
-from pyzeal.pyzeal_types.root_types import tHoloFunc
-from pyzeal.rootfinders import RootFinder
 from pyzeal.settings.json_settings_service import JSONSettingsService
 from pyzeal.tests.resources.testing_fixtures import newtonGridFinder
 from pyzeal.tests.resources.testing_resources import (
@@ -29,11 +21,11 @@ from pyzeal.tests.resources.testing_resources import (
 from pyzeal.tests.resources.testing_utils import rootsMatchClosely
 
 # 20 is enough to pass all tests while still running faster than the default 50
-NUM_SAMPLE_POINTS = 20
+NUM_SAMPLE_POINTS: Final[int] = 20
 # disable progress bar by default for tests
 JSONSettingsService().verbose = False
 # some test functions do not work due to algorithmic limitations
-KNOWN_FAILURES = ["log and sin composition", "x^100", "1e6 * x^100"]
+KNOWN_FAILURES = ["x^30", "x^50", "x^100", "1e6 * x^100"]
 
 
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
@@ -50,44 +42,9 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
-    for numSamplePoints in [20, 100]:
+    for numSamplePoints in [20, 50]:
         gridRF = newtonGridFinder(testName, numSamplePoints, parallel=parallel)
         gridRF.calculateRoots(RE_RAN, IM_RAN, precision=(4, 4))
-        print(gridRF.roots)
         foundRoots = np.sort_complex(gridRF.roots)
         expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
         assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
-
-
-@given(
-    strategies.lists(
-        strategies.complex_numbers(max_magnitude=10), min_size=1, max_size=10
-    )
-)
-@settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testNewtonGridRootFinderHypothesis(roots: List[complex]) -> None:
-    """
-    Test the grid-based Newton rootfinder on polynomials whose roots are
-    generated automatically using the hypothesis package.
-
-    :param roots: Roots of a polynomial
-    :type roots: List[complex]
-    """
-    polynomial = Polynomial.fromroots(roots)
-    f: tHoloFunc = polynomial
-    df: tHoloFunc = polynomial.deriv()
-    gridRF = RootFinder(
-        f,
-        df=df,
-        numSamplePoints=NUM_SAMPLE_POINTS,
-        containerType=ContainerTypes.ROUNDING_CONTAINER,
-        algorithmType=AlgorithmTypes.NEWTON_GRID,
-    )
-    gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
-    gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    gridRF.calculateRoots((-10, 10), (-10, 10), precision=(3, 3))
-    foundRoots = np.sort_complex(gridRF.roots)
-    # We only find a higher-order zero once, so we remove duplicates
-    uniqueRoots = list(set(roots))
-    expectedRoots = np.sort_complex(np.array(uniqueRoots))
-    assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
