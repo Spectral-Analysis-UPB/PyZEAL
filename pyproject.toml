@@ -11,7 +11,7 @@ authors = [
 description = "Python successor to the ZEAL package calculating zeros of holomorphic functions."
 readme = "README.rst"
 license = {file = "LICENSE"}
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
@@ -22,7 +22,6 @@ dependencies = [
     "numpy>=1.21",
     "cython",
     "matplotlib",
-    "numba>=0.55",
     "scipy>=1.9.1",
     "rich>=12.2.0",
     "typing-extensions",
@@ -65,7 +64,7 @@ package-dir = {pyzeal = "pyzeal"}
 
 [tool.black]
 line-length = 79
-target-version = ['py38']
+target-version = ['py39']
 
 [tool.isort]
 profile = "black"
@@ -75,7 +74,7 @@ line_length = 79
 junit_family = "legacy"
 filterwarnings = "ignore::DeprecationWarning"
 markers = [
-    {slow = "slow tests."},
+    "slow: mark tests as slow",
 ]
 
 [tool.pytest.ini_options]
@@ -85,7 +84,7 @@ addopts = "--import-mode=importlib --strict-markers -p no:logging"
 omit = ["pyzeal/tests/benchmarks/*.py"]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 explicit_package_bases = true
 strict = true
 warn_return_any = true
@@ -117,7 +116,7 @@ fail-under = 8.9
 ignore = ["CVS"]
 limit-inference-results = 100
 persistent = true
-py-version = "3.8"
+py-version = "3.9"
 suggestion-mode = true
 
 [tool.pylint.basic]

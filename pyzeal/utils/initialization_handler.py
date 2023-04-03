@@ -74,10 +74,8 @@ class PyZEALInitializationHandler:
             ServiceLocator.registerAsSingleton(
                 PyZEALParserInterface, PyZEALParser()
             )
-            # TODO: the locator should resolve this dependency on its own!
-            settings = ServiceLocator.tryResolve(SettingsService)
-            ServiceLocator.registerAsSingleton(
-                CLIControllerFacade, CLIController(settings)
+            ServiceLocator.registerAsTransient(
+                CLIControllerFacade, CLIController
             )
 
         # plugins cannot be loaded in cli mode (plugins might be broken, ...)!

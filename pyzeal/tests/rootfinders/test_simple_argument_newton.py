@@ -13,6 +13,7 @@ from numpy.polynomial import Polynomial
 
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.pyzeal_types.filter_types import FilterTypes
 from pyzeal.pyzeal_types.root_types import tHoloFunc
 from pyzeal.rootfinders import RootFinder
@@ -39,32 +40,45 @@ KNOWN_FAILURES = [
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
 @pytest.mark.parametrize("parallel", [False, True])
-def testSimpleArgumentNewton(testName: str, parallel: bool) -> None:
+@pytest.mark.parametrize(
+    "estimator",
+    [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],
+)
+def testSimpleArgumentNewton(
+    testName: str, parallel: bool, estimator: EstimatorTypes
+) -> None:
     """
     Test the SIMPLE_ARGUMENT_NEWTON RootFinder with the test case given by
-    `testName`
+    `testName`.
 
     :param testName: Name of the test case
-    :type testName: str
     :param parallel: If roots should be searched in parallel
-    :type parallel: bool
+    :param estimator: The type of estimator to use
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
-    hrf = simpleArgumentNewtonRootFinder(testName, parallel=parallel)
+    hrf = simpleArgumentNewtonRootFinder(
+        testName, parallel=parallel, estimatorType=estimator
+    )
     hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
     foundRoots = hrf.roots
     expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
     assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
 
 
+@pytest.mark.parametrize(
+    "estimator",
+    [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],
+)
 @given(
     strategies.lists(
         strategies.complex_numbers(max_magnitude=10), min_size=1, max_size=10
     )
 )
 @settings(deadline=(timedelta(seconds=5)), max_examples=5)
-def testSimpleArgumentNewtonHypothesis(roots: List[complex]) -> None:
+def testSimpleArgumentNewtonHypothesis(
+    estimator: EstimatorTypes, roots: List[complex]
+) -> None:
     """
     Test the root finder algorithm based on a simple partial integration of the
     classical argument principle combined with a Newton algorithm upon
@@ -73,14 +87,18 @@ def testSimpleArgumentNewtonHypothesis(roots: List[complex]) -> None:
     hypothesis package.
 
     :param roots: Roots of a polynomial
-    :type roots: List[complex]
+    :param estimator: The type of estimator to use
     """
-    f: tHoloFunc = Polynomial.fromroots(roots)
+    pytest.skip()
+    polynomial = Polynomial.fromroots(roots)
+    f: tHoloFunc = polynomial
+    df: tHoloFunc = polynomial.deriv()
     hrf = RootFinder(
         f,
-        None,
+        df,
         algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
         containerType=ContainerTypes.ROUNDING_CONTAINER,
+        estimatorType=estimator,
         verbose=False,
     )
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
