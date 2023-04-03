@@ -26,6 +26,9 @@ jobs:
     - name: Lint with pylama
       run: |
         pylama pyzeal
+    - name: Lint with pylint
+      run: |
+        pylint pyzeal
     - name: Type checking with mypy
       run: |
         mypy pyzeal

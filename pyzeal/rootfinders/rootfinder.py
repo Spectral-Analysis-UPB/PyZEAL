@@ -107,7 +107,7 @@ class RootFinder(RootFinderInterface, Loggable):
             )
         return (
             f"RootFinder(f={getattr(self.f, '__name__', '<unnamed>')}, "
-            + "df=None"
+            + "df=None)"
         )
 
     def calculateRoots(
