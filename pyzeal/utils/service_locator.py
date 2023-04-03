@@ -70,6 +70,7 @@ class ServiceLocator:
 
     # TODO: resolve remaining constructor parameters from locator itself
     # TODO: test by removing explicit argument from controller in init
+    # TODO: should be able to register factory methods asSingleton
     @staticmethod
     def tryResolve(serviceType: Type[T], **kwargs: object) -> T:
         """
@@ -104,6 +105,9 @@ class ServiceLocator:
                 if (arg := sig.parameters[param].default) != Parameter.empty:
                     arguments[param] = arg
                 else:
+                    # TODO: inspect factory signature and try to resolve args
+                    ServiceLocator.tryResolve(sig.parameters[param].annotation)
+                    print("resolving from locator")
                     raise InvalidServiceConfiguration(serviceType) from exc
         instance = factory(**arguments)
         if isinstance(instance, serviceType):
