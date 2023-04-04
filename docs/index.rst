@@ -53,6 +53,7 @@ Welcome to PyZEAL's documentation!
    estimators
    containers
    auto_diff
+   faq
 
 --------------------------------
 
