@@ -76,7 +76,7 @@ class ContainerFactory:
         """
         Initialize and return a root container instance based on the given type
         `algoType` of container and a given accuracy in real and imaginary
-        parts.
+        parts with default filters.
 
         :param containerType: type of container to construct
         :param precision: the accuracy of the given container
@@ -87,19 +87,25 @@ class ContainerFactory:
             ContainerFactory.logger.debug(
                 "requested a new rounding container..."
             )
-            return RoundingContainer(precision)
+            container = RoundingContainer(precision)
+            ContainerFactory.registerDefaultFilters(container)
+            return container
         if containerType == ContainerTypes.PLAIN_CONTAINER:
             ContainerFactory.logger.debug("requested a new plain container...")
-            return PlainContainer(queue)
-
+            container = PlainContainer(queue)
+            ContainerFactory.registerDefaultFilters(container)
+            return container
+            
         # return the current default container
         ContainerFactory.logger.debug("requested a new default container...")
         settings = ServiceLocator.tryResolve(SettingsService)
-        return ContainerFactory.getConcreteContainer(
+        container = ContainerFactory.getConcreteContainer(
             settings.defaultContainer,
             precision=precision,
             queue=queue,
         )
+        ContainerFactory.registerDefaultFilters(container)
+        return container
 
     @staticmethod
     def registerPreDefinedFilter(
@@ -137,3 +143,14 @@ class ContainerFactory:
         :param level: the new log level
         """
         ContainerFactory.logger.setLevel(level=level.value)
+
+    @staticmethod
+    def registerDefaultFilters(container: RootContainer):
+        """
+        Register all default filters for the given container.
+
+        :param container: Container to enable filters for
+        """
+        if isinstance(container, RoundingContainer):
+            ContainerFactory.registerPreDefinedFilter(container, filterType=FilterTypes.FUNCTION_VALUE_ZERO)
+            ContainerFactory.registerPreDefinedFilter(container, filterType=FilterTypes.ZERO_IN_BOUNDS)
