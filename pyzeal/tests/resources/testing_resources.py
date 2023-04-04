@@ -1,8 +1,8 @@
 """
 This module contains the resources necessary for the tests of the PyZEAL
 project. The resources are provided as a dictionary mapping function names to
-triples of callable target functions, their derivatives, and their roots in a
-certain domain of the complex plane.
+triples of holomorphic target functions, their derivatives, and their roots in
+a certain domain of the complex plane.
 
 Authors:\n
 - Luca Wasmuth\n
@@ -30,6 +30,11 @@ localTestFunctions: Dict[
 ] = {
     "x^2-1": (lambda x: cast(tVec, x**2 - 1), lambda x: 2 * x, (-1, 1)),
     "x^2+1": (lambda x: cast(tVec, x**2 + 1), lambda x: 2 * x, (1j, -1j)),
+    "(2x/5)^2+1": (
+        lambda x: cast(tVec, (2 * x / 5) ** 2 + 1),
+        lambda x: 8 * x / 25,
+        (2.5j, -2.5j),
+    ),
     "x^4-1": (
         lambda x: cast(tVec, x**4 - 1),
         lambda x: cast(tVec, 4 * x**3),
@@ -65,6 +70,7 @@ localTestFunctions: Dict[
         (0.1, 0, -0.1),
     ),
     "x^30": (lambda x: x**30, lambda x: cast(tVec, 30 * x**29), (0,)),
+    "x^50": (lambda x: x**50, lambda x: cast(tVec, 50 * x**49), (0,)),
     "x^100": (lambda x: x**100, lambda x: cast(tVec, 100 * x**99), (0,)),
     "1e6 * x^100": (
         lambda x: cast(tVec, 1e6 * x**100),
@@ -83,6 +89,11 @@ localTestFunctions: Dict[
     ),
     "sin(x)": (np.sin, np.cos, (-1 * np.pi, 0, np.pi)),
     "exp(x)": (np.exp, np.exp, ()),
+    "exp(x)-1": (
+        lambda x: cast(tVec, np.exp(np.pi * x / 2) - 1),
+        lambda x: cast(tVec, np.pi * np.exp(np.pi * x / 2) / 2),
+        (-4j, 0, 4j),
+    ),
     "tan(x/10)": (
         lambda x: cast(tVec, np.tan(x / 10)),
         lambda x: cast(tVec, 1 / (10 * np.cos(x / 10) ** 2)),
@@ -93,43 +104,66 @@ localTestFunctions: Dict[
         lambda x: cast(tVec, 1 / (100 * np.cos(x / 100) ** 2)),
         (0,),
     ),
-    "log and sin composition": (
-        lambda x: cast(tVec, np.log(np.sin(x) ** 2 + 1)),
-        lambda x: cast(tVec, 2 * np.sin(x) * np.cos(x) / (np.sin(x) ** 2 + 1)),
-        (-np.pi, 0, np.pi),
+    "sin x cos": (
+        lambda x: cast(tVec, 2 * np.sin(x) * np.cos(x)),
+        lambda x: cast(tVec, 2 * np.cos(x) ** 2 - 2 * np.sin(x) ** 2),
+        (
+            0,
+            np.pi,
+            -np.pi,
+            0.5 * np.pi,
+            1.5 * np.pi,
+            -0.5 * np.pi,
+            -1.5 * np.pi,
+        ),
     ),
-    "seventh root": (
-        lambda x: x ** (1 / 7),
-        lambda x: cast(tVec, 1 / 7 * x ** (-6 / 7)),
+    "log and sinh composition": (
+        lambda x: cast(tVec, np.log(np.sinh(0.2 * x) ** 2 + 1)),
+        lambda x: cast(
+            tVec,
+            0.4
+            * np.sinh(0.2 * x)
+            * np.cosh(0.2 * x)
+            / (1 + np.sinh(0.2 * x) ** 2),
+        ),
         (0,),
+    ),
+    "square root of exp": (
+        lambda x: cast(tVec, np.emath.sqrt(np.exp(2 * np.pi * x / 4)) - 1),
+        lambda x: cast(
+            tVec, 0.25 * np.pi / np.emath.sqrt(np.exp(2 * np.pi * x / 4))
+        ),
+        (0, -4j, 4j),
     ),
     "log(x^2+26)": (
         lambda x: cast(tVec, np.log(x**2 + 26)),
         lambda x: cast(tVec, 2 * x / (x**2 + 26)),
         (-5j, 5j),
     ),
-    "log, arctan, exp composition": (
-        lambda x: cast(tVec, np.log(np.arctan(np.exp(x)))),
+    "20arctan(x/10)": (
+        lambda x: cast(tVec, 20 * np.arctan(x / 10)),
+        lambda x: cast(tVec, 2 / (1 + (x / 10) ** 2)),
+        (0,),
+    ),
+    "exp(arctan(x/10)-1)": (
+        lambda x: cast(tVec, np.exp(np.arctan(x / 10)) - 1),
         lambda x: cast(
-            tVec, np.exp(x) / ((np.exp(2 * x) + 1) * np.arctan(np.exp(x)))
+            tVec, 0.1 * np.exp(np.arctan(x / 10)) / (1 + (x / 10) ** 2)
         ),
-        (0.44302,),
+        (0,),
     ),
 }
 
 
-# wrap lambdas inside partial so multithreading works correctly
+# wrap lambdas inside partial so multiprocessing works correctly
 def f(name: str, x: tVec) -> tVec:
     """
     Evaluate the function `name` with argument `x`. Use with `partial` to
     get a function in `x`.
 
     :param name: Function name
-    :type name: str
-    :param x: David Stamm hat seine schwangere Frau in den Bauch geboxt?
-    :type x: tVec
+    :param x: Point for function evaluation
     :return: `name` evaluated at `x`
-    :rtype: complex
     """
     return localTestFunctions[name][0](x)
 
@@ -139,11 +173,8 @@ def df(name: str, x: tVec) -> tVec:
     Evaluate the derivative of function `name` at `x`.
 
     :param name: Function name
-    :type name: str
-    :param x: David Stamm hat seine schwangere Frau in den Bauch geboxt?
-    :type x: tVec
-    :return: derivative of `name` evaluated at `x`
-    :rtype: complex
+    :param x: Point for function evaluation
+    :return: Derivative of `name` evaluated at `x`
     """
     return localTestFunctions[name][1](x)
 

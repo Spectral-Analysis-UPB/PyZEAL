@@ -145,11 +145,17 @@ class SummationEstimator(ArgumentEstimator):
                     "horizontal line start in internal cache found - dividing!"
                 )
                 value = cache[(y, order)][(x1, "start")]
-                middleIdx = np.where(np.real(value[0]) <= x2)[0][-1]
-                newValue = (
-                    value[0][: middleIdx + 1],
-                    value[1][: middleIdx + 1],
-                )
+                if len((indices := np.where(np.real(value[0]) <= x2)[0])) < 3:
+                    self.logger.warning("must regenerate support points!")
+                    newValue = self.genPhiArr(
+                        order, x1 + 1j * y, x2 + 1j * y, context
+                    )
+                else:
+                    middleIdx = indices[-1]
+                    newValue = (
+                        value[0][: middleIdx + 1],
+                        value[1][: middleIdx + 1],
+                    )
                 self.storeCache(y, order, x1, x2, cache, newValue)
                 return cast(float, sign * newValue[1].sum())
             if (x2, "end") in cache[(y, order)]:
@@ -157,11 +163,18 @@ class SummationEstimator(ArgumentEstimator):
                     "horizontal line end in internal cache found - dividing!"
                 )
                 value = cache[(y, order)][(x2, "end")]
-                middleIdx = np.where(x1 <= np.real(value[0]))[0][0]
-                newValue = (
-                    value[0][middleIdx:],
-                    value[1][middleIdx:],
-                )
+
+                if len((indices := np.where(x1 <= np.real(value[0]))[0])) < 3:
+                    self.logger.warning("must regenerate support points!")
+                    newValue = self.genPhiArr(
+                        order, x1 + 1j * y, x2 + 1j * y, context
+                    )
+                else:
+                    middleIdx = indices[0]
+                    newValue = (
+                        value[0][middleIdx:],
+                        value[1][middleIdx:],
+                    )
                 self.storeCache(y, order, x1, x2, cache, newValue)
                 return cast(float, sign * newValue[1].sum())
 
@@ -196,11 +209,17 @@ class SummationEstimator(ArgumentEstimator):
                     "vertical line start in internal cache found - dividing!"
                 )
                 value = cache[(x, order)][(y1, "start")]
-                middleIdx = np.where(np.imag(value[0]) <= y2)[0][-1]
-                newValue = (
-                    value[0][: middleIdx + 1],
-                    value[1][: middleIdx + 1],
-                )
+                if len((indices := np.where(np.imag(value[0]) <= y2)[0])) < 3:
+                    self.logger.warning("must regenerate support points!")
+                    newValue = self.genPhiArr(
+                        order, x + 1j * y1, x + 1j * y2, context
+                    )
+                else:
+                    middleIdx = indices[-1]
+                    newValue = (
+                        value[0][: middleIdx + 1],
+                        value[1][: middleIdx + 1],
+                    )
                 self.storeCache(x, order, y1, y2, cache, newValue)
                 return cast(float, sign * newValue[1].sum())
             if (y2, "end") in cache[(x, order)]:
@@ -208,11 +227,17 @@ class SummationEstimator(ArgumentEstimator):
                     "vertical line end in internal cache found - dividing!"
                 )
                 value = cache[(x, order)][(y2, "end")]
-                middleIdx = np.where(y1 <= np.imag(value[0]))[0][0]
-                newValue = (
-                    value[0][middleIdx:],
-                    value[1][middleIdx:],
-                )
+                if len((indices := np.where(np.imag(value[0]) <= y2)[0])) < 3:
+                    self.logger.warning("must regenerate support points!")
+                    newValue = self.genPhiArr(
+                        order, x + 1j * y1, x + 1j * y2, context
+                    )
+                else:
+                    middleIdx = np.where(y1 <= np.imag(value[0]))[0][0]
+                    newValue = (
+                        value[0][middleIdx:],
+                        value[1][middleIdx:],
+                    )
                 self.storeCache(x, order, y1, y2, cache, newValue)
                 return cast(float, sign * newValue[1].sum())
 
@@ -280,7 +305,10 @@ class SummationEstimator(ArgumentEstimator):
                 idx * Z_REFINE * abs(phiArr[k]) / self.deltaPhi
             )
             zArrRefinement, funcArr = self.genFuncArr(
-                zArr[k], zArr[k + 1], context, refinementFactor
+                cast(complex, zArr[k]),
+                cast(complex, zArr[k + 1]),
+                context,
+                refinementFactor,
             )
             funcArr = funcArr[1:] / funcArr[:-1]
             phiArrRefinement = np.arctan2(funcArr.imag, funcArr.real)

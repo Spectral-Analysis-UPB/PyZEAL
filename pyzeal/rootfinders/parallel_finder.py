@@ -86,7 +86,7 @@ class ParallelRootFinder(RootFinder):
         return (
             "ParallelRootFinder(f="
             + f"{getattr(self.f, '__name__', '<unnamed>')}, "
-            + "df=None"
+            + "df=None)"
         )
 
     def calculateRoots(
