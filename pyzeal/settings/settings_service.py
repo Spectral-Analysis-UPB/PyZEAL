@@ -23,7 +23,7 @@ class SettingsService(CoreSettingsService, Protocol):
     @property
     def logLevel(self) -> LogLevel:
         """
-        Get the cur rent LogLevel setting.
+        Get the current LogLevel setting.
 
         :return: Current LogLevel
         """
