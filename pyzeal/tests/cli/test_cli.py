@@ -5,7 +5,8 @@ parsing.
 
 from functools import partial
 from typing import Tuple, TypedDict
-from unittest.mock import PropertyMock, patch
+from unittest.mock import PropertyMock, patch, create_autospec
+import pytest
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.finder_algorithm import FinderAlgorithm
@@ -24,6 +25,7 @@ from pyzeal.utils.factories.algorithm_factory import AlgorithmFactory
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 from pyzeal.utils.service_locator import ServiceLocator
+from pyzeal.settings.settings_service import SettingsService
 
 ServiceLocator.registerAsSingleton(PyZEALParserInterface, PyZEALParser())
 ServiceLocator.registerAsTransient(
@@ -277,3 +279,20 @@ def testChangePrecisionSettingsCall() -> None:
             dut = PyZEALEntry()
             dut.mainPyZEAL()
             mockedProp.assert_called_with((3, 3))
+
+@pytest.mark.parametrize("changeFunction", [
+    CLIController.changeAlgorithmSetting,
+    CLIController.changeContainerSetting,
+    CLIController.changeEstimatorSetting,
+    CLIController.changeLogLevelSetting
+])
+def testCLIControllerInvalidName(changeFunction) -> None:
+    """
+    Test if CLIController correctly exits when an invalid name is given
+    for a setting.
+
+    :param changeFunction: Function to test, parametrized by pytest
+    """
+    mockSettings = create_autospec(SettingsService, spec_set=True)
+    with pytest.raises(SystemExit):
+        changeFunction("THIS_DOES_NOT_EXIST", mockSettings)
