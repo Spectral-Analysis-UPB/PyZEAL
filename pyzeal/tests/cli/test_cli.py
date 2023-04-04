@@ -61,9 +61,7 @@ def mockArgs(
     containing the settings given by `setting`.
 
     :param setting: Dict of settings and values
-    :type setting: Dict[str, str]
     :return: ParseResults with appropriate settings
-    :rtype: ParseResults
     """
     settingsParseResult = SettingsParseResults(
         doPrint=True,
@@ -140,7 +138,7 @@ def testChangeCall(pair) -> None:
         with patch(pair[1]) as doNothing:
             dut = PyZEALEntry()
             dut.mainPyZEAL()
-            doNothing.assert_called()
+            doNothing.assert_called_once()
 
 
 @pytest.mark.parametrize("pair", testPairs)
