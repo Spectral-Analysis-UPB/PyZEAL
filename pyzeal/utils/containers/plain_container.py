@@ -42,9 +42,7 @@ class PlainContainer(RootContainer):
         Add a new root to the internal buffer, ignoring the filter context.
 
         :param root: the root to be added to the container
-        :type root: tRoot
         :param context: the context of the new root, ignored
-        :type context: FilterContext
         """
         self.logger.debug(
             "adding new root %f + %fi to plain container!",
@@ -58,9 +56,7 @@ class PlainContainer(RootContainer):
         Roots cannot be removed from a plain container.
 
         :param root: the root to be removed from the container
-        :type root: tRoot
         :return: always returns False
-        :rtype: bool
         """
         return False
 
@@ -69,7 +65,6 @@ class PlainContainer(RootContainer):
         Returns all roots currently held in this container as a vector.
 
         :return: a vector of complex roots
-        :rtype: NDArray[complex128]
         """
         self._transferRootBuffer()
         return np.array([root for root, _ in self._roots], dtype=np.complex128)
@@ -80,7 +75,6 @@ class PlainContainer(RootContainer):
         vector which is parallel to the vector returned by `getRoots`.
 
         :return: a vector of integer root orders (multiplicities)
-        :rtype: NDArray[int32]
         """
         self._transferRootBuffer()
         return np.array([order for _, order in self._roots], dtype=np.int32)
@@ -101,9 +95,7 @@ class PlainContainer(RootContainer):
         Cannot register filters with an instance of `PlainContainer`.
 
         :param filterPredicate: New filter to register
-        :type filterPredicate: tRootFilter
         :param key: A key to identify this filter
-        :type key: str
         """
         raise NotImplementedError("plain containers do not support filtering!")
 
@@ -112,6 +104,5 @@ class PlainContainer(RootContainer):
         Cannot unregister filters with an instance of `PlainContainer`.
 
         :param key: Filter key
-        :type key: str
         """
         raise NotImplementedError("plain containers do not support filtering!")

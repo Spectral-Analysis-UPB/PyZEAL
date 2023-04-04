@@ -24,6 +24,5 @@ class InvalidServiceConfiguration(Exception, Generic[T]):
         Initialize a new `InvalidServiceConfiguration` exception.
 
         :param serviceType: the faulty service
-        :type serviceType: Type
         """
         super().__init__("invalid service request: " + str(serviceType))

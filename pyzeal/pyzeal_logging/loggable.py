@@ -27,7 +27,6 @@ class Loggable(Protocol):
         creation happens upon first property access.
 
         :returns: the logger of this class
-        :rtype: PyZEALLogger
         """
         if not hasattr(self, "_logger"):
             self._logger = LogManager.initLogger(
@@ -40,6 +39,5 @@ class Loggable(Protocol):
         Set the log level.
 
         :param level: the new log level
-        :type level: pyzeal_logging.log_levels.LogLevel
         """
         self.logger.setLevel(level=level.value)

@@ -36,9 +36,7 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     Test the Newton-Grid-Rootfinder with the function given by `testName`
 
     :param testName: Name of the test case
-    :type testName: str
     :param parallel: If roots should be searched in parallel
-    :type parallel: bool
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
