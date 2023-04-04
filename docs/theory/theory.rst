@@ -15,36 +15,46 @@ can be found in the :ref:`Bibliography <bibliography>` below.
 Newton Grid Algorithm
 ---------------------
 
-Coming Soon!
+.. toctree::
+   :maxdepth: 1
+
+   newton_grid
 
 -------------------------
 Simple Argument Algorithm
 -------------------------
 
-Coming Soon!
+.. toctree::
+   :maxdepth: 1
+
+   simple_argument
 
 --------------------------------
 Simple Argument Newton Algorithm
 --------------------------------
 
-Coming Soon!
+.. toctree::
+   :maxdepth: 1
+
+   simple_argument_newton
 
 -------------------------------
 Associated Polynomial Algorithm
 -------------------------------
 
-Coming Soon!
+.. toctree::
+   :maxdepth: 1
+
+   associated_polynomial
 
 -----------------
 Future Directions
 -----------------
 
-.. attention::
+.. toctree::
+   :maxdepth: 1
 
-   If you are looking to contribute to **PyZEAL** something that is related to algorithms then
-   this section might be a good place to look (at least for inspiration)!
-
-Coming Soon!
+   future_directions
 
 .. _bibliography:
 
