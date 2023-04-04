@@ -4,8 +4,9 @@ parsing.
 """
 
 from functools import partial
-from typing import Tuple, TypedDict
-from unittest.mock import PropertyMock, patch, create_autospec
+from typing import Callable, Tuple, TypedDict, Union
+from unittest.mock import PropertyMock, create_autospec, patch
+
 import pytest
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
@@ -20,12 +21,12 @@ from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
+from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.containers.root_container import RootContainer
 from pyzeal.utils.factories.algorithm_factory import AlgorithmFactory
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 from pyzeal.utils.service_locator import ServiceLocator
-from pyzeal.settings.settings_service import SettingsService
 
 ServiceLocator.registerAsSingleton(PyZEALParserInterface, PyZEALParser())
 ServiceLocator.registerAsTransient(
@@ -85,42 +86,60 @@ testPairs = [
     (
         {"algorithm": "NEWTON_GRID"},
         "pyzeal.cli.cli_controller.CLIController.changeAlgorithmSetting",
-        "pyzeal.settings.json_settings_service.JSONSettingsService.defaultAlgorithm",
+        (
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.defaultAlgorithm"
+        ),
         AlgorithmTypes.SIMPLE_ARGUMENT,
         AlgorithmTypes.NEWTON_GRID,
     ),
     (
         {"verbose": "True"},
         "pyzeal.cli.cli_controller.CLIController.changeVerbositySetting",
-        "pyzeal.settings.json_settings_service.JSONSettingsService.verbose",
+        (
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.verbose"
+        ),
         False,
         True,
     ),
     (
         {"container": "plain"},
         "pyzeal.cli.cli_controller.CLIController.changeContainerSetting",
-        "pyzeal.settings.json_settings_service.JSONSettingsService.defaultContainer",
+        (
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.defaultContainer"
+        ),
         ContainerTypes.ROUNDING_CONTAINER,
         ContainerTypes.PLAIN_CONTAINER,
     ),
     (
         {"logLevel": "INFO"},
         "pyzeal.cli.cli_controller.CLIController.changeLogLevelSetting",
-        "pyzeal.settings.json_settings_service.JSONSettingsService.logLevel",
+        (
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.logLevel"
+        ),
         LogLevel.WARNING,
         LogLevel.INFO,
     ),
     (
         {"estimator": "summation"},
         "pyzeal.cli.cli_controller.CLIController.changeEstimatorSetting",
-        "pyzeal.settings.json_settings_service.JSONSettingsService.defaultEstimator",
+        (
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.defaultEstimator"
+        ),
         EstimatorTypes.QUADRATURE_ESTIMATOR,
         EstimatorTypes.SUMMATION_ESTIMATOR,
     ),
     (
         {"precision": (3, 3)},
         "pyzeal.cli.cli_controller.CLIController.changePrecisionSetting",
-        "pyzeal.settings.json_settings_service.JSONSettingsService.precision",
+        (
+            "pyzeal.settings.json_settings_service."
+            "JSONSettingsService.precision"
+        ),
         (1, 1),
         (3, 3),
     ),
@@ -128,7 +147,29 @@ testPairs = [
 
 
 @pytest.mark.parametrize("pair", testPairs)
-def testChangeCall(pair) -> None:
+def testChangeCall(
+    pair: Tuple[
+        SettingsDict,
+        str,
+        str,
+        Union[
+            AlgorithmTypes,
+            bool,
+            ContainerTypes,
+            LogLevel,
+            EstimatorTypes,
+            Tuple[int, int],
+        ],
+        Union[
+            AlgorithmTypes,
+            bool,
+            ContainerTypes,
+            LogLevel,
+            EstimatorTypes,
+            Tuple[int, int],
+        ],
+    ]
+) -> None:
     """
     Test if `change...Setting` gets called correctly.
     """
@@ -142,7 +183,29 @@ def testChangeCall(pair) -> None:
 
 
 @pytest.mark.parametrize("pair", testPairs)
-def testChangeSettingsCall(pair) -> None:
+def testChangeSettingsCall(
+    pair: Tuple[
+        SettingsDict,
+        str,
+        str,
+        Union[
+            AlgorithmTypes,
+            bool,
+            ContainerTypes,
+            LogLevel,
+            EstimatorTypes,
+            Tuple[int, int],
+        ],
+        Union[
+            AlgorithmTypes,
+            bool,
+            ContainerTypes,
+            LogLevel,
+            EstimatorTypes,
+            Tuple[int, int],
+        ],
+    ]
+) -> None:
     """
     Test if `change...Setting` correctly updates the setting.
     """
@@ -165,7 +228,9 @@ def testChangeSettingsCall(pair) -> None:
         CLIController.changeLogLevelSetting,
     ],
 )
-def testCLIControllerInvalidName(changeFunction) -> None:
+def testCLIControllerInvalidName(
+    changeFunction: Callable[[str, SettingsService], None]
+) -> None:
     """
     Test if CLIController correctly exits when an invalid name is given
     for a setting.
