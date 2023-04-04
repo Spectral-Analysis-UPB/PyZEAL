@@ -56,16 +56,16 @@ Welcome to PyZEAL's documentation!
 
 --------------------------------
 
-The Origins of the PyZEAL Project
-=================================
+The Origins of the **PyZEAL** Project
+=====================================
 
-This is the introduction to the PyZEAL numerics project dealing with the calculation
+This is the introduction to the **PyZEAL** numerics project dealing with the calculation
 of zeros of holomorphic functions. With this project we plan on porting much of the functionality
 of the original **ZEAL** (ZEros of AnaLytic functions [KVanBarelR+00]_) Fortran90 package
 (and namesake for this project) to Python while both adding some convenience features as well
 as leveraging more recent algorithms and technologies.
 
-PyZEAL originated as part of the **PyZeta** project which provides facilities for the calculation
+**PyZEAL** originated as part of the **PyZeta** project which provides facilities for the calculation
 of dynamical zeta functions. These in turn allow one to determine dynamical invariants called
 *Ruelle resonances* as their zeros (see the image below). Dynamical determinants being examples for rather
 complicated holomorphic functions therefore set the context for the independent investigation and
@@ -78,8 +78,10 @@ of **PyZEAL** and **PyZeta**:
 .. image:: ./_static/images/resonance_example.png
    :align: center
 
-For more information on the philosophy and aims of this project check out :ref:`intro`, for details on the
-theoretical background see :ref:`theory`. A list of references relevant to **PyZEAL** can be found below.
+If you want to get off the ground with using **PyZEAL** in your own project as fast as possible then :ref:`usage` is a
+good place to get started. For a softer introduction and additional information on the philosophy and aims of this project
+check out :ref:`intro`. For details on the theoretical background and a list of references relevant to **PyZEAL** visit
+:ref:`theory`.
 
 --------------------------------
 

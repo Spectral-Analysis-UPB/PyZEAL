@@ -1,7 +1,7 @@
 .. _intro:
 
-Goals, Overview, and Installation
-=================================
+Goals and Project Overview
+==========================
 
 ---------------
 Goals of PyZEAL
@@ -26,7 +26,7 @@ We aim to support two main use cases:
    into the *Python* ecosystem and a user experience similar to common packages like SciPy_ or NumPy_.
 #. Providing a platform for the practical implementation, debugging, testing, and benchmarking of newly
    developed root finding algorithms as well as their comparison with existing procedures. To this end
-   *PyZEAL* includes a number of framework elements as well as a plugin mechanism for more light-weight
+   **PyZEAL** includes a number of framework elements as well as a plugin mechanism for more light-weight
    implementations of prototypes.
 
 The approach to achieving these goals will be iterative implementation and optimization of a variety of
@@ -48,7 +48,7 @@ Overview
 
 The project can roughly be divided into the user-facing API (supporting the first use case mentioned
 above) and the framework elements (supporting both the first and second use cases). In this section
-we give a rough description of the components making up *PyZEAL* through class and package diagrams.
+we give a rough description of the components making up **PyZEAL** through class and package diagrams.
 More detailed information can be found in the respective sections of the class-level documentation.
 
 - **API**: ``rootfinders``, ``algorithms``, ``algorithms.estimators``, ``plugins``
@@ -60,21 +60,4 @@ More detailed information can be found in the respective sections of the class-l
 
 
 For more information on the theoretical underpinning of the algorithms currently implemented, see
-the :ref:`theory` page.
-
-------------
-Installation
-------------
-
-First, clone the repository from GitHub. Then issue the following command in the resulting directory:
-
-.. code:: bash
-
-   $ python3 -m pip install -e ".[dev]"
-
-This installs the *PyZEAL* project for local development. If you do not wish to conduct your own development
-on the project, you can safely replace ``.[dev]`` with a simple ``.``. Additional installation targets are
-``[docs]`` (for all dependencies required to build and contribute to the docs) and ``[all]``.
-
-You can now import the packages and classes of *PyZEAL* into your own scripts, run the tests on your local
-installation, and extend the project by e.g. writing plugins.
+the :ref:`theory` page. There you can also find a list of original references.

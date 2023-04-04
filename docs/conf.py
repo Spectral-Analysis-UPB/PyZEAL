@@ -98,7 +98,7 @@ html_css_files = [
 ]
 
 # the name of the syntax highlighting style to use
-pygments_style = "monokai"
+pygments_style = "emacs"
 
 # Add type of source files
 source_suffix = [".rst"]
