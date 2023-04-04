@@ -51,13 +51,9 @@ def generateRootContext(
     Generate a `RootContext` for the test case `name` with given search ranges.
 
     :param name: Test case name
-    :type name: str
     :param reRan: Real search range
-    :type reRan: Tuple[float, float]
     :param imRan: Imaginary search range
-    :type imRan: Tuple[float, float]
     :return: Generated `RootContext`
-    :rtype: RootContext
     """
     return RootContext(
         f=functions[name][0],

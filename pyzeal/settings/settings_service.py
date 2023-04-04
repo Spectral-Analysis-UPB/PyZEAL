@@ -26,7 +26,6 @@ class SettingsService(CoreSettingsService, Protocol):
         Get the current LogLevel setting.
 
         :return: Current LogLevel
-        :rtype: LogLevel
         """
         ...
 
@@ -36,7 +35,6 @@ class SettingsService(CoreSettingsService, Protocol):
         Set the LogLevel to `value`.
 
         :param value: New LogLevel to use
-        :type value: LogLevel
         """
         ...
 
@@ -46,7 +44,6 @@ class SettingsService(CoreSettingsService, Protocol):
         Get current verbosity setting.
 
         :return: True if verbose mode is enabled.
-        :rtype: bool
         """
         ...
 
@@ -56,7 +53,6 @@ class SettingsService(CoreSettingsService, Protocol):
         Set the default verbosity setting.
 
         :param value: New verbosity setting
-        :type value: bool
         """
         ...
 
@@ -68,7 +64,6 @@ class SettingsService(CoreSettingsService, Protocol):
         to a precision level of (3, 3).
 
         :return: Current precision level
-        :rtype: Tuple[int, int]
         """
         ...
 
@@ -78,6 +73,5 @@ class SettingsService(CoreSettingsService, Protocol):
         Set the default precision level to `value`.
 
         :param value: New precision level
-        :type value: Tuple[int, int]
         """
         ...
