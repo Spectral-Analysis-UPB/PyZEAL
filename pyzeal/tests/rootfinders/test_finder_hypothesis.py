@@ -76,7 +76,7 @@ def testSimpleArgumentNewtonHypothesis(
 
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    hrf.calculateRoots((-5.8, 5.9), (-6.0, 6.1), precision=(5, 5))
+    hrf.calculateRoots((-10.4, 10), (-10.1, 10), precision=(5, 5))
 
     foundRoots = np.sort_complex(hrf.roots)
     expectedRoots = np.sort_complex(np.array(uniqueRoots))

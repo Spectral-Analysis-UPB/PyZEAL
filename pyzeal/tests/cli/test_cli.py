@@ -55,23 +55,23 @@ class SettingsDict(TypedDict, total=False):
 
 
 def mockArgs(
-    setting: SettingsDict,
+    newSetting: SettingsDict,
 ) -> Tuple[SettingsParseResults, PluginParseResults]:
     """
     Generate `SettingsParseResults` and `PluginParseResults` instances
-    containing the settings given by `setting`.
+    containing the settings given by `newSetting`.
 
-    :param setting: Dict of settings and values
+    :param newSetting: Dict of settings and values
     :return: ParseResults with appropriate settings
     """
     settingsParseResult = SettingsParseResults(
         doPrint=True,
-        container=setting.get("container", ""),
-        algorithm=setting.get("algorithm", ""),
-        logLevel=setting.get("logLevel", ""),
-        verbose=setting.get("verbose", ""),
-        estimator=setting.get("estimator", ""),
-        precision=setting.get("precision", None),
+        container=newSetting.get("container", ""),
+        algorithm=newSetting.get("algorithm", ""),
+        logLevel=newSetting.get("logLevel", ""),
+        verbose=newSetting.get("verbose", ""),
+        estimator=newSetting.get("estimator", ""),
+        precision=newSetting.get("precision", None),
     )
     pluginParseResult = PluginParseResults(
         listPlugins=False,
@@ -82,141 +82,103 @@ def mockArgs(
     return settingsParseResult, pluginParseResult
 
 
-testPairs = [
-    (
-        {"algorithm": "NEWTON_GRID"},
-        "pyzeal.cli.cli_controller.CLIController.changeAlgorithmSetting",
-        (
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.defaultAlgorithm"
-        ),
-        AlgorithmTypes.SIMPLE_ARGUMENT,
-        AlgorithmTypes.NEWTON_GRID,
-    ),
-    (
-        {"verbose": "True"},
-        "pyzeal.cli.cli_controller.CLIController.changeVerbositySetting",
-        (
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.verbose"
-        ),
-        False,
-        True,
-    ),
-    (
-        {"container": "plain"},
-        "pyzeal.cli.cli_controller.CLIController.changeContainerSetting",
-        (
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.defaultContainer"
-        ),
-        ContainerTypes.ROUNDING_CONTAINER,
-        ContainerTypes.PLAIN_CONTAINER,
-    ),
-    (
-        {"logLevel": "INFO"},
-        "pyzeal.cli.cli_controller.CLIController.changeLogLevelSetting",
-        (
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.logLevel"
-        ),
-        LogLevel.WARNING,
-        LogLevel.INFO,
-    ),
-    (
-        {"estimator": "summation"},
-        "pyzeal.cli.cli_controller.CLIController.changeEstimatorSetting",
-        (
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.defaultEstimator"
-        ),
-        EstimatorTypes.QUADRATURE_ESTIMATOR,
-        EstimatorTypes.SUMMATION_ESTIMATOR,
-    ),
-    (
-        {"precision": (3, 3)},
-        "pyzeal.cli.cli_controller.CLIController.changePrecisionSetting",
-        (
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.precision"
-        ),
-        (1, 1),
-        (3, 3),
-    ),
+tSettingsTypes = Union[
+    AlgorithmTypes,
+    bool,
+    ContainerTypes,
+    LogLevel,
+    EstimatorTypes,
+    Tuple[int, int],
 ]
 
+newSettings: Tuple[SettingsDict, ...] = (
+    {"algorithm": "NEWTON_GRID"},
+    {"verbose": "True"},
+    {"container": "plain"},
+    {"logLevel": "INFO"},
+    {"estimator": "summation"},
+    {"precision": (3, 3)},
+)
+changeMethods: Tuple[str, ...] = (
+    "changeAlgorithmSetting",
+    "changeVerbositySetting",
+    "changeContainerSetting",
+    "changeLogLevelSetting",
+    "changeEstimatorSetting",
+    "changePrecisionSetting",
+)
+defaultSettingProperties: Tuple[str, ...] = (
+    "defaultAlgorithm",
+    "verbose",
+    "defaultContainer",
+    "logLevel",
+    "defaultEstimator",
+    "precision",
+)
+beforeValues: Tuple[tSettingsTypes, ...] = (
+    AlgorithmTypes.SIMPLE_ARGUMENT,
+    False,
+    ContainerTypes.ROUNDING_CONTAINER,
+    LogLevel.WARNING,
+    EstimatorTypes.QUADRATURE_ESTIMATOR,
+    (1, 1),
+)
+afterValues: Tuple[tSettingsTypes, ...] = (
+    AlgorithmTypes.NEWTON_GRID,
+    True,
+    ContainerTypes.PLAIN_CONTAINER,
+    LogLevel.INFO,
+    EstimatorTypes.SUMMATION_ESTIMATOR,
+    (3, 3),
+)
 
-@pytest.mark.parametrize("pair", testPairs)
-def testChangeCall(
-    pair: Tuple[
-        SettingsDict,
-        str,
-        str,
-        Union[
-            AlgorithmTypes,
-            bool,
-            ContainerTypes,
-            LogLevel,
-            EstimatorTypes,
-            Tuple[int, int],
-        ],
-        Union[
-            AlgorithmTypes,
-            bool,
-            ContainerTypes,
-            LogLevel,
-            EstimatorTypes,
-            Tuple[int, int],
-        ],
-    ]
-) -> None:
+
+@pytest.mark.parametrize("testSetup", zip(newSettings, changeMethods))
+def testChangeCall(testSetup: Tuple[SettingsDict, str]) -> None:
     """
     Test if `change...Setting` gets called correctly.
     """
-    setting: SettingsDict = pair[0]
+    newSetting: SettingsDict = testSetup[0]
+    changeMethod = "pyzeal.cli.cli_controller.CLIController." + testSetup[1]
     with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(mockArgs, setting=setting)
-        with patch(pair[1]) as doNothing:
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
+        mockParse.side_effect = partial(mockArgs, newSetting=newSetting)
+        with patch(changeMethod) as doNothing:
+            entry = PyZEALEntry()
+            entry.mainPyZEAL()
             doNothing.assert_called_once()
 
 
-@pytest.mark.parametrize("pair", testPairs)
+@pytest.mark.parametrize(
+    "testSetup",
+    zip(newSettings, defaultSettingProperties, beforeValues, afterValues),
+)
 def testChangeSettingsCall(
-    pair: Tuple[
+    testSetup: Tuple[
         SettingsDict,
         str,
-        str,
-        Union[
-            AlgorithmTypes,
-            bool,
-            ContainerTypes,
-            LogLevel,
-            EstimatorTypes,
-            Tuple[int, int],
-        ],
-        Union[
-            AlgorithmTypes,
-            bool,
-            ContainerTypes,
-            LogLevel,
-            EstimatorTypes,
-            Tuple[int, int],
-        ],
+        tSettingsTypes,
+        tSettingsTypes,
     ]
 ) -> None:
     """
-    Test if `change...Setting` correctly updates the setting.
+    Test if `change...Setting` correctly updates the newSetting.
     """
-    setting: SettingsDict = pair[0]
+    newSetting: SettingsDict = testSetup[0]
+    defaultSettingProperty = (
+        "pyzeal.settings.json_settings_service.JSONSettingsService."
+        + testSetup[1]
+    )
+    beforeValue = testSetup[2]
+    afterValue = testSetup[3]
     with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(mockArgs, setting=setting)
-        with patch(pair[2], new_callable=PropertyMock) as mockedProp:
-            mockedProp.return_value = pair[3]
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            mockedProp.assert_called_with(pair[4])
+        mockParse.side_effect = partial(mockArgs, newSetting=newSetting)
+        with patch(
+            defaultSettingProperty, new_callable=PropertyMock
+        ) as mockedProp:
+            mockedProp.return_value = beforeValue
+            entry = PyZEALEntry()
+            entry.mainPyZEAL()
+            mockedProp.assert_called_with(afterValue)
 
 
 @pytest.mark.parametrize(
@@ -233,10 +195,12 @@ def testCLIControllerInvalidName(
 ) -> None:
     """
     Test if CLIController correctly exits when an invalid name is given
-    for a setting.
+    for a newSetting.
 
     :param changeFunction: Function to test, parametrized by pytest
     """
-    mockSettings = create_autospec(SettingsService, spec_set=True)
+    mockSettings = create_autospec(
+        SettingsService, spec_set=True, instance=True
+    )
     with pytest.raises(SystemExit):
         changeFunction("THIS_DOES_NOT_EXIST", mockSettings)
