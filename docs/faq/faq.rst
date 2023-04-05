@@ -33,7 +33,7 @@ line of its code.
 You can find a detailed description of this procedure in the notebook linked below.
 
 Additional Resources
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
