@@ -28,7 +28,6 @@ class CoreSettingsService(Protocol):
         Get the default container type.
 
         :return: Default container type
-        :rtype: ContainerTypes
         """
         ...
 
@@ -38,7 +37,6 @@ class CoreSettingsService(Protocol):
         Set the default container type to `value`.
 
         :param value: New default container type.
-        :type value: ContainerTypes
         """
         ...
 

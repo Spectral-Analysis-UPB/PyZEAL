@@ -14,6 +14,5 @@ class InvalidSettingException(Exception):
         Initialize an `InvalidSettingException` instance.
 
         :param setting: the setting which caused the exception
-        :type setting: str
         """
         super().__init__(f"setting invalid value for {setting}!")

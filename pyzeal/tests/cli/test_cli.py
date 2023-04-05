@@ -42,9 +42,7 @@ def mockArgs(
     containing the settings given by `setting`.
 
     :param setting: Dict of settings and values
-    :type setting: Dict[str, str]
     :return: ParseResults with appropriate settings
-    :rtype: ParseResults
     """
     settingsParseResult = SettingsParseResults(
         doPrint=True,

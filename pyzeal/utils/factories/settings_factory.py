@@ -23,7 +23,6 @@ class SettingsServiceFactory:
         `SettingsService` interface to global PyZEAL settings.
 
         :param settingsType: type of settings service to construct
-        :type settingsType: SettingsServiceTypes
         """
         if settingsType == SettingsServicesTypes.JSON_SETTINGS:
             return JSONSettingsService()
