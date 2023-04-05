@@ -47,27 +47,28 @@ class PyZEALPlugin(ABC, Generic[T_co]):
     @abstractmethod
     def initialize() -> Callable[..., T_co]:
         """
-        Returns a constructor for the plugin's implementation of `T_co`.
+        Returns a factory for the plugin's implementation of `T_co`.
 
-        :return: Constructor for plugin implementation of `T_co`.
+        :return: Factory for plugin implementation of `T_co`.
         """
 
     @staticmethod
     @abstractmethod
     def getInstance() -> PyZEALPlugin[T_co]:
         """
-        Return a `PyZEALPlugin` with type `T_co`.
+        Return the singleton instance of `PyZEALPlugin` which provides a
+        service of type `T_co`.
 
-        :return: `PyZEALPlugin` with type `T_co`.
+        :return: `PyZEALPlugin` instance.
         """
 
     @property
     @abstractmethod
     def pluginType(self) -> Type[T_co]:
         """
-        Return the type of plugin.
+        Return the type provided by the plugin.
 
-        :return: Type of plugin.
+        :return: Service type of plugin.
         """
         ...
 
@@ -75,9 +76,9 @@ class PyZEALPlugin(ABC, Generic[T_co]):
     @abstractmethod
     def pluginName(self) -> str:
         """
-        Return the plugin name.
+        Return the name of the plugin.
 
-        :return: Plugin name
+        :return: Plugin name.
         """
         ...
 
@@ -85,8 +86,8 @@ class PyZEALPlugin(ABC, Generic[T_co]):
     @abstractmethod
     def pluginVersion(self) -> Tuple[int, int, int]:
         """
-        Return the plugin version.
+        Return the version of the plugin as (`major`, `minor`, `patch`).
 
-        :return: Plugin version
+        :return: Plugin version.
         """
         ...
