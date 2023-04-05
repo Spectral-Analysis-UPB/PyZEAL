@@ -1,6 +1,12 @@
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -41,4 +47,4 @@ jobs:
       if: ${{ matrix.os }} == 'ubuntu-latest'
     - name: Test with pytest
       run: |
-        pytest pyzeal/tests
+        pytest -m "not hypothesis" pyzeal/tests

@@ -40,48 +40,56 @@ Welcome to PyZEAL's documentation!
 
 --------------------------------
 
+.. _intro:
+
+What is **PyZEAL**?
+===================
+
+**PyZEAL** aims to provide facilities for the calculation of zeros and poles of holomorphic and
+meromorphic functions. While there exists a wealth of theoretical results as well as battle-hardened
+implementations of such root finding algorithms for e.g. smooth functions (SciPy_), the situation
+in the holomorphic setting is much less comfortable: It appears that most of the algorithms available
+for holomorphic ones do not possess a readily available, up-to-date, actively maintained implementation.
+
+This (seeming) gap in the software landscape is even more apparant as these types of functions exhibit a
+rich structure far beyond simple smoothness, opening up the possibility for adapted, more efficient root
+finding algorithms. The goal of this project then is the practical implementation of such algorithms in
+an open-source package that is well tested, written in an accessible language, and distributed in a
+user-friendly manner.
+
+We aim to support two main use cases:
+
+1. Enabling out-of-the-box usage as a tool within any project which requires the calculation of roots
+   or poles of holomorphic or meromorphic functions. In particular this includes seamless integration
+   into the *Python* ecosystem and a user experience similar to common packages like SciPy_ or NumPy_.
+#. Providing a platform for the practical implementation, debugging, testing, and benchmarking of newly
+   developed root finding algorithms as well as their comparison with existing procedures. To this end
+   **PyZEAL** includes a number of framework elements as well as a plugin mechanism for more light-weight
+   implementations of prototypes.
+
+The approach to achieving these goals will be iterative implementation and optimization of a variety of
+different algorithms and comparing them, while simultaneously exposing an easy-to-use, accessible, and
+standardized API.
+
+.. note::
+
+    This is an ongoing project. Any contributions such as feature requests, bug reports, or
+    collaborations on documentation, theoretical background, or practical implementation are
+    much appreciated!
+
+.. _SciPy: https://scipy.org/
+.. _NumPy: https://numpy.org/
+
+--------------------------------
+
 .. toctree::
    :maxdepth: 1
    :caption: Contents of PyZEAL's Documentation:
-   :numbered:
 
-   intro
-   usage
-   theory
-   rootfinder
-   algorithms
-   estimators
-   containers
-   auto_diff
-   faq
-
---------------------------------
-
-The Origins of the PyZEAL Project
-=================================
-
-This is the introduction to the PyZEAL numerics project dealing with the calculation
-of zeros of holomorphic functions. With this project we plan on porting much of the functionality
-of the original **ZEAL** (ZEros of AnaLytic functions [KVanBarelR+00]_) Fortran90 package
-(and namesake for this project) to Python while both adding some convenience features as well
-as leveraging more recent algorithms and technologies.
-
-PyZEAL originated as part of the **PyZeta** project which provides facilities for the calculation
-of dynamical zeta functions. These in turn allow one to determine dynamical invariants called
-*Ruelle resonances* as their zeros (see the image below). Dynamical determinants being examples for rather
-complicated holomorphic functions therefore set the context for the independent investigation and
-implementation of root finding algorithms for this class of functions in the form of the present project.
-
-The following is an example of resonances for a dynamical system called a *Schottky surface*. Plots such as this
-(and significantly more complex numerical experiments) are straightforward to calculating by combining basic features
-of **PyZEAL** and **PyZeta**:
-
-.. image:: ./_static/images/resonance_example.png
-   :align: center
-
-For more information on the philosophy and aims of this project check out :ref:`intro`, for details on the
-theoretical background see :ref:`theory`. A list of references relevant to **PyZEAL** can be found below.
-
---------------------------------
-
-.. [KVanBarelR+00] Kravanja, Van Barel, Ragos, Vrahatis, and Zafiropoulos. ZEAL: A mathematical software package for computing zeros of analytic functions. Computer Physics Communications, 124(2):212–232, 2000.
+   misc/getting_started
+   user_guide/user_guide
+   theory/theory
+   package_reference/package_reference
+   faq/faq
+   misc/origins
+   misc/release_notes

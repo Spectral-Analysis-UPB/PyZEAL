@@ -46,6 +46,8 @@ The PyZEAL numerical project
 Introduction
 ------------
 
+Welcome to **PyZEAL**!
+
 This project implements numerical algorithms for the computation of zeros of holomorphic and the zeros, poles and residues of meromorphic functions.
 It aspires to be a successor to and an extension of the original ZEAL (ZEros of AnaLytic functions) package written in Fortran90 by Kravanja, Van Barel, Ragos, Vrahatis, and Zafiropoulos [KVanBarelR+00]_.
 The full documentation of this project is hosted on `ReadTheDocs <https://pyzeal.readthedocs.io/en/latest//>`_.
@@ -57,9 +59,9 @@ Installation
 To install this package you have to clone this repository using ``git clone``.
 Then you can simply use ``pip`` to install the package via
 
-.. code:: bash
+.. code:: console
 
-  $ python3 -m pip install -e .[dev]
+  $ python3 -m pip install -e ".[dev]""
 
 locally in editable mode (``-e``) and including all requirements necessary for development (``[dev]``).
 The latter are optional and can be skipped if you just want to use **PyZEAL** as a third-party module in your own applications.
