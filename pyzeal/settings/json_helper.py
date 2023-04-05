@@ -5,7 +5,7 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from json import dump, load
+from json import JSONDecodeError, dump, load
 from typing import Dict, Literal, Set, Tuple, Type, Union
 
 from pyzeal.pyzeal_logging.log_levels import LogLevel
@@ -71,6 +71,8 @@ class JSONHelper:
                 currentSettings = load(custom)
         except FileNotFoundError:
             pass
+        except JSONDecodeError as exc:
+            raise InvalidSettingException(f"{filename=}") from exc
 
         if setting in JSONHelper._coreSettings:
             if not isinstance(value, JSONHelper._coreSettings[setting]):
@@ -122,6 +124,8 @@ class JSONHelper:
                 currentSettings = load(custom)
         except FileNotFoundError:
             pass
+        except JSONDecodeError as exc:
+            raise InvalidSettingException(f"{filename=}") from exc
 
         if setting == "logLevel":
             if not isinstance(value, LogLevel):

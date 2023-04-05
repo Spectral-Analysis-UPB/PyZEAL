@@ -6,9 +6,6 @@ rm -rf logs/
 # change to project root
 cd ..
 
-# remove test artifacts
-rm THIS_FILE_DOES_NOT_EXIST
-
 # remove pytest related stuff in project root
 rm -rf .mypy_cache
 rm -rf .pytest_cache
