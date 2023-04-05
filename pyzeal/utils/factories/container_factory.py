@@ -92,9 +92,7 @@ class ContainerFactory:
             return roundingContainer
         if containerType == ContainerTypes.PLAIN_CONTAINER:
             ContainerFactory.logger.debug("requested a new plain container...")
-            plainContainer = PlainContainer(queue)
-            ContainerFactory.registerDefaultFilters(plainContainer)
-            return plainContainer
+            return PlainContainer(queue)
 
         # return the current default container
         ContainerFactory.logger.debug("requested a new default container...")
@@ -147,14 +145,15 @@ class ContainerFactory:
     @staticmethod
     def registerDefaultFilters(container: RootContainer) -> None:
         """
-        Register all default filters for the given container.
+        Register a set of default filters for the given (rounding) container.
 
         :param container: Container to enable filters for
         """
         if isinstance(container, RoundingContainer):
-            ContainerFactory.registerPreDefinedFilter(
-                container, filterType=FilterTypes.FUNCTION_VALUE_ZERO
-            )
-            ContainerFactory.registerPreDefinedFilter(
-                container, filterType=FilterTypes.ZERO_IN_BOUNDS
-            )
+            for filterType in [
+                FilterTypes.FUNCTION_VALUE_ZERO,
+                FilterTypes.ZERO_IN_BOUNDS,
+            ]:
+                ContainerFactory.registerPreDefinedFilter(
+                    container, filterType=filterType
+                )
