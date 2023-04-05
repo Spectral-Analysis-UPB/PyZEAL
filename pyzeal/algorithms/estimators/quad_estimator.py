@@ -6,21 +6,16 @@ Authors:\n
 - Philipp Schuette
 """
 
-from typing import Final
-
 import numpy as np
 from scipy.integrate import romb  # type: ignore
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
+from pyzeal.algorithms.estimators.constants import (
+    EXP_SAMPLE_POINTS,
+    MAX_SAMPLE_POINTS,
+)
 from pyzeal.algorithms.estimators.estimator_cache import EstimatorCache
 from pyzeal.utils.root_context import RootContext
-
-####################
-# Global Constants #
-####################
-
-EXP_SAMPLE_POINTS: Final[int] = 10  # number of sample points for integration
-MAX_SAMPLE_POINTS: Final[int] = 21  # maximal sample points for integration
 
 
 class QuadratureEstimator(ArgumentEstimator):
@@ -64,7 +59,6 @@ class QuadratureEstimator(ArgumentEstimator):
                 "derivative required for quadrature-based argument estimation!"
             )
 
-        # TODO: caching of function evaluations!
         samplePts = EXP_SAMPLE_POINTS
         zArr, funcArr = self.genFuncArr(
             zStart, zEnd, context, 2**samplePts + 1

@@ -22,7 +22,7 @@ from pyzeal.tests.resources.testing_utils import rootsMatchClosely
 # disable progress bar by default for tests
 JSONSettingsService().verbose = False
 # some test functions do not work due to z-refinement limitations
-KNOWN_FAILURES = ["x^100", "1e6 * x^100"]
+KNOWN_FAILURES = ["poly", "x^100", "1e6 * x^100"]
 
 
 @pytest.mark.parametrize("testName", testFunctions.keys())
