@@ -75,7 +75,7 @@ class QuadratureEstimator(ArgumentEstimator):
             # for expensive target functions merging of arrays with function
             # values is preferable over recalculation - for inexpensive targets
             # the converse is true:
-            merge = samplePts >= EXP_SAMPLE_POINTS + 3
+            merge = samplePts >= EXP_SAMPLE_POINTS + 2
             if merge:
                 zStart = (zArr[0] + zArr[1]) / 2
                 zEnd = (zArr[-1] + zArr[-2]) / 2
