@@ -20,7 +20,7 @@ ServiceLocator.registerAsTransient(
 )
 
 
-@pytest.mark.parametrize("testName", functions.keys())
+@pytest.mark.parametrize("testName", sorted(functions.keys()))
 @pytest.mark.parametrize(
     "estimator",
     [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],

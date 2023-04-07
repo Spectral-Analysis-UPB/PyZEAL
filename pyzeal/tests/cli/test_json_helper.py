@@ -1,7 +1,7 @@
 """
 Test the JSONHelper for correct exception throwing behavior.
 """
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -15,6 +15,9 @@ from pyzeal.settings.json_helper import (
 )
 
 
+@patch("pyzeal.settings.json_helper.dump")
+@patch("builtins.open")
+@patch("pyzeal.settings.json_helper.load")
 @pytest.mark.parametrize(
     "settingName",
     [
@@ -24,44 +27,67 @@ from pyzeal.settings.json_helper import (
         "defaultEstimator",
     ],
 )
-def testInvalidCoreSettings(settingName: tCoreSettingsKey) -> None:
+def testInvalidCoreSettings(
+    loadMock: MagicMock,
+    openMock: MagicMock,
+    dumpMock: MagicMock,
+    settingName: tCoreSettingsKey,
+) -> None:
     """
     Test exception raising when an invalid core setting is given.
 
     :param settingName: Setting name to test, parametrized by pytest
     """
-    with patch("json.dump"):
-        with pytest.raises(InvalidSettingException):
-            # at least one of these should fail, no matter which
-            # settingName is used
-            JSONHelper.createOrUpdateCoreSetting(
-                "THIS_FILE_DOES_NOT_EXIST",
-                settingName,
-                AlgorithmTypes.NEWTON_GRID,
-            )
-            JSONHelper.createOrUpdateCoreSetting(
-                "THIS_FILE_DOES_NOT_EXIST",
-                settingName,
-                EstimatorTypes.QUADRATURE_ESTIMATOR,
-            )
+    with pytest.raises(InvalidSettingException):
+        # at least one of these should fail, no matter which
+        # settingName is used
+        JSONHelper.createOrUpdateCoreSetting(
+            "DOES_NOT_EXIST.json",
+            settingName,
+            AlgorithmTypes.NEWTON_GRID,
+        )
+        JSONHelper.createOrUpdateCoreSetting(
+            "DOES_NOT_EXIST.json",
+            settingName,
+            EstimatorTypes.QUADRATURE_ESTIMATOR,
+        )
+    if settingName != "defaultAlgorithm":
+        dumpMock.assert_not_called()
+    else:
+        dumpMock.assert_called_once()
+    openMock.assert_called()
+    loadMock.assert_called()
 
 
+@patch("pyzeal.settings.json_helper.dump")
+@patch("builtins.open")
+@patch("pyzeal.settings.json_helper.load")
 @pytest.mark.parametrize(
     "settingName", ["INVALID_KEY", "logLevel", "verbose", "precision"]
 )
-def testInvalidSettings(settingName: tSettingsKey) -> None:
+def testInvalidSettings(
+    loadMock: MagicMock,
+    openMock: MagicMock,
+    dumpMock: MagicMock,
+    settingName: tSettingsKey,
+) -> None:
     """
     Test exception raising when an invalid setting is given.
 
     :param settingName: Setting name to test, parametrized by pytest
     """
-    with patch("json.dump"):
-        with pytest.raises(InvalidSettingException):
-            # at least one of these should fail, no matter which
-            # settingName is used
-            JSONHelper.createOrUpdateSetting(
-                "THIS_FILE_DOES_NOT_EXIST", settingName, False
-            )
-            JSONHelper.createOrUpdateSetting(
-                "THIS_FILE_DOES_NOT_EXIST", settingName, (1, 1)
-            )
+    with pytest.raises(InvalidSettingException):
+        # at least one of these should fail, no matter which
+        # settingName is used
+        JSONHelper.createOrUpdateSetting(
+            "DOES_NOT_EXIST.json", settingName, False
+        )
+        JSONHelper.createOrUpdateSetting(
+            "DOES_NOT_EXIST.json", settingName, (1, 1)
+        )
+    if settingName != "verbose":
+        dumpMock.assert_not_called()
+    else:
+        dumpMock.assert_called_once()
+    openMock.assert_called()
+    loadMock.assert_called()

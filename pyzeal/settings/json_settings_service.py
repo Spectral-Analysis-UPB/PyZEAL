@@ -91,6 +91,7 @@ class JSONSettingsService(SettingsService):
     def defaultContainer(self) -> ContainerTypes:
         return self._coreSettings.defaultContainer
 
+    # docstr-coverage:inherited
     @defaultContainer.setter
     def defaultContainer(self, value: ContainerTypes) -> None:
         self._coreSettings.defaultContainer = value
@@ -100,6 +101,7 @@ class JSONSettingsService(SettingsService):
     def defaultAlgorithm(self) -> AlgorithmTypes:
         return self._coreSettings.defaultAlgorithm
 
+    # docstr-coverage:inherited
     @defaultAlgorithm.setter
     def defaultAlgorithm(self, value: AlgorithmTypes) -> None:
         self._coreSettings.defaultAlgorithm = value
@@ -109,6 +111,7 @@ class JSONSettingsService(SettingsService):
     def defaultEstimator(self) -> EstimatorTypes:
         return self._coreSettings.defaultEstimator
 
+    # docstr-coverage:inherited
     @defaultEstimator.setter
     def defaultEstimator(self, value: EstimatorTypes) -> None:
         self._coreSettings.defaultEstimator = value
@@ -118,6 +121,7 @@ class JSONSettingsService(SettingsService):
     def logLevel(self) -> LogLevel:
         return self._level
 
+    # docstr-coverage:inherited
     @logLevel.setter
     def logLevel(self, value: LogLevel) -> None:
         self._level = value
@@ -128,6 +132,7 @@ class JSONSettingsService(SettingsService):
     def verbose(self) -> bool:
         return self._verbose
 
+    # docstr-coverage:inherited
     @verbose.setter
     def verbose(self, value: bool) -> None:
         self._verbose = value
@@ -138,6 +143,7 @@ class JSONSettingsService(SettingsService):
     def precision(self) -> Tuple[int, int]:
         return self._precision
 
+    # docstr-coverage:inherited
     @precision.setter
     def precision(self, value: Tuple[int, int]) -> None:
         self._precision = value

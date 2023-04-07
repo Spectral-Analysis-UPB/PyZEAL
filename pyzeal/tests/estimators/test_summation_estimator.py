@@ -14,7 +14,7 @@ from pyzeal.tests.resources.testing_estimator_resources import (
 from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 
 
-@pytest.mark.parametrize("testName", rectangleCases.keys())
+@pytest.mark.parametrize("testName", sorted(rectangleCases.keys()))
 def testSummationEstimatorRectangle(testName: str) -> None:
     """
     Test the summation-based estimator over a rectangular contour with the
@@ -34,7 +34,7 @@ def testSummationEstimatorRectangle(testName: str) -> None:
     assert np.abs(result - expected) < 1e-6
 
 
-@pytest.mark.parametrize("testName", lineCases.keys())
+@pytest.mark.parametrize("testName", sorted(lineCases.keys()))
 def testSummationEstimatorLine(testName: str) -> None:
     """
     Test the summation-based estimator over a line with the test case given

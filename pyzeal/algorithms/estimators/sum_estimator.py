@@ -6,23 +6,16 @@ Authors:\n
 - Philipp Schuette\n
 """
 
-from typing import Dict, Final, Literal, Tuple, Union, cast
+from typing import Dict, Literal, Tuple, Union, cast
 
 import numpy as np
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
+from pyzeal.algorithms.estimators.constants import MAX_Z_LENGTH, Z_REFINE
 from pyzeal.algorithms.estimators.estimator_cache import EstimatorCache
 from pyzeal.pyzeal_types.root_types import tVec
 from pyzeal.utils.root_context import RootContext
 
-####################
-# Global Constants #
-####################
-
-# constant determining the refinement of complex arrays for large phi values
-Z_REFINE: Final[int] = 100
-# constant determining the maximal length of z-arrays
-MAX_Z_LENGTH: Final[int] = 100
 # type alias for internal caches
 tCache = Dict[
     Tuple[float, int],
