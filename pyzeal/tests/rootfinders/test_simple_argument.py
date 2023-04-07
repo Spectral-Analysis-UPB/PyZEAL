@@ -25,7 +25,7 @@ JSONSettingsService().verbose = False
 KNOWN_FAILURES = ["poly", "x^100", "1e6 * x^100"]
 
 
-@pytest.mark.parametrize("testName", testFunctions.keys())
+@pytest.mark.parametrize("testName", sorted(testFunctions.keys()))
 @pytest.mark.parametrize("parallel", [False, True])
 @pytest.mark.parametrize(
     "estimator",

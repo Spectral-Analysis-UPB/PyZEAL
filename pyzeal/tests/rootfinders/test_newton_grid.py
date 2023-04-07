@@ -29,7 +29,7 @@ KNOWN_FAILURES = ["x^30", "x^50", "x^100", "1e6 * x^100"]
 
 
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-@pytest.mark.parametrize("testName", testFunctions.keys())
+@pytest.mark.parametrize("testName", sorted(testFunctions.keys()))
 @pytest.mark.parametrize("parallel", [False, True])
 def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     """
