@@ -47,5 +47,5 @@ jobs:
       if: ${{ matrix.os }} == 'ubuntu-latest'
     - name: Test with pytest
       run: |
-        pytest -n auto pyzeal/tests
+        pytest pyzeal/tests
         pytest -m "locator" pyzeal

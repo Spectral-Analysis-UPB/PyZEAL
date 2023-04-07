@@ -42,7 +42,6 @@ dev = [
 	"hypothesis",
 	"pytest",
 	"pytest-cov",
-    "pytest-xdist",
 	"black",
 	"isort",
 	"docstr-coverage",
