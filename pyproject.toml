@@ -76,7 +76,7 @@ junit_family = "legacy"
 filterwarnings = "ignore::DeprecationWarning"
 
 [tool.pytest.ini_options]
-addopts = "--import-mode=importlib --strict-markers -p no:logging -m 'not hypothesis and not locator' -n auto"
+addopts = "--import-mode=importlib --strict-markers -p no:logging -m 'not hypothesis and not locator'"
 markers = [
     "slow: mark tests as slow",
     "locator: tests for the locator must be run separately"
