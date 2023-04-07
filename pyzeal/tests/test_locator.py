@@ -29,6 +29,7 @@ class Foo(FooInterface):
         "Interface implementation."
 
 
+@pytest.mark.locator
 def testRegisterSingleton() -> None:
     "Test singleton registration."
     ServiceLocator.clearConfigurations()
@@ -44,6 +45,7 @@ def testRegisterSingleton() -> None:
     assert not ServiceLocator.registerAsSingleton(FooInterface, 0)
 
 
+@pytest.mark.locator
 def testRegisterTransient() -> None:
     "Test transient registration."
     ServiceLocator.clearConfigurations()
@@ -62,6 +64,7 @@ def testRegisterTransient() -> None:
     assert resolvent1 is not resolvent2
 
 
+@pytest.mark.locator
 def testLocatorSealing() -> None:
     "Test sealing operation on locator."
     ServiceLocator.clearConfigurations()

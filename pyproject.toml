@@ -42,6 +42,7 @@ dev = [
 	"hypothesis",
 	"pytest",
 	"pytest-cov",
+    "pytest-xdist",
 	"black",
 	"isort",
 	"docstr-coverage",
@@ -75,9 +76,10 @@ junit_family = "legacy"
 filterwarnings = "ignore::DeprecationWarning"
 
 [tool.pytest.ini_options]
-addopts = "--import-mode=importlib --strict-markers -p no:logging"
+addopts = "--import-mode=importlib --strict-markers -p no:logging -m 'not locator'"
 markers = [
-    "slow: mark tests as slow"
+    "slow: mark tests as slow",
+    "locator: tests for the locator must be run separately"
 ]
 
 [tool.coverage.run]
