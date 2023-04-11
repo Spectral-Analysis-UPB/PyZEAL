@@ -5,7 +5,7 @@ Origins of the **PyZEAL** Project
 
 This is the documentation of the **PyZEAL** numerics project. It deals with the calculation
 of zeros of holomorphic functions. Within this project we aspire to port much of the functionality
-of the original **ZEAL** (ZEros of AnaLytic functions [KVanBarelR+00]_) Fortran90 package
+of the original **ZEAL** (ZEros of AnaLytic functions :cite:p:`ZEAL.2000`) Fortran90 package
 (and namesake for this project) to ``Python`` while both adding some convenience features as well
 as leveraging more recent algorithms and technologies.
 
@@ -27,6 +27,3 @@ good place to get started. For a softer introduction and additional information 
 check out :ref:`intro`. For details on the theoretical background and a list of references relevant to **PyZEAL** visit
 :ref:`theory`.
 
---------------------------------
-
-.. [KVanBarelR+00] Kravanja, Van Barel, Ragos, Vrahatis, and Zafiropoulos. ZEAL: A mathematical software package for computing zeros of analytic functions. Computer Physics Communications, 124(2):212–232, 2000.
