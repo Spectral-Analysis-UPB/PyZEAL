@@ -4,18 +4,24 @@ parsing.
 """
 
 from functools import partial
-from typing import Dict, Tuple
-from unittest.mock import PropertyMock, patch
+from typing import Callable, Tuple, TypedDict, Union
+from unittest.mock import PropertyMock, create_autospec, patch
+
+import pytest
 
 from pyzeal.algorithms.estimators.argument_estimator import ArgumentEstimator
 from pyzeal.algorithms.finder_algorithm import FinderAlgorithm
 from pyzeal.cli.__main__ import PyZEALEntry
+from pyzeal.cli.cli_controller import CLIController
 from pyzeal.cli.cli_parser import PyZEALParser
+from pyzeal.cli.controller_facade import CLIControllerFacade
 from pyzeal.cli.parse_results import PluginParseResults, SettingsParseResults
 from pyzeal.cli.parser_facade import PyZEALParserInterface
 from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
+from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
+from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.containers.root_container import RootContainer
 from pyzeal.utils.factories.algorithm_factory import AlgorithmFactory
 from pyzeal.utils.factories.container_factory import ContainerFactory
@@ -32,24 +38,40 @@ ServiceLocator.registerAsTransient(
 ServiceLocator.registerAsTransient(
     ArgumentEstimator, EstimatorFactory.getConcreteEstimator
 )
+ServiceLocator.registerAsTransient(CLIControllerFacade, CLIController)
+
+
+class SettingsDict(TypedDict, total=False):
+    """
+    Container class to ensure correct typing of settings options to be tested.
+    """
+
+    container: str
+    algorithm: str
+    logLevel: str
+    verbose: str
+    estimator: str
+    precision: Tuple[int, int]
 
 
 def mockArgs(
-    setting: Dict[str, str]
+    newSetting: SettingsDict,
 ) -> Tuple[SettingsParseResults, PluginParseResults]:
     """
     Generate `SettingsParseResults` and `PluginParseResults` instances
-    containing the settings given by `setting`.
+    containing the settings given by `newSetting`.
 
-    :param setting: Dict of settings and values
+    :param newSetting: Dict of settings and values
     :return: ParseResults with appropriate settings
     """
     settingsParseResult = SettingsParseResults(
         doPrint=True,
-        container=setting.get("container", ""),
-        algorithm=setting.get("algorithm", ""),
-        logLevel=setting.get("logLevel", ""),
-        verbose=setting.get("verbose", ""),
+        container=newSetting.get("container", ""),
+        algorithm=newSetting.get("algorithm", ""),
+        logLevel=newSetting.get("logLevel", ""),
+        verbose=newSetting.get("verbose", ""),
+        estimator=newSetting.get("estimator", ""),
+        precision=newSetting.get("precision", None),
     )
     pluginParseResult = PluginParseResults(
         listPlugins=False,
@@ -60,133 +82,125 @@ def mockArgs(
     return settingsParseResult, pluginParseResult
 
 
-def testChangeAlgorithmCall() -> None:
+tSettingsTypes = Union[
+    AlgorithmTypes,
+    bool,
+    ContainerTypes,
+    LogLevel,
+    EstimatorTypes,
+    Tuple[int, int],
+]
+
+newSettings: Tuple[SettingsDict, ...] = (
+    {"algorithm": "NEWTON_GRID"},
+    {"verbose": "True"},
+    {"container": "plain"},
+    {"logLevel": "INFO"},
+    {"estimator": "summation"},
+    {"precision": (3, 3)},
+)
+changeMethods: Tuple[str, ...] = (
+    "changeAlgorithmSetting",
+    "changeVerbositySetting",
+    "changeContainerSetting",
+    "changeLogLevelSetting",
+    "changeEstimatorSetting",
+    "changePrecisionSetting",
+)
+defaultSettingProperties: Tuple[str, ...] = (
+    "defaultAlgorithm",
+    "verbose",
+    "defaultContainer",
+    "logLevel",
+    "defaultEstimator",
+    "precision",
+)
+beforeValues: Tuple[tSettingsTypes, ...] = (
+    AlgorithmTypes.SIMPLE_ARGUMENT,
+    False,
+    ContainerTypes.ROUNDING_CONTAINER,
+    LogLevel.WARNING,
+    EstimatorTypes.QUADRATURE_ESTIMATOR,
+    (1, 1),
+)
+afterValues: Tuple[tSettingsTypes, ...] = (
+    AlgorithmTypes.NEWTON_GRID,
+    True,
+    ContainerTypes.PLAIN_CONTAINER,
+    LogLevel.INFO,
+    EstimatorTypes.SUMMATION_ESTIMATOR,
+    (3, 3),
+)
+
+
+@pytest.mark.parametrize("testSetup", zip(newSettings, changeMethods))
+def testChangeCall(testSetup: Tuple[SettingsDict, str]) -> None:
     """
-    Test if `changeAlgorithmSetting` gets called correctly.
+    Test if `change...Setting` gets called correctly.
     """
+    newSetting: SettingsDict = testSetup[0]
+    changeMethod = "pyzeal.cli.cli_controller.CLIController." + testSetup[1]
     with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(
-            mockArgs, setting={"algorithm": "NEWTON_GRID"}
-        )
-        with patch(
-            "pyzeal.cli.__main__.PyZEALEntry.changeAlgorithmSetting"
-        ) as doNothing:
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            doNothing.assert_called()
+        mockParse.side_effect = partial(mockArgs, newSetting=newSetting)
+        with patch(changeMethod) as doNothing:
+            entry = PyZEALEntry()
+            entry.mainPyZEAL()
+            doNothing.assert_called_once()
 
 
-def testChangeVerbosityCall() -> None:
+@pytest.mark.parametrize(
+    "testSetup",
+    zip(newSettings, defaultSettingProperties, beforeValues, afterValues),
+)
+def testChangeSettingsCall(
+    testSetup: Tuple[
+        SettingsDict,
+        str,
+        tSettingsTypes,
+        tSettingsTypes,
+    ]
+) -> None:
     """
-    Test if `changeVerbositySetting` gets called correctly.
+    Test if `change...Setting` correctly updates the newSetting.
     """
+    newSetting: SettingsDict = testSetup[0]
+    defaultSettingProperty = (
+        "pyzeal.settings.json_settings_service.JSONSettingsService."
+        + testSetup[1]
+    )
+    beforeValue = testSetup[2]
+    afterValue = testSetup[3]
     with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(mockArgs, setting={"verbose": "True"})
+        mockParse.side_effect = partial(mockArgs, newSetting=newSetting)
         with patch(
-            "pyzeal.cli.__main__.PyZEALEntry.changeVerbositySetting"
-        ) as doNothing:
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            doNothing.assert_called()
-
-
-def testChangeContainerCall() -> None:
-    """
-    Test if `changeContainerSetting` gets called correctly.
-    """
-    with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(
-            mockArgs, setting={"container": "PLAIN_CONTAINER"}
-        )
-        with patch(
-            "pyzeal.cli.__main__.PyZEALEntry.changeContainerSetting"
-        ) as doNothing:
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            doNothing.assert_called()
-
-
-def testChangeLogLevelCall() -> None:
-    """
-    Test if `changeLogLevelSetting` gets called correctly.
-    """
-    with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(mockArgs, setting={"logLevel": "INFO"})
-        with patch(
-            "pyzeal.cli.__main__.PyZEALEntry.changeLogLevelSetting"
-        ) as doNothing:
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            doNothing.assert_called()
-
-
-def testChangeAlgorithmSettingsCall() -> None:
-    """
-    Test if `changeAlgorithmSetting` correctly updates the setting.
-    """
-    with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(
-            mockArgs, setting={"algorithm": "NEWTON_GRID"}
-        )
-        with patch(
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.defaultAlgorithm",
-            new_callable=PropertyMock,
+            defaultSettingProperty, new_callable=PropertyMock
         ) as mockedProp:
-            mockedProp.return_value = AlgorithmTypes.SIMPLE_ARGUMENT
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            mockedProp.assert_called_with(AlgorithmTypes.NEWTON_GRID)
+            mockedProp.return_value = beforeValue
+            entry = PyZEALEntry()
+            entry.mainPyZEAL()
+            mockedProp.assert_called_with(afterValue)
 
 
-def testChangeVerbositySettingsCall() -> None:
+@pytest.mark.parametrize(
+    "changeFunction",
+    [
+        CLIController.changeAlgorithmSetting,
+        CLIController.changeContainerSetting,
+        CLIController.changeEstimatorSetting,
+        CLIController.changeLogLevelSetting,
+    ],
+)
+def testCLIControllerInvalidName(
+    changeFunction: Callable[[str, SettingsService], None]
+) -> None:
     """
-    Test if `changeVerbositySetting` correctly updates the setting.
-    """
-    with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(mockArgs, setting={"verbose": "True"})
-        with patch(
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.verbose",
-            new_callable=PropertyMock,
-        ) as mockedProp:
-            mockedProp.return_value = False
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            mockedProp.assert_called_with(True)
+    Test if CLIController correctly exits when an invalid name is given
+    for a newSetting.
 
-
-def testChangeLogLevelSettingsCall() -> None:
+    :param changeFunction: Function to test, parametrized by pytest
     """
-    Test if `changeLogLevelSetting` correctly updates the setting.
-    """
-    with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(mockArgs, setting={"logLevel": "INFO"})
-        with patch(
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.logLevel",
-            new_callable=PropertyMock,
-        ) as mockedProp:
-            mockedProp.return_value = LogLevel.WARNING
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            mockedProp.assert_called_with(LogLevel.INFO)
-
-
-def testChangeContainerSettingsCall() -> None:
-    """
-    Test if `changeContainerSetting` correctly updates the setting.
-    """
-    with patch("pyzeal.cli.cli_parser.PyZEALParser.parseArgs") as mockParse:
-        mockParse.side_effect = partial(
-            mockArgs, setting={"container": "plain"}
-        )
-        with patch(
-            "pyzeal.settings.json_settings_service."
-            "JSONSettingsService.defaultContainer",
-            new_callable=PropertyMock,
-        ) as mockedProp:
-            mockedProp.return_value = ContainerTypes.ROUNDING_CONTAINER
-            dut = PyZEALEntry()
-            dut.mainPyZEAL()
-            mockedProp.assert_called_with(ContainerTypes.PLAIN_CONTAINER)
+    mockSettings = create_autospec(
+        SettingsService, spec_set=True, instance=True
+    )
+    with pytest.raises(SystemExit):
+        changeFunction("THIS_DOES_NOT_EXIST", mockSettings)

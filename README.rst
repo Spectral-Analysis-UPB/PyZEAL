@@ -134,11 +134,9 @@ your ``Python`` scripts:
 
    print(f"calculated roots: {finder.roots}")
 
-This will calculate numerically the roots of the function :math:`z\mapsto z^2 - 1` in the complex domain
-
-.. math::
-
-   \{z\in\mathbb{C}: \mathrm{Re}(z)\in [-2, 2], \mathrm{Im}(z)\in [-2, 2]\} .
+This will calculate numerically those roots of the function mapping `z` to `z^2 - 1` which are
+contained in the rectangle within the complex plane defined by the conditions `-2 <= Re(z) <= 2`
+and `-2 <= Im(z) <= 2` on the real and imaginary parts of the complex variable `z`.
 
 This minimal example leaves a lot of configuration up to the pre-configured settings.
 Visit the full documentation to learn more about the possible setups!

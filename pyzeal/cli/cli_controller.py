@@ -211,7 +211,6 @@ class CLIController(CLIControllerFacade):
 
         :param verbose: New verbosity setting
         :param service: Setting service to update
-        :raises SystemExit: Raised when an invalid verbosity setting is given.
         """
         oldVerbosity = service.verbose
         newVerbosity: bool = verbose.lower() == "true"
@@ -234,7 +233,6 @@ class CLIController(CLIControllerFacade):
 
         :param precision: New precision setting
         :param service: Setting service to update
-        :raises SystemExit: Raised when an invalid precision setting is given.
         """
         oldPrecision = service.precision
         newPrecision: Tuple[int, int] = precision
