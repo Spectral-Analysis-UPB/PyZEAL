@@ -134,12 +134,12 @@ your ``Python`` scripts:
 
    print(f"calculated roots: {finder.roots}")
 
-This will calculate numerically those roots of the function mapping `z` to `z^2 - 1` which are
-contained in the rectangle within the complex plane defined by the conditions `-2 <= Re(z) <= 2`
-and `-2 <= Im(z) <= 2` on the real and imaginary parts of the complex variable `z`.
+This will calculate numerically those roots of the function mapping ``z`` to ``z^2 - 1`` which are
+contained in the rectangle within the complex plane defined by the conditions ``-2 <= Re(z) <= 2``
+and ``-2 <= Im(z) <= 2`` on the real and imaginary parts of the complex variable ``z``.
 
-This minimal example leaves a lot of configuration up to the pre-configured settings.
-Visit the full documentation to learn more about the possible setups!
+This minimal example leaves a lot of configuration up to the pre-configured settings. Visit the
+`full documentation <https://pyzeal.readthedocs.io/en/latest//>`_ to learn more about the possible setups!
 
 ------------
 Contributing

@@ -24,7 +24,12 @@ from pyzeal.utils.filter_context import FilterContext, tRootFilter
 class PlainContainer(RootContainer):
     """
     Minimal container implementation. Simply adds roots to an internal buffer
-    without any further action.
+    of type `tQueue` without any further action.
+
+    This class is mainly designed for application with a `queue` instance
+    obtained from a `multiprocessing.Manager`. With this particular choice of
+    root buffer it can serve as shared memory for several distinct processes
+    each running their own instance of a `FinderAlgorithm`.
     """
 
     __slots__ = ("rootBuffer", "_roots")
@@ -32,6 +37,8 @@ class PlainContainer(RootContainer):
     def __init__(self, queue: Optional[tQueue]) -> None:
         """
         Initialize a new PlainContainer.
+
+        :param queue: the internal buffer used for root storage
         """
         self.rootBuffer = cast(tQueue, queue or Manager().Queue())
         self._roots: List[tRoot] = []
