@@ -1,10 +1,6 @@
 Welcome to PyZEAL's documentation!
 ==================================
 
-
-.. |badge7| image:: _static/docstr_coverage_badge.svg
-   :target: https://pypi.org/project/docstr-coverage/
-
 .. only:: html
 
     .. include:: misc/badges.rst

@@ -7,4 +7,3 @@ Once you have completed your work on this branch create a pull request on the ma
 your PR requires (at least) one positive review from a core contributor. Once you have received such a review, maybe
 after addressing some comments and suggestions by the reviewer(s), your PR will be merged, effectively making your
 work part of the mainline PyZEAL package.
-
