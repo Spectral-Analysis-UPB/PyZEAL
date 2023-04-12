@@ -137,6 +137,7 @@ your ``Python`` scripts:
 This will calculate numerically the roots of the function :math:`z\mapsto z^2 - 1` in the complex domain
 
 .. math::
+
    \{z\in\mathbb{C}: \mathrm{Re}(z)\in [-2, 2], \mathrm{Im}(z)\in [-2, 2]\} .
 
 This minimal example leaves a lot of configuration up to the pre-configured settings.

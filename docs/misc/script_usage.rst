@@ -10,8 +10,10 @@ your ``Python`` scripts:
 
    print(f"calculated roots: {finder.roots}")
 
-This will calculate numerically the roots of the function :math:`z\mapsto z^2 - 1` in the complex domain
+This will calculate numerically those roots of the function :math:`z\mapsto z^2 - 1` that are contained in the rectangle
+within the complex plane :math:`\mathbb{C}` defined by:
 
 .. math::
-   \{z\in\mathbb{C}: \mathrm{Re}(z)\in [-2, 2], \mathrm{Im}(z)\in [-2, 2]\} .
+
+   \{z\in\mathbb{C}: -2 \leq \mathrm{Re}(z) \leq 2, -2 \leq \mathrm{Im}(z) \leq 2\} .
 
