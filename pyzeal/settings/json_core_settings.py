@@ -85,6 +85,7 @@ class JSONCoreSettingsService(CoreSettingsService):
     def defaultContainer(self) -> ContainerTypes:
         return self._container
 
+    # docstr-coverage:inherited
     @defaultContainer.setter
     def defaultContainer(self, value: ContainerTypes) -> None:
         self._container = value
@@ -97,6 +98,7 @@ class JSONCoreSettingsService(CoreSettingsService):
     def defaultAlgorithm(self) -> AlgorithmTypes:
         return self._algorithm
 
+    # docstr-coverage:inherited
     @defaultAlgorithm.setter
     def defaultAlgorithm(self, value: AlgorithmTypes) -> None:
         self._algorithm = value
@@ -109,6 +111,7 @@ class JSONCoreSettingsService(CoreSettingsService):
     def defaultEstimator(self) -> EstimatorTypes:
         return self._estimator
 
+    # docstr-coverage:inherited
     @defaultEstimator.setter
     def defaultEstimator(self, value: EstimatorTypes) -> None:
         self._estimator = value

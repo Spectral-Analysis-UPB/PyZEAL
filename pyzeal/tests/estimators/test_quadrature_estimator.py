@@ -15,7 +15,7 @@ from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 from pyzeal.utils.root_context import RootContext
 
 
-@pytest.mark.parametrize("testName", rectangleCases.keys())
+@pytest.mark.parametrize("testName", sorted(rectangleCases.keys()))
 def testQuadratueEstimatorRectangle(testName: str) -> None:
     """
     Test the quadrature-based estimator over a rectangular contour with the
@@ -35,7 +35,7 @@ def testQuadratueEstimatorRectangle(testName: str) -> None:
     assert np.abs(result - expected) < 1e-6
 
 
-@pytest.mark.parametrize("testName", lineCases.keys())
+@pytest.mark.parametrize("testName", sorted(lineCases.keys()))
 def testQuadratureEstimatorLine(testName: str) -> None:
     """
     Test the quadrature-based estimator over a line with the test case given

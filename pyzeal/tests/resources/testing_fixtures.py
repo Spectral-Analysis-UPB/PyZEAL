@@ -2,6 +2,7 @@
 Provide rootfinder setup methods with common settings for testing purposes.
 """
 
+
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes

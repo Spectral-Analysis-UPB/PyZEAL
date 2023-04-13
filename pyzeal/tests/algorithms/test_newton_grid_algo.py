@@ -12,7 +12,7 @@ from pyzeal.tests.resources.testing_estimator_resources import (
 )
 
 
-@pytest.mark.parametrize("testName", functions.keys())
+@pytest.mark.parametrize("testName", sorted(functions.keys()))
 def testNewtonGridAlgo(testName: str) -> None:
     """
     Test the NEWTON_GRID algorithm by checking if the found roots actually

@@ -70,7 +70,6 @@ class ServiceLocator:
         ServiceLocator._transientServices[serviceType] = factory
         return True
 
-    # TODO: create dedicated locator tests
     @staticmethod
     def tryResolve(serviceType: Type[T], **kwargs: object) -> T:
         """
@@ -136,3 +135,13 @@ class ServiceLocator:
         :return: `True` if the service locator is sealed.
         """
         return ServiceLocator._sealed
+
+    @staticmethod
+    def clearConfigurations() -> None:
+        """
+        Clear all service locator configurations, unsealing the locator in the
+        process.
+        """
+        ServiceLocator._transientServices.clear()
+        ServiceLocator._singletonServices.clear()
+        ServiceLocator._sealed = False

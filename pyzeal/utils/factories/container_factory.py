@@ -93,9 +93,7 @@ class ContainerFactory:
             ContainerFactory._logger.debug(
                 "requested a new rounding container..."
             )
-            roundingContainer = RoundingContainer(precision)
-            ContainerFactory.registerDefaultFilters(roundingContainer)
-            return roundingContainer
+            return RoundingContainer(precision)
         if containerType == ContainerTypes.PLAIN_CONTAINER:
             ContainerFactory._logger.debug(
                 "requested a new plain container..."
@@ -110,7 +108,6 @@ class ContainerFactory:
             precision=precision,
             queue=queue,
         )
-        ContainerFactory.registerDefaultFilters(container)
         return container
 
     @staticmethod

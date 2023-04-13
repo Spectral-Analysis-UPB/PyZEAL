@@ -21,11 +21,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install pytest pytest-cov=="2.7.1" hypothesis
+        python -m pip install pytest pytest-cov>="4.0.0" hypothesis pytest-xdist
         python -m pip install -e .
     - name: Test with pytest
       working-directory: ./
       run: |
-        pytest --cov-report=xml --cov=pyzeal/ -m "not hypothesis" pyzeal/tests/
+        pytest --cov-report=xml --cov=pyzeal/ pyzeal/tests/
     - name: Upload coverage report to codecov
       uses: codecov/codecov-action@v3
