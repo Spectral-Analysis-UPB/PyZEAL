@@ -30,7 +30,7 @@ class PyZEALEntry:
         PyZEALInitializationHandler.initPyZEALServices(InitModes.CLI)
 
         parser = ServiceLocator.tryResolve(PyZEALParserInterface)
-        settingsArgs, pluginArgs = parser.parseArgs()
+        settingsArgs, pluginArgs, testingArgs = parser.parseArgs()
 
         # check if any arguments were provided and respond with usage hint
         if len(argv) < 2:
@@ -40,7 +40,8 @@ class PyZEALEntry:
         controller.handleViewSubcommand(settingsArgs)
         controller.handleChangeSubcommand(settingsArgs)
         controller.handlePluginSubcommand(pluginArgs)
+        optionSelected = controller.handleTestingOption(testingArgs)
 
         # a valid subcommand was selected but with no meaningful options
-        if len(argv) == 2:
+        if len(argv) == 2 and not optionSelected:
             print("use '-h' with your subcommand for help.")

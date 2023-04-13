@@ -21,6 +21,8 @@ from pyzeal.utils.factories.algorithm_factory import AlgorithmFactory
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 from pyzeal.utils.factories.settings_factory import SettingsServiceFactory
+from pyzeal.utils.install_test_facade import InstallTestingHandlerFacade
+from pyzeal.utils.install_test_handler import InstallTestingHandler
 from pyzeal.utils.service_locator import ServiceLocator
 
 
@@ -76,6 +78,9 @@ class PyZEALInitializationHandler:
             )
             ServiceLocator.registerAsTransient(
                 CLIControllerFacade, CLIController
+            )
+            ServiceLocator.registerAsTransient(
+                InstallTestingHandlerFacade, InstallTestingHandler
             )
 
         # plugins cannot be loaded in cli mode (plugins might be broken, ...)!

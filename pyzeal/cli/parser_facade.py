@@ -10,7 +10,11 @@ Authors:\n
 
 from typing import Protocol, Tuple, runtime_checkable
 
-from pyzeal.cli.parse_results import PluginParseResults, SettingsParseResults
+from pyzeal.cli.parse_results import (
+    InstallTestingParseResults,
+    PluginParseResults,
+    SettingsParseResults,
+)
 
 
 @runtime_checkable
@@ -19,7 +23,11 @@ class PyZEALParserInterface(Protocol):
     Acts as a facade for the standard library `ArgumentParser`.
     """
 
-    def parseArgs(self) -> Tuple[SettingsParseResults, PluginParseResults]:
+    def parseArgs(
+        self,
+    ) -> Tuple[
+        SettingsParseResults, PluginParseResults, InstallTestingParseResults
+    ]:
         """
         Read command line arguments, parse the read arguments and return them
         wrapped according to the `pyzeal_cli` data contract for parsed command

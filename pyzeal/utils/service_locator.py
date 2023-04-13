@@ -53,7 +53,9 @@ class ServiceLocator:
         serviceType: Type[T], factory: Callable[..., T]
     ) -> bool:
         """
-        Register a transient service.
+        Register a transient service. Note that you MUST implement a (dummy)
+        default constructor if you want to register a class without constructor
+        as an instance factory and that class inherits from `typing.Protocol`.
 
         :param serviceType: Type of service to register.
         :param factory: Factory for the given service

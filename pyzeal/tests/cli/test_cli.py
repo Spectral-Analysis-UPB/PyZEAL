@@ -15,7 +15,11 @@ from pyzeal.cli.__main__ import PyZEALEntry
 from pyzeal.cli.cli_controller import CLIController
 from pyzeal.cli.cli_parser import PyZEALParser
 from pyzeal.cli.controller_facade import CLIControllerFacade
-from pyzeal.cli.parse_results import PluginParseResults, SettingsParseResults
+from pyzeal.cli.parse_results import (
+    InstallTestingParseResults,
+    PluginParseResults,
+    SettingsParseResults,
+)
 from pyzeal.cli.parser_facade import PyZEALParserInterface
 from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
@@ -56,7 +60,9 @@ class SettingsDict(TypedDict, total=False):
 
 def mockArgs(
     newSetting: SettingsDict,
-) -> Tuple[SettingsParseResults, PluginParseResults]:
+) -> Tuple[
+    SettingsParseResults, PluginParseResults, InstallTestingParseResults
+]:
     """
     Generate `SettingsParseResults` and `PluginParseResults` instances
     containing the settings given by `newSetting`.
@@ -79,7 +85,8 @@ def mockArgs(
         install="",
         uninstall="",
     )
-    return settingsParseResult, pluginParseResult
+    testingParseResult = InstallTestingParseResults(doTest=False)
+    return settingsParseResult, pluginParseResult, testingParseResult
 
 
 tSettingsTypes = Union[
