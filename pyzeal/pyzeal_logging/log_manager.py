@@ -13,9 +13,8 @@ from datetime import datetime
 from os.path import join
 from typing import Final, Tuple
 
+from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_logging.logger_facade import PyZEALLogger
-from pyzeal.pyzeal_types.settings_types import SettingsServicesTypes
-from pyzeal.utils.factories.settings_factory import SettingsServiceFactory
 
 
 class LogManager:
@@ -34,7 +33,7 @@ class LogManager:
     LOG_EXT: Final[str] = ".log"
 
     @staticmethod
-    def initLogger(logName: str) -> PyZEALLogger:
+    def initLogger(logName: str, logLevel: LogLevel) -> PyZEALLogger:
         """
         Initialize a module-level logger for the module 'modName'. Default
         logging level is retrieved from `SettingsService`. All logs are stored
@@ -49,11 +48,7 @@ class LogManager:
             os.mkdir(LogManager.LOG_DIR)
 
         logger = logging.getLogger(logName)
-        logger.setLevel(
-            SettingsServiceFactory.getConcreteSettings(
-                settingsType=SettingsServicesTypes.DEFAULT
-            ).logLevel.value
-        )
+        logger.setLevel(logLevel.value)
 
         if not logger.hasHandlers():
             fileName = LogManager.buildFileName()

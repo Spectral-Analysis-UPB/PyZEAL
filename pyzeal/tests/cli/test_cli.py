@@ -25,11 +25,14 @@ from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
+from pyzeal.settings.json_settings_service import JSONSettingsService
 from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.containers.root_container import RootContainer
 from pyzeal.utils.factories.algorithm_factory import AlgorithmFactory
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.factories.estimator_factory import EstimatorFactory
+from pyzeal.utils.install_test_facade import InstallTestingHandlerFacade
+from pyzeal.utils.install_test_handler import InstallTestingHandler
 from pyzeal.utils.service_locator import ServiceLocator
 
 ServiceLocator.registerAsSingleton(PyZEALParserInterface, PyZEALParser())
@@ -43,6 +46,10 @@ ServiceLocator.registerAsTransient(
     ArgumentEstimator, EstimatorFactory.getConcreteEstimator
 )
 ServiceLocator.registerAsTransient(CLIControllerFacade, CLIController)
+ServiceLocator.registerAsTransient(
+    InstallTestingHandlerFacade, InstallTestingHandler
+)
+ServiceLocator.registerAsTransient(SettingsService, JSONSettingsService)
 
 
 class SettingsDict(TypedDict, total=False):

@@ -27,5 +27,5 @@ class SettingsServiceFactory:
         if settingsType == SettingsServicesTypes.JSON_SETTINGS:
             return JSONSettingsService()
 
-        # return the current default algorithm
+        # return the current default settings provider
         return JSONSettingsService()

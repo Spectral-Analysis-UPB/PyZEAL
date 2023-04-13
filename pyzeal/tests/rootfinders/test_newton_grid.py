@@ -22,7 +22,7 @@ from pyzeal.tests.resources.testing_utils import rootsMatchClosely
 
 # 20 is enough to pass all tests while still running faster than the default 50
 NUM_SAMPLE_POINTS: Final[int] = 20
-# disable progress bar by default for tests
+# TODO: for tests we should register an in-memory settings service
 JSONSettingsService().verbose = False
 # some test functions do not work due to algorithmic limitations
 KNOWN_FAILURES = ["x^30", "x^50", "x^100", "1e6 * x^100"]

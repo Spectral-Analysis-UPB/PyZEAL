@@ -30,20 +30,22 @@ def testInvalidCoreSettings(settingName: tCoreSettingsKey) -> None:
 
     :param settingName: Setting name to test, parametrized by pytest
     """
-    with patch("json.dump"):
-        with pytest.raises(InvalidSettingException):
-            # at least one of these should fail, no matter which
-            # settingName is used
-            JSONHelper.createOrUpdateCoreSetting(
-                "THIS_FILE_DOES_NOT_EXIST",
-                settingName,
-                AlgorithmTypes.NEWTON_GRID,
-            )
-            JSONHelper.createOrUpdateCoreSetting(
-                "THIS_FILE_DOES_NOT_EXIST",
-                settingName,
-                EstimatorTypes.QUADRATURE_ESTIMATOR,
-            )
+    with patch("pyzeal.settings.json_helper.dump"):
+        with patch("pyzeal.settings.json_helper.load"):
+            with patch("builtins.open"):
+                with pytest.raises(InvalidSettingException):
+                    # at least one of these should fail, no matter which
+                    # settingName is used
+                    JSONHelper.createOrUpdateCoreSetting(
+                        "THIS_FILE_DOES_NOT_EXIST",
+                        settingName,
+                        AlgorithmTypes.NEWTON_GRID,
+                    )
+                    JSONHelper.createOrUpdateCoreSetting(
+                        "THIS_FILE_DOES_NOT_EXIST",
+                        settingName,
+                        EstimatorTypes.QUADRATURE_ESTIMATOR,
+                    )
 
 
 @pytest.mark.parametrize(
@@ -55,13 +57,15 @@ def testInvalidSettings(settingName: tSettingsKey) -> None:
 
     :param settingName: Setting name to test, parametrized by pytest
     """
-    with patch("json.dump"):
-        with pytest.raises(InvalidSettingException):
-            # at least one of these should fail, no matter which
-            # settingName is used
-            JSONHelper.createOrUpdateSetting(
-                "THIS_FILE_DOES_NOT_EXIST", settingName, False
-            )
-            JSONHelper.createOrUpdateSetting(
-                "THIS_FILE_DOES_NOT_EXIST", settingName, (1, 1)
-            )
+    with patch("pyzeal.settings.json_helper.dump"):
+        with patch("pyzeal.settings.json_helper.load"):
+            with patch("builtins.open"):
+                with pytest.raises(InvalidSettingException):
+                    # at least one of these should fail, no matter which
+                    # settingName is used
+                    JSONHelper.createOrUpdateSetting(
+                        "THIS_FILE_DOES_NOT_EXIST", settingName, False
+                    )
+                    JSONHelper.createOrUpdateSetting(
+                        "THIS_FILE_DOES_NOT_EXIST", settingName, (1, 1)
+                    )

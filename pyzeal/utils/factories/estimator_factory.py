@@ -13,6 +13,7 @@ from pyzeal.algorithms.estimators import ArgumentEstimator, EstimatorCache
 from pyzeal.algorithms.estimators.quad_estimator import QuadratureEstimator
 from pyzeal.algorithms.estimators.sum_estimator import SummationEstimator
 from pyzeal.pyzeal_logging.log_manager import LogManager
+from pyzeal.pyzeal_logging.logger_facade import PyZEALLogger
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.service_locator import ServiceLocator
@@ -21,8 +22,8 @@ from pyzeal.utils.service_locator import ServiceLocator
 class EstimatorFactory:
     "Static factory class used to create instances of argument estimators."
 
-    # initialize the module level logger
-    logger = LogManager.initLogger(__name__.rsplit(".", maxsplit=1)[-1])
+    # module level logger
+    _logger: Optional[PyZEALLogger] = None
 
     @staticmethod
     def getConcreteEstimator(
@@ -45,8 +46,13 @@ class EstimatorFactory:
         :param cache: Cache to store argument changes
         :return: Estimator instance with given parameters
         """
+        if EstimatorFactory._logger is None:
+            EstimatorFactory._logger = LogManager.initLogger(
+                __name__.rsplit(".", maxsplit=1)[-1],
+                ServiceLocator.tryResolve(SettingsService).logLevel,
+            )
         if estimatorType == EstimatorTypes.SUMMATION_ESTIMATOR:
-            EstimatorFactory.logger.debug(
+            EstimatorFactory._logger.debug(
                 "requested a new phase summation based argument estimator..."
             )
             if numPts is None or deltaPhi is None or maxPrecision is None:
@@ -61,12 +67,12 @@ class EstimatorFactory:
                 cache=cache,
             )
         if estimatorType == EstimatorTypes.QUADRATURE_ESTIMATOR:
-            EstimatorFactory.logger.debug(
+            EstimatorFactory._logger.debug(
                 "requested a new quadrature based argument estimator..."
             )
             return QuadratureEstimator(cache=cache)
 
-        EstimatorFactory.logger.debug(
+        EstimatorFactory._logger.debug(
             "requested a new default argument estimator..."
         )
         settings = ServiceLocator.tryResolve(SettingsService)

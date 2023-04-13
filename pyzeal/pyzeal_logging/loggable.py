@@ -8,6 +8,8 @@ from typing import Protocol
 from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_logging.log_manager import LogManager
 from pyzeal.pyzeal_logging.logger_facade import PyZEALLogger
+from pyzeal.settings.settings_service import SettingsService
+from pyzeal.utils.service_locator import ServiceLocator
 
 
 class Loggable(Protocol):
@@ -30,7 +32,8 @@ class Loggable(Protocol):
         """
         if not hasattr(self, "_logger"):
             self._logger = LogManager.initLogger(
-                self.__module__.rsplit(".", maxsplit=1)[-1]
+                self.__module__.rsplit(".", maxsplit=1)[-1],
+                ServiceLocator.tryResolve(SettingsService).logLevel,
             )
         return self._logger
 
