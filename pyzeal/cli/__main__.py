@@ -1,7 +1,8 @@
 """
 This module provides the main CLI entry point of the PyZEAL project through the
 function `mainPyZEAL`. At the moment it provides facilities to query the
-currently installed PyZEAL version as well as view and manipulate settings.
+currently installed PyZEAL version, view and manipulate settings,
+(un-)install plugins, and invoke unit tests on the local installation.
 
 Authors:\n
 - Philipp Schuette\n

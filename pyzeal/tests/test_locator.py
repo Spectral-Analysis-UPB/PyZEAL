@@ -9,6 +9,7 @@ from typing import Protocol, runtime_checkable
 
 import pytest
 
+from pyzeal.utils.configuration_exception import InvalidServiceConfiguration
 from pyzeal.utils.service_locator import ServiceLocator
 
 
@@ -36,13 +37,18 @@ def testRegisterSingleton() -> None:
     instance: FooInterface = Foo()
 
     # try valid registration
-    assert ServiceLocator.registerAsSingleton(FooInterface, instance)
+    assert ServiceLocator is ServiceLocator.registerAsSingleton(
+        FooInterface, instance
+    )
     resolvent = ServiceLocator.tryResolve(FooInterface)
 
     assert resolvent is instance
 
     # try invalid registration
-    assert not ServiceLocator.registerAsSingleton(FooInterface, 0)
+    with pytest.raises(InvalidServiceConfiguration):
+        ServiceLocator.registerAsSingleton(
+            FooInterface, 0
+        ).registerAsSingleton(FooInterface, Foo())
 
 
 @pytest.mark.locator
@@ -51,7 +57,9 @@ def testRegisterTransient() -> None:
     ServiceLocator.clearConfigurations()
 
     # try valid registration
-    assert ServiceLocator.registerAsTransient(FooInterface, Foo)
+    assert ServiceLocator is ServiceLocator.registerAsTransient(
+        FooInterface, Foo
+    )
     resolvent1 = ServiceLocator.tryResolve(FooInterface)
     resolvent2 = ServiceLocator.tryResolve(FooInterface)
 

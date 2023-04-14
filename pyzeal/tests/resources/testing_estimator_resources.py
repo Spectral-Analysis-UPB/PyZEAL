@@ -11,13 +11,13 @@ import numpy as np
 
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.root_types import tVec
-from pyzeal.settings.json_settings_service import JSONSettingsService
+from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.root_context import RootContext
 from pyzeal.utils.service_locator import ServiceLocator
 
-ServiceLocator.registerAsTransient(SettingsService, JSONSettingsService)
+ServiceLocator.registerAsTransient(SettingsService, RAMSettingsService)
 
 
 def f(n: int, z: tVec) -> tVec:

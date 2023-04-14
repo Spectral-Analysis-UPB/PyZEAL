@@ -14,7 +14,7 @@ from typing import Dict, Tuple, cast
 import numpy as np
 
 from pyzeal.pyzeal_types.root_types import tHoloFunc, tVec
-from pyzeal.settings.json_settings_service import JSONSettingsService
+from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.service_locator import ServiceLocator
 
@@ -23,7 +23,7 @@ from pyzeal.utils.service_locator import ServiceLocator
 RE_RAN = (-5, 5)
 IM_RAN = (-5, 5)
 
-ServiceLocator.registerAsTransient(SettingsService, JSONSettingsService)
+ServiceLocator.registerAsTransient(SettingsService, RAMSettingsService)
 
 localTestFunctions: Dict[
     str,

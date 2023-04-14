@@ -11,7 +11,8 @@ from typing import Final
 import numpy as np
 import pytest
 
-from pyzeal.settings.json_settings_service import JSONSettingsService
+from pyzeal.settings.ram_settings_service import RAMSettingsService
+from pyzeal.settings.settings_service import SettingsService
 from pyzeal.tests.resources.testing_fixtures import newtonGridFinder
 from pyzeal.tests.resources.testing_resources import (
     IM_RAN,
@@ -19,11 +20,14 @@ from pyzeal.tests.resources.testing_resources import (
     testFunctions,
 )
 from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.utils.service_locator import ServiceLocator
 
 # 20 is enough to pass all tests while still running faster than the default 50
 NUM_SAMPLE_POINTS: Final[int] = 20
-# TODO: for tests we should register an in-memory settings service
-JSONSettingsService().verbose = False
+
+settingsService = RAMSettingsService(verbose=False)
+ServiceLocator.registerAsSingleton(SettingsService, settingsService)
+
 # some test functions do not work due to algorithmic limitations
 KNOWN_FAILURES = ["x^30", "x^50", "x^100", "1e6 * x^100"]
 

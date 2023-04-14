@@ -7,6 +7,8 @@ Authors:\n
 - Philipp Schuette\n
 """
 
+from __future__ import annotations
+
 from inspect import Parameter, signature
 from typing import Callable, Dict, Type, TypeVar
 
@@ -28,7 +30,9 @@ class ServiceLocator:
     _sealed: bool = False
 
     @staticmethod
-    def registerAsSingleton(serviceType: Type[T], instance: T) -> bool:
+    def registerAsSingleton(
+        serviceType: Type[T], instance: T
+    ) -> Type[ServiceLocator]:
         """
         Register service `instance` as a singleton service, meaning only one
         instance exists.
@@ -37,7 +41,9 @@ class ServiceLocator:
         :param instance: Service instance
         :raises ValueError: If the service locator is sealed, no new services
             can be registered.
-        :return: `True` if the service has been successfully registered.
+        :raises InvalidServiceConfiguration: Given instance must implement the
+            given type
+        :return: Return the static `ServiceLocator` for method chaining
         """
         if ServiceLocator.isSealed():
             raise ValueError(
@@ -45,13 +51,13 @@ class ServiceLocator:
             )
         if isinstance(instance, serviceType):
             ServiceLocator._singletonServices[serviceType] = instance
-            return True
-        return False
+            return ServiceLocator
+        raise InvalidServiceConfiguration(serviceType)
 
     @staticmethod
     def registerAsTransient(
         serviceType: Type[T], factory: Callable[..., T]
-    ) -> bool:
+    ) -> Type[ServiceLocator]:
         """
         Register a transient service. Note that you MUST implement a (dummy)
         default constructor if you want to register a class without constructor
@@ -61,14 +67,14 @@ class ServiceLocator:
         :param factory: Factory for the given service
         :raises ValueError: If the service locator is sealed, no new services
             can be registered.
-        :return: `True` if the service has been successfully registered.
+        :return: Return the static `ServiceLocator` for method chaining
         """
         if ServiceLocator.isSealed():
             raise ValueError(
                 f"cannot register transient {serviceType} on sealed locator!"
             )
         ServiceLocator._transientServices[serviceType] = factory
-        return True
+        return ServiceLocator
 
     @staticmethod
     def tryResolve(serviceType: Type[T], **kwargs: object) -> T:

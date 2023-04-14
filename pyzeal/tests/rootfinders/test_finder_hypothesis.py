@@ -20,7 +20,13 @@ from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.pyzeal_types.filter_types import FilterTypes
 from pyzeal.pyzeal_types.root_types import tHoloFunc
 from pyzeal.rootfinders import RootFinder
+from pyzeal.settings.ram_settings_service import RAMSettingsService
+from pyzeal.settings.settings_service import SettingsService
 from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.utils.service_locator import ServiceLocator
+
+settingsService = RAMSettingsService(verbose=False)
+ServiceLocator.registerAsSingleton(SettingsService, settingsService)
 
 
 @pytest.mark.slow

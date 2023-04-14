@@ -8,9 +8,11 @@ Authors:\n
 """
 
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.settings.json_settings_service import JSONSettingsService
+from pyzeal.settings.ram_settings_service import RAMSettingsService
+from pyzeal.settings.settings_service import SettingsService
 from pyzeal.tests.resources.testing_fixtures import simpleArgumentRootFinder
 from pyzeal.tests.resources.testing_resources import IM_RAN, RE_RAN
+from pyzeal.utils.service_locator import ServiceLocator
 
 benchmarkFunctions = [
     "x^2-1",
@@ -20,8 +22,10 @@ benchmarkFunctions = [
     "sin(x)",
     "exp(x)",
 ]
+
 # disable progress bar
-JSONSettingsService().verbose = False
+settingsService = RAMSettingsService(verbose=False)
+ServiceLocator.registerAsSingleton(SettingsService, settingsService)
 
 
 class SimpleArgumentSuite:

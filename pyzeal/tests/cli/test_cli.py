@@ -25,7 +25,7 @@ from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.settings.json_settings_service import JSONSettingsService
+from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
 from pyzeal.utils.containers.root_container import RootContainer
 from pyzeal.utils.factories.algorithm_factory import AlgorithmFactory
@@ -35,21 +35,21 @@ from pyzeal.utils.install_test_facade import InstallTestingHandlerFacade
 from pyzeal.utils.install_test_handler import InstallTestingHandler
 from pyzeal.utils.service_locator import ServiceLocator
 
-ServiceLocator.registerAsSingleton(PyZEALParserInterface, PyZEALParser())
-ServiceLocator.registerAsTransient(
+ServiceLocator.registerAsSingleton(
+    PyZEALParserInterface, PyZEALParser()
+).registerAsTransient(
     FinderAlgorithm, AlgorithmFactory.getConcreteAlgorithm
-)
-ServiceLocator.registerAsTransient(
+).registerAsTransient(
     RootContainer, ContainerFactory.getConcreteContainer
-)
-ServiceLocator.registerAsTransient(
+).registerAsTransient(
     ArgumentEstimator, EstimatorFactory.getConcreteEstimator
-)
-ServiceLocator.registerAsTransient(CLIControllerFacade, CLIController)
-ServiceLocator.registerAsTransient(
+).registerAsTransient(
+    CLIControllerFacade, CLIController
+).registerAsTransient(
     InstallTestingHandlerFacade, InstallTestingHandler
+).registerAsSingleton(
+    SettingsService, RAMSettingsService()
 )
-ServiceLocator.registerAsTransient(SettingsService, JSONSettingsService)
 
 
 class SettingsDict(TypedDict, total=False):
@@ -179,7 +179,7 @@ def testChangeSettingsCall(
     """
     newSetting: SettingsDict = testSetup[0]
     defaultSettingProperty = (
-        "pyzeal.settings.json_settings_service.JSONSettingsService."
+        "pyzeal.settings.ram_settings_service.RAMSettingsService."
         + testSetup[1]
     )
     beforeValue = testSetup[2]

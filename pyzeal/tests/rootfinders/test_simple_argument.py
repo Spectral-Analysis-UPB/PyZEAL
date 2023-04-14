@@ -10,7 +10,8 @@ import numpy as np
 import pytest
 
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.settings.json_settings_service import JSONSettingsService
+from pyzeal.settings.ram_settings_service import RAMSettingsService
+from pyzeal.settings.settings_service import SettingsService
 from pyzeal.tests.resources.testing_fixtures import simpleArgumentRootFinder
 from pyzeal.tests.resources.testing_resources import (
     IM_RAN,
@@ -18,9 +19,12 @@ from pyzeal.tests.resources.testing_resources import (
     testFunctions,
 )
 from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.utils.service_locator import ServiceLocator
 
 # disable progress bar by default for tests
-JSONSettingsService().verbose = False
+settingsService = RAMSettingsService(verbose=False)
+ServiceLocator.registerAsSingleton(SettingsService, settingsService)
+
 # some test functions do not work due to z-refinement limitations
 KNOWN_FAILURES = ["poly", "x^100", "1e6 * x^100"]
 
