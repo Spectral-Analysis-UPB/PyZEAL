@@ -61,7 +61,8 @@ then
         shift
     done
 
-    pytest --cov=pyzeal/ $PARALLEL pyzeal/tests/
+    pytest --cov=pyzeal/ --cov-report=html  $PARALLEL pyzeal/tests/
+    pytest --cov=pyzeal/ --cov-report=html --cov-append -m "locator" pyzeal/tests/
     echo ""
 fi
 

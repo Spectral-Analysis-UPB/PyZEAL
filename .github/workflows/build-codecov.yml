@@ -27,5 +27,6 @@ jobs:
       working-directory: ./
       run: |
         pytest -n auto --cov-report=xml --cov=pyzeal/ pyzeal/tests/
+        pytest --cov-report=xml --cov=pyzeal/ --cov-append -m "locator" pyzeal/tests/
     - name: Upload coverage report to codecov
       uses: codecov/codecov-action@v3

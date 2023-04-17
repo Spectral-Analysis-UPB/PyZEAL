@@ -89,3 +89,18 @@ def testLocatorSealing() -> None:
     # try sealing locator twice
     with pytest.raises(ValueError):
         ServiceLocator.seal()
+
+
+@pytest.mark.locator
+def testInvalidConfiguration() -> None:
+    "Test if invalid registered configurations raise exceptions."
+    ServiceLocator.clearConfigurations()
+
+    # try to resolve a non-existing configuration
+    with pytest.raises(InvalidServiceConfiguration):
+        ServiceLocator.tryResolve(FooInterface)
+
+    # register an invalid configuration and try to resolve it
+    ServiceLocator.registerAsTransient(FooInterface, lambda: None)  # type: ignore
+    with pytest.raises(InvalidServiceConfiguration):
+        ServiceLocator.tryResolve(FooInterface)
