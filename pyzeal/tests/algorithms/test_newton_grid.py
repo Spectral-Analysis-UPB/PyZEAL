@@ -38,7 +38,7 @@ def testNewtonGridRootFinder(testName: str) -> None:
     if testName in KNOWN_FAILURES:
         pytest.skip()
 
-    for numSamplePoints in [20, 40]:
+    for numSamplePoints in [25, 40]:
         precision = testFunctions[testName].precision
         newtonGridAlgo = NewtonGridAlgorithm(numSamplePoints=numSamplePoints)
         container = RoundingContainer(precision=precision)

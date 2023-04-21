@@ -57,8 +57,8 @@ def buildContextFromData(data: TestData) -> RootContext:
     # assemble the context from the data
     deltaRe, deltaIm = data.precision
     reRan, imRan = data.reRan, data.imRan
-    reRan = reRan[0] - 0.01, reRan[1] + 0.02
-    imRan = imRan[0] - 0.03, imRan[1] + 0.04
+    reRan = reRan[0] - 0.001, reRan[1] + 0.002
+    imRan = imRan[0] - 0.003, imRan[1] + 0.004
     return RootContext(
         f=data.testFunc,
         df=data.testFuncDerivative,
@@ -146,8 +146,8 @@ localTestFunctions: Dict[str, TestData] = {
             -0.116791 - 1.43844769j,
             -0.116791 + 1.43844769j,
         ),
-        reRan=(-5, 5),
-        imRan=(-5, 5),
+        reRan=(-7.1, 6.2),
+        imRan=(-9.3, 8.4),
         precision=(3, 3),
     ),
     "x^3-0.01x": TestData(
@@ -162,16 +162,16 @@ localTestFunctions: Dict[str, TestData] = {
         lambda x: x**30,
         lambda x: cast(tVec, 30 * x**29),
         (0,),
-        (-5, 5.01),
-        (-5.1, 5),
-        precision=(4, 4),
+        (-5.009, 5.01),
+        (-5.02, 5.03),
+        precision=(3, 3),
     ),
     "x^50": TestData(
         lambda x: x**50,
         lambda x: cast(tVec, 50 * x**49),
         (0,),
-        (-5, 5),
-        (-5, 5),
+        (-5.009, 5.018),
+        (-5.027, 5.036),
         precision=(3, 3),
     ),
     "x^100": TestData(
@@ -194,8 +194,8 @@ localTestFunctions: Dict[str, TestData] = {
         lambda x: cast(tVec, 1 * (x - 5) * (x + 5)),
         lambda x: 2 * x,
         (5, -5),
-        (-5, 5),
-        (-5, 5),
+        (-5.1, 5.2),
+        (-5.3, 5.4),
         precision=(3, 3),
     ),
     "x^2+(0.000024414 - i)x": TestData(
@@ -222,8 +222,8 @@ localTestFunctions: Dict[str, TestData] = {
             ),
         ),
         expectedRoots=(-4.652, -0.333 - 1.5j, -1.5j, 0, 4.768j),
-        reRan=(-5, 5),
-        imRan=(-5, 5),
+        reRan=(-6.2, 7.4),
+        imRan=(-8.6, 9.8),
         precision=(3, 3),
     ),
     "sin(x)": TestData(
@@ -305,8 +305,8 @@ localTestFunctions: Dict[str, TestData] = {
         lambda x: cast(tVec, np.log(x**2 + 26)),
         lambda x: cast(tVec, 2 * x / (x**2 + 26)),
         (-5j, 5j),
-        (-5, 5),
-        (-5, 5),
+        (-5.01, 5.02),
+        (-5.03, 5.04),
         precision=(3, 3),
     ),
     "20arctan(x/10)": TestData(

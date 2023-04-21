@@ -1,5 +1,5 @@
 """
-Class FinderAlgorithm from the package pyzeal_algorithms.
+Class SimpleArgumentNewtonAlgorithm from the package pyzeal_algorithms.
 
 This module defines a refined version of the `SimpleArgumentAlgorithm` by
 supplementing the argument principle with a Newton algorithm once a starting

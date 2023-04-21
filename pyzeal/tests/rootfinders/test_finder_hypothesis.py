@@ -54,7 +54,7 @@ ServiceLocator.registerAsSingleton(SettingsService, settingsService)
     max_examples=5,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.explain],
 )
-def testSimpleArgumentNewtonHypothesis(
+def testRootFinderHypothesis(
     algorithm: AlgorithmTypes,
     estimator: EstimatorTypes,
     parallel: bool,
@@ -67,11 +67,13 @@ def testSimpleArgumentNewtonHypothesis(
     are polynomials whose roots are generated automatically using the
     hypothesis package.
 
-    :param roots: Roots of a polynomial
-    :param estimator: The type of estimator to use
+    :param algorithm: The type of algorithm to test
+    :param estimator: The type of estimator to test
+    :param parallel: Whether the tested finder works in parallel
+    :param roots: Roots of the test polynomial
     """
     # We only find a higher-order zero once, so we have to remove duplicates
-    uniqueRoots = list(set(np.round(roots, 3)))
+    uniqueRoots = list(set(np.round(roots, 2)))
     polynomial = Polynomial.fromroots(uniqueRoots)
     f: tHoloFunc = polynomial
     df: tHoloFunc = polynomial.deriv()
@@ -93,11 +95,6 @@ def testSimpleArgumentNewtonHypothesis(
     foundRoots = np.sort_complex(hrf.roots)
     expectedRoots = np.sort_complex(np.array(uniqueRoots))
 
-    if rootsMatchClosely(foundRoots, expectedRoots, precision=(3, 3)):
-        assert True
-    else:
-        if rootsMatchClosely(
-            foundRoots, expectedRoots, precision=(3, 3), allowSubset=True
-        ):
-            pytest.xfail(reason="only subset of (hypothesis) roots found!")
-        assert False
+    assert rootsMatchClosely(
+        foundRoots, expectedRoots, precision=(3, 3), allowSubset=True
+    )

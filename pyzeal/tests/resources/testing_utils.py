@@ -28,8 +28,7 @@ def rootsMatchClosely(
         the second is sufficient
     :return: flag indicating if `roots1` and `roots2` are the same
     """
-    if not allowSubset:
-        assert len(roots1) == len(roots2)
+    assert len(roots1) == len(roots2) or allowSubset
 
     deltaReal = 10 ** (-precision[0])
     deltaImag = 10 ** (-precision[1])
