@@ -105,6 +105,9 @@ class ParallelRootFinder(RootFinder):
         """
         # if no precision was given, use default precision from constructor
         precision = precision or self.precision
+        # if a rounding container is used we must calculate with an additional
+        # digit of internal precision to obtain correct results after rounding
+        precision = (precision[0] + 1, precision[1] + 1)
         # desymmetrize the input rectangle
         (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
 

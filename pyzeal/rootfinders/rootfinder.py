@@ -45,7 +45,6 @@ class RootFinder(RootFinderInterface, Loggable):
         "precision",
         "numSamplePoints",
         "verbose",
-        "precision",
     )
 
     def __init__(
@@ -89,7 +88,7 @@ class RootFinder(RootFinderInterface, Loggable):
 
         self.verbose = (
             verbose
-            if verbose
+            if verbose is not None
             else ServiceLocator.tryResolve(
                 SettingsService, settingsType=SettingsServicesTypes.DEFAULT
             ).verbose
@@ -127,8 +126,12 @@ class RootFinder(RootFinderInterface, Loggable):
         """
         # if no precision was given, use default precision from constructor
         precision = precision or self.precision
+        # if a rounding container is used we must calculate with an additional
+        # digit of internal precision to obtain correct results after rounding
+        precision = (precision[0] + 1, precision[1] + 1)
         # desymmetrize the input rectangle
         (x1, x2), (y1, y2) = self.desymmetrizeDomain(reRan, imRan, precision)
+
         # initialize the progress bar
         progress = FinderProgressBar() if self.verbose else None
         task: Optional[TaskID] = None

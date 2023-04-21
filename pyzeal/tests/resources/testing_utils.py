@@ -4,49 +4,46 @@ PyZEAL project.
 
 Authors:\n
 - Luca Wasmuth\n
+- Philipp Schuette\n
 """
 
-import numpy as np
+from typing import Tuple
 
 from pyzeal.pyzeal_types.root_types import tVec
 
 
-def _compareRootSets(roots1: tVec, roots2: tVec, atol: float) -> bool:
+def rootsMatchClosely(
+    roots1: tVec,
+    roots2: tVec,
+    precision: Tuple[int, int],
+    allowSubset: bool = False,
+) -> bool:
     """
-    Test if two vectors contain the same roots, up to inaccuraccy of size atol.
-    Internal method to supplement np.allclose, as numpy can't handle differenz
-    sizes.
+    Determine if `roots1` and `roots2` contain the same roots, up to a number
+    of decimal places given by `precision`.
 
     :param roots1: first vector of roots
     :param roots2: second vector of roots
-    :param atol: tolerance up to which roots are considered the same
-    :return: indicates if `roots1` and `roots2` are the same (up to `atol`)
+    :param precision: number of decimal places where roots are considered equal
+        the second is sufficient
+    :return: flag indicating if `roots1` and `roots2` are the same
     """
+    if not allowSubset:
+        assert len(roots1) == len(roots2)
+
+    deltaReal = 10 ** (-precision[0])
+    deltaImag = 10 ** (-precision[1])
+
     for root1 in roots1:
-        foundEqualRoot: bool = False
+        matchFound = False
         for root2 in roots2:
-            if np.abs(root1 - root2) < atol:
-                foundEqualRoot = True
+            if (
+                abs(root1.real - root2.real) < deltaReal
+                and abs(root1.imag - root2.imag) < deltaImag
+            ):
+                matchFound = True
                 break
-        if not foundEqualRoot:
+        if not matchFound:
             return False
 
     return True
-
-
-def rootsMatchClosely(roots1: tVec, roots2: tVec, atol: float) -> bool:
-    """
-    Determine if `roots1` and `roots2` contain the same roots, up to
-    precision `atol`.
-
-    :param roots1: first vector of roots
-    :param roots2: second vector of roots
-    :param atol: tolerance up to which roots are considered the same
-    :return: indicates if `roots1` and `roots2` are the same (up to `atol`)
-    """
-    assert len(roots1) == len(roots2)
-    try:
-        numpyMatch = np.allclose(roots1, roots2, atol=atol)
-    except ValueError:
-        numpyMatch = False
-    return numpyMatch or _compareRootSets(roots1, roots2, atol)

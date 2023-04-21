@@ -33,25 +33,17 @@ def newtonGridFinder(
         without the derivative, defaults to False
     :return: Initialized RootFinder
     """
-    f = testFunctions[testName][0]
-    df = testFunctions[testName][1] if not derivativeFree else None
+    f = testFunctions[testName].testFunc
+    df = None if derivativeFree else testFunctions[testName].testFuncDerivative
     gridRF: RootFinderInterface
-    if parallel:
-        gridRF = ParallelRootFinder(
-            f,
-            df,
-            numSamplePoints=numSamplePoints,
-            containerType=ContainerTypes.ROUNDING_CONTAINER,
-            algorithmType=AlgorithmTypes.NEWTON_GRID,
-        )
-    else:
-        gridRF = RootFinder(
-            f,
-            df,
-            numSamplePoints=numSamplePoints,
-            containerType=ContainerTypes.ROUNDING_CONTAINER,
-            algorithmType=AlgorithmTypes.NEWTON_GRID,
-        )
+    Finder = ParallelRootFinder if parallel else RootFinder
+    gridRF = Finder(
+        f,
+        df,
+        numSamplePoints=numSamplePoints,
+        containerType=ContainerTypes.ROUNDING_CONTAINER,
+        algorithmType=AlgorithmTypes.NEWTON_GRID,
+    )
     gridRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     gridRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
     return gridRF
@@ -71,26 +63,17 @@ def simpleArgumentRootFinder(
     :return: Initialized RootFinder
     """
     holoRF: RootFinderInterface
-    f = testFunctions[testName][0]
-    df = testFunctions[testName][1]
-    if parallel:
-        holoRF = ParallelRootFinder(
-            f,
-            df,
-            containerType=ContainerTypes.ROUNDING_CONTAINER,
-            algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
-            estimatorType=estimatorType,
-            verbose=False,
-        )
-    else:
-        holoRF = RootFinder(
-            f,
-            df,
-            containerType=ContainerTypes.ROUNDING_CONTAINER,
-            algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
-            estimatorType=estimatorType,
-            verbose=False,
-        )
+    f = testFunctions[testName].testFunc
+    df = testFunctions[testName].testFuncDerivative
+    Finder = ParallelRootFinder if parallel else RootFinder
+    holoRF = Finder(
+        f,
+        df,
+        containerType=ContainerTypes.ROUNDING_CONTAINER,
+        algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT,
+        estimatorType=estimatorType,
+        verbose=False,
+    )
     holoRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     holoRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
     return holoRF
@@ -110,26 +93,17 @@ def simpleArgumentNewtonRootFinder(
     :return: Initialized RootFinder
     """
     holoNewtonRF: RootFinderInterface
-    f = testFunctions[testName][0]
-    df = testFunctions[testName][1]
-    if parallel:
-        holoNewtonRF = ParallelRootFinder(
-            f,
-            df,
-            containerType=ContainerTypes.ROUNDING_CONTAINER,
-            algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
-            estimatorType=estimatorType,
-            verbose=False,
-        )
-    else:
-        holoNewtonRF = RootFinder(
-            f,
-            df,
-            containerType=ContainerTypes.ROUNDING_CONTAINER,
-            algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
-            estimatorType=estimatorType,
-            verbose=False,
-        )
+    f = testFunctions[testName].testFunc
+    df = testFunctions[testName].testFuncDerivative
+    Finder = ParallelRootFinder if parallel else RootFinder
+    holoNewtonRF = Finder(
+        f,
+        df,
+        containerType=ContainerTypes.ROUNDING_CONTAINER,
+        algorithmType=AlgorithmTypes.SIMPLE_ARGUMENT_NEWTON,
+        estimatorType=estimatorType,
+        verbose=False,
+    )
     holoNewtonRF.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     holoNewtonRF.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
     return holoNewtonRF

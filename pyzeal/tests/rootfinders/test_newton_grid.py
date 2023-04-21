@@ -14,11 +14,7 @@ import pytest
 from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
 from pyzeal.tests.resources.testing_fixtures import newtonGridFinder
-from pyzeal.tests.resources.testing_resources import (
-    IM_RAN,
-    RE_RAN,
-    testFunctions,
-)
+from pyzeal.tests.resources.testing_resources import testFunctions
 from pyzeal.tests.resources.testing_utils import rootsMatchClosely
 from pyzeal.utils.service_locator import ServiceLocator
 
@@ -44,9 +40,16 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
-    for numSamplePoints in [20, 50]:
+
+    for numSamplePoints in [20, 40]:
         gridRF = newtonGridFinder(testName, numSamplePoints, parallel=parallel)
-        gridRF.calculateRoots(RE_RAN, IM_RAN, precision=(4, 4))
+        reRan = testFunctions[testName].reRan
+        imRan = testFunctions[testName].imRan
+        precision = testFunctions[testName].precision
+        gridRF.calculateRoots(reRan, imRan, precision=precision)
         foundRoots = np.sort_complex(gridRF.roots)
-        expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
-        assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
+        expectedRoots = np.array(testFunctions[testName].expectedRoots)
+
+        assert rootsMatchClosely(
+            foundRoots, expectedRoots, precision=precision
+        )
