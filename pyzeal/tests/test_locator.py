@@ -101,6 +101,8 @@ def testInvalidConfiguration() -> None:
         ServiceLocator.tryResolve(FooInterface)
 
     # register an invalid configuration and try to resolve it
-    ServiceLocator.registerAsTransient(FooInterface, lambda: None)  # type: ignore
+    ServiceLocator.registerAsTransient(
+        FooInterface, lambda: None  # type: ignore
+    )
     with pytest.raises(InvalidServiceConfiguration):
         ServiceLocator.tryResolve(FooInterface)
