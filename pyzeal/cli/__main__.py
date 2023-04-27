@@ -1,7 +1,8 @@
 """
 This module provides the main CLI entry point of the PyZEAL project through the
 function `mainPyZEAL`. At the moment it provides facilities to query the
-currently installed PyZEAL version as well as view and manipulate settings.
+currently installed PyZEAL version, view and manipulate settings,
+(un-)install plugins, and invoke unit tests on the local installation.
 
 Authors:\n
 - Philipp Schuette\n
@@ -30,7 +31,7 @@ class PyZEALEntry:
         PyZEALInitializationHandler.initPyZEALServices(InitModes.CLI)
 
         parser = ServiceLocator.tryResolve(PyZEALParserInterface)
-        settingsArgs, pluginArgs = parser.parseArgs()
+        settingsArgs, pluginArgs, testingArgs = parser.parseArgs()
 
         # check if any arguments were provided and respond with usage hint
         if len(argv) < 2:
@@ -40,7 +41,8 @@ class PyZEALEntry:
         controller.handleViewSubcommand(settingsArgs)
         controller.handleChangeSubcommand(settingsArgs)
         controller.handlePluginSubcommand(pluginArgs)
+        optionSelected = controller.handleTestingOption(testingArgs)
 
         # a valid subcommand was selected but with no meaningful options
-        if len(argv) == 2:
+        if len(argv) == 2 and not optionSelected:
             print("use '-h' with your subcommand for help.")

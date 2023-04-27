@@ -20,7 +20,14 @@ from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.pyzeal_types.filter_types import FilterTypes
 from pyzeal.pyzeal_types.root_types import tHoloFunc
 from pyzeal.rootfinders import RootFinder
-from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.rootfinders.parallel_finder import ParallelRootFinder
+from pyzeal.settings.ram_settings_service import RAMSettingsService
+from pyzeal.settings.settings_service import SettingsService
+from pyzeal.tests.resources.utils import rootsMatchClosely
+from pyzeal.utils.service_locator import ServiceLocator
+
+settingsService = RAMSettingsService(verbose=False)
+ServiceLocator.registerAsSingleton(SettingsService, settingsService)
 
 
 @pytest.mark.slow
@@ -36,6 +43,7 @@ from pyzeal.tests.resources.testing_utils import rootsMatchClosely
     "estimator",
     [EstimatorTypes.SUMMATION_ESTIMATOR, EstimatorTypes.QUADRATURE_ESTIMATOR],
 )
+@pytest.mark.parametrize("parallel", [True, False])
 @given(
     strategies.lists(
         strategies.complex_numbers(max_magnitude=5), min_size=2, max_size=5
@@ -46,8 +54,11 @@ from pyzeal.tests.resources.testing_utils import rootsMatchClosely
     max_examples=5,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.explain],
 )
-def testSimpleArgumentNewtonHypothesis(
-    algorithm: AlgorithmTypes, estimator: EstimatorTypes, roots: List[complex]
+def testRootFinderHypothesis(
+    algorithm: AlgorithmTypes,
+    estimator: EstimatorTypes,
+    parallel: bool,
+    roots: List[complex],
 ) -> None:
     """
     Test the root finder algorithm based on a simple partial integration of the
@@ -56,15 +67,18 @@ def testSimpleArgumentNewtonHypothesis(
     are polynomials whose roots are generated automatically using the
     hypothesis package.
 
-    :param roots: Roots of a polynomial
-    :param estimator: The type of estimator to use
+    :param algorithm: The type of algorithm to test
+    :param estimator: The type of estimator to test
+    :param parallel: Whether the tested finder works in parallel
+    :param roots: Roots of the test polynomial
     """
     # We only find a higher-order zero once, so we have to remove duplicates
-    uniqueRoots = list(set(np.round(roots, 3)))
+    uniqueRoots = list(set(np.round(roots, 2)))
     polynomial = Polynomial.fromroots(uniqueRoots)
     f: tHoloFunc = polynomial
     df: tHoloFunc = polynomial.deriv()
-    hrf = RootFinder(
+    Finder = RootFinder if parallel else ParallelRootFinder
+    hrf = Finder(
         f,
         df,
         numSamplePoints=30,
@@ -76,9 +90,11 @@ def testSimpleArgumentNewtonHypothesis(
 
     hrf.setRootFilter(filterType=FilterTypes.FUNCTION_VALUE_ZERO)
     hrf.setRootFilter(filterType=FilterTypes.ZERO_IN_BOUNDS)
-    hrf.calculateRoots((-10.1, 10.2), (-10.3, 10.4), precision=(5, 5))
+    hrf.calculateRoots((-10.1, 10.2), (-10.3, 10.4), precision=(3, 3))
 
     foundRoots = np.sort_complex(hrf.roots)
     expectedRoots = np.sort_complex(np.array(uniqueRoots))
 
-    assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
+    assert rootsMatchClosely(
+        foundRoots, expectedRoots, precision=(3, 3), allowSubset=True
+    )

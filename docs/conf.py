@@ -36,7 +36,7 @@ extensions = [
 
 bibtex_bibfiles = ["./_static/refs.bib"]
 
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "misc/intro.rst", "misc/badges.rst"]
 
 # -- Options for HTML output -------------------------------------------------
 

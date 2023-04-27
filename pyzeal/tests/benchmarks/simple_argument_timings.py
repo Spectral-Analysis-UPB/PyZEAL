@@ -8,9 +8,11 @@ Authors:\n
 """
 
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.settings.json_settings_service import JSONSettingsService
-from pyzeal.tests.resources.testing_fixtures import simpleArgumentRootFinder
-from pyzeal.tests.resources.testing_resources import IM_RAN, RE_RAN
+from pyzeal.settings.ram_settings_service import RAMSettingsService
+from pyzeal.settings.settings_service import SettingsService
+from pyzeal.tests.resources.finder_helpers import simpleArgumentRootFinder
+from pyzeal.tests.resources.finder_test_cases import testFunctions
+from pyzeal.utils.service_locator import ServiceLocator
 
 benchmarkFunctions = [
     "x^2-1",
@@ -20,8 +22,10 @@ benchmarkFunctions = [
     "sin(x)",
     "exp(x)",
 ]
+
 # disable progress bar
-JSONSettingsService().verbose = False
+settingsService = RAMSettingsService(verbose=False)
+ServiceLocator.registerAsSingleton(SettingsService, settingsService)
 
 
 class SimpleArgumentSuite:
@@ -42,7 +46,9 @@ class SimpleArgumentSuite:
                 parallel=False,
                 estimatorType=EstimatorTypes.SUMMATION_ESTIMATOR,
             )
-            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))
+            reRan = testFunctions[caseName].reRan
+            imRan = testFunctions[caseName].imRan
+            hrf.calculateRoots(reRan, imRan, precision=(5, 5))
 
     def TimeSimpleArgumentQuadrature(self) -> None:
         """
@@ -55,4 +61,6 @@ class SimpleArgumentSuite:
                 parallel=False,
                 estimatorType=EstimatorTypes.QUADRATURE_ESTIMATOR,
             )
-            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))
+            reRan = testFunctions[caseName].reRan
+            imRan = testFunctions[caseName].imRan
+            hrf.calculateRoots(reRan, imRan, precision=(5, 5))

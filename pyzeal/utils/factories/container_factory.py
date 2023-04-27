@@ -14,6 +14,7 @@ import numpy as np
 
 from pyzeal.pyzeal_logging.log_levels import LogLevel
 from pyzeal.pyzeal_logging.log_manager import LogManager
+from pyzeal.pyzeal_logging.logger_facade import PyZEALLogger
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.filter_types import FilterTypes
 from pyzeal.pyzeal_types.parallel_types import tQueue
@@ -29,8 +30,8 @@ from pyzeal.utils.service_locator import ServiceLocator
 class ContainerFactory:
     "Static factory class used to create instances of root containers."
 
-    # initialize the module level logger
-    logger = LogManager.initLogger(__name__.rsplit(".", maxsplit=1)[-1])
+    # the module level logger
+    _logger: Optional[PyZEALLogger] = None
 
     @staticmethod
     def _func_value_zero(
@@ -83,17 +84,24 @@ class ContainerFactory:
         :param queue: an existing queue instance as base for a plain container
         :return: a concrete `RootContainer` instance
         """
+        if ContainerFactory._logger is None:
+            ContainerFactory._logger = LogManager.initLogger(
+                __name__.rsplit(".", maxsplit=1)[-1],
+                ServiceLocator.tryResolve(SettingsService).logLevel,
+            )
         if containerType == ContainerTypes.ROUNDING_CONTAINER:
-            ContainerFactory.logger.debug(
+            ContainerFactory._logger.debug(
                 "requested a new rounding container..."
             )
             return RoundingContainer(precision)
         if containerType == ContainerTypes.PLAIN_CONTAINER:
-            ContainerFactory.logger.debug("requested a new plain container...")
+            ContainerFactory._logger.debug(
+                "requested a new plain container..."
+            )
             return PlainContainer(queue)
 
         # return the current default container
-        ContainerFactory.logger.debug("requested a new default container...")
+        ContainerFactory._logger.debug("requested a new default container...")
         settings = ServiceLocator.tryResolve(SettingsService)
         container = ContainerFactory.getConcreteContainer(
             settings.defaultContainer,
@@ -126,9 +134,10 @@ class ContainerFactory:
             predicate = ContainerFactory._zero_in_bounds
 
         container.registerFilter(predicate, filterType.value)
-        ContainerFactory.logger.debug(
-            "registered a new %s filter!", filterType.value
-        )
+        if ContainerFactory._logger is not None:
+            ContainerFactory._logger.debug(
+                "registered a new %s filter!", filterType.value
+            )
 
     @staticmethod
     def setLevel(level: LogLevel) -> None:
@@ -137,7 +146,8 @@ class ContainerFactory:
 
         :param level: the new log level
         """
-        ContainerFactory.logger.setLevel(level=level.value)
+        if ContainerFactory._logger is not None:
+            ContainerFactory._logger.setLevel(level=level.value)
 
     @staticmethod
     def registerDefaultFilters(container: RootContainer) -> None:

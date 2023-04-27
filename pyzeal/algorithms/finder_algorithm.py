@@ -11,7 +11,7 @@ Authors:\n
 
 from abc import ABC, abstractmethod
 
-from pyzeal.pyzeal_logging import Loggable
+from pyzeal.pyzeal_logging.loggable import Loggable
 from pyzeal.utils.root_context import RootContext
 
 

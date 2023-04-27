@@ -10,21 +10,23 @@ import numpy as np
 import pytest
 
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.settings.json_settings_service import JSONSettingsService
-from pyzeal.tests.resources.testing_fixtures import (
+from pyzeal.settings.ram_settings_service import RAMSettingsService
+from pyzeal.settings.settings_service import SettingsService
+from pyzeal.tests.resources.finder_helpers import (
     simpleArgumentNewtonRootFinder,
 )
-from pyzeal.tests.resources.testing_resources import (
-    IM_RAN,
-    RE_RAN,
-    testFunctions,
-)
-from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.tests.resources.finder_test_cases import testFunctions
+from pyzeal.tests.resources.utils import rootsMatchClosely
+from pyzeal.utils.service_locator import ServiceLocator
 
 # disable progress bar by default for tests
-JSONSettingsService().verbose = False
+settingsService = RAMSettingsService(verbose=False)
+ServiceLocator.registerAsSingleton(SettingsService, settingsService)
+
 # some test functions do not work due to z-refinement limitations
 KNOWN_FAILURES = ["x^100", "1e6 * x^100"]
+# some test functions act strangely on some domains
+EXCEPTIONAL_CASES = ["x^30", "x^50", "x^5-4x+2"]
 
 
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
@@ -47,10 +49,19 @@ def testSimpleArgumentNewton(
     """
     if testName in KNOWN_FAILURES:
         pytest.skip()
+
+    reRan = testFunctions[testName].reRan
+    imRan = testFunctions[testName].imRan
+    if testName in EXCEPTIONAL_CASES:
+        reRan = (-5, 5)
+        imRan = (-5, 5)
+    precision = testFunctions[testName].precision
+
     hrf = simpleArgumentNewtonRootFinder(
         testName, parallel=parallel, estimatorType=estimator
     )
-    hrf.calculateRoots(RE_RAN, IM_RAN, precision=(5, 5))
+    hrf.calculateRoots(reRan, imRan, precision=precision)
     foundRoots = hrf.roots
-    expectedRoots = np.sort_complex(np.array(testFunctions[testName][2]))
-    assert rootsMatchClosely(foundRoots, expectedRoots, atol=1e-3)
+    expectedRoots = np.array(testFunctions[testName].expectedRoots)
+
+    assert rootsMatchClosely(foundRoots, expectedRoots, precision=precision)

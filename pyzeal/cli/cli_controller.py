@@ -9,7 +9,11 @@ from os.path import abspath
 from typing import Optional, Tuple
 
 from pyzeal.cli.controller_facade import CLIControllerFacade
-from pyzeal.cli.parse_results import PluginParseResults, SettingsParseResults
+from pyzeal.cli.parse_results import (
+    InstallTestingParseResults,
+    PluginParseResults,
+    SettingsParseResults,
+)
 from pyzeal.plugins.installation_helper import InstallationHelper
 from pyzeal.plugins.plugin_loader import PluginLoader
 from pyzeal.pyzeal_logging.log_levels import LogLevel
@@ -17,6 +21,7 @@ from pyzeal.pyzeal_types.algorithm_types import AlgorithmTypes
 from pyzeal.pyzeal_types.container_types import ContainerTypes
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.settings_service import SettingsService
+from pyzeal.utils.install_test_facade import InstallTestingHandlerFacade
 
 
 class CLIController(CLIControllerFacade):
@@ -25,11 +30,16 @@ class CLIController(CLIControllerFacade):
     interface.
     """
 
-    def __init__(self, settings: SettingsService) -> None:
+    def __init__(
+        self,
+        testingHandler: InstallTestingHandlerFacade,
+        settings: SettingsService,
+    ) -> None:
         """
         Initialize a new command line interface controller instance.
         """
         self.settingsService = settings
+        self.testingHandler = testingHandler
 
     # docstr-coverage:inherited
     def handleViewSubcommand(self, args: SettingsParseResults) -> None:
@@ -85,6 +95,17 @@ class CLIController(CLIControllerFacade):
             else:
                 print("[error] the requested plugin does not exist - abort!")
                 raise SystemExit(2)
+
+    # docstr-coverage:inherited
+    def handleTestingOption(self, args: InstallTestingParseResults) -> bool:
+        if args.doTest:
+            # right now we do not include root finder tests here to reduce
+            # runtime; one could include those tests after performance increase
+            modules = ["cli", "algorithms", "containers", "estimators"]
+            for module in modules:
+                self.testingHandler.testModule(module=module)
+            return True
+        return False
 
     @staticmethod
     def changeContainerSetting(

@@ -34,3 +34,12 @@ class PluginParseResults:
     listModules: bool
     install: str
     uninstall: str
+
+
+@dataclass
+class InstallTestingParseResults:
+    """
+    Container for parsing results related to testing of the installation.
+    """
+
+    doTest: bool

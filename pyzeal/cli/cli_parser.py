@@ -14,7 +14,11 @@ from argparse import ArgumentParser, _SubParsersAction
 from importlib.metadata import version
 from typing import Final, Tuple
 
-from pyzeal.cli.parse_results import PluginParseResults, SettingsParseResults
+from pyzeal.cli.parse_results import (
+    InstallTestingParseResults,
+    PluginParseResults,
+    SettingsParseResults,
+)
 from pyzeal.cli.parser_facade import PyZEALParserInterface
 
 
@@ -48,11 +52,13 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         )
 
         self.addVersionOption()
+        # one could also let the user choose from a set of submodules to test
+        self.addTestingOption()
 
         # add subcommands for options and plugins
         subParsers = self.add_subparsers(
             title=PyZEALParser.SETTINGS_PLUGINS_DESCRIPTION,
-            help="view/change settings and (un-)install plugins",
+            help="view/change settings, (un-)install plugins and run tests",
             parser_class=ArgumentParser,
         )
 
@@ -68,6 +74,14 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             "--version",
             action="version",
             version=f"%(prog)s {PyZEALParser.VERSION}",
+        )
+
+    def addTestingOption(self) -> None:
+        """
+        Add complete project testing option to the cli.
+        """
+        self.add_argument(
+            "-t", "--test", action="store_true", help="test complete project"
         )
 
     def addViewSubcommand(
@@ -104,6 +118,7 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
                 "newton_grid",
                 "simple_argument",
                 "simple_argument_newton",
+                "associated_polynomial",
             ],
             help="change current default algorithm",
         )
@@ -156,33 +171,41 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
             help="uninstall a given plugin-related (data or source) file",
         )
 
-    def parseArgs(self) -> Tuple[SettingsParseResults, PluginParseResults]:
+    def parseArgs(
+        self,
+    ) -> Tuple[
+        SettingsParseResults, PluginParseResults, InstallTestingParseResults
+    ]:
         """
         Read command line arguments, parse the read arguments and return them
         wrapped according to the `pyzeal_cli` data contract for parsed command
         line arguments.
 
-        :return: the wrapped parsing results
+        :return: the wrapped results of the parsing process
         """
         # fetch cli arguments
         args = super().parse_args()
 
         # return wrapped cli arguments
         parseArgs = SettingsParseResults(
-            doPrint=getattr(args, "print", None) or False,
-            container=getattr(args, "container", None) or "",
-            algorithm=getattr(args, "algorithm", None) or "",
-            estimator=getattr(args, "estimator", None) or "",
-            logLevel=getattr(args, "log_level", None) or "",
-            verbose=getattr(args, "verbose", None) or "",
+            doPrint=getattr(args, "print", False),
+            container=getattr(args, "container", ""),
+            algorithm=getattr(args, "algorithm", ""),
+            estimator=getattr(args, "estimator", ""),
+            logLevel=getattr(args, "log_level", ""),
+            verbose=getattr(args, "verbose", ""),
             precision=tuple(precision)  # type: ignore
             if (precision := getattr(args, "precision", None))
             else None,
         )
         pluginArgs = PluginParseResults(
-            listPlugins=getattr(args, "list", None) or False,
-            listModules=getattr(args, "modules", None) or False,
-            install=getattr(args, "install", None) or "",
-            uninstall=getattr(args, "uninstall", None) or "",
+            listPlugins=getattr(args, "list", False),
+            listModules=getattr(args, "modules", False),
+            install=getattr(args, "install", ""),
+            uninstall=getattr(args, "uninstall", ""),
         )
-        return parseArgs, pluginArgs
+        testingArgs = InstallTestingParseResults(
+            doTest=getattr(args, "test", False)
+        )
+
+        return parseArgs, pluginArgs, testingArgs

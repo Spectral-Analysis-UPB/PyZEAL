@@ -48,12 +48,21 @@ then
     echo "|---------------------------|"
     echo "|[running tests with pytest]|"
     echo "|---------------------------|"
-    if [[ "$2" == "--slow" ]]
-    then
-        pytest --cov=pyzeal/ --cov-report=html pyzeal/tests/
-    else
-        pytest --cov=pyzeal/ --cov-report=html -m "not slow" pyzeal/tests/
-    fi
+
+    PARALLEL=""
+    shift
+
+    while [[ "$#" -ge 1 ]]
+    do
+        if [[ "$1" == "--parallel" ]]
+        then
+            PARALLEL="-n auto"
+        fi
+        shift
+    done
+
+    pytest --cov=pyzeal/ --cov-report=html  $PARALLEL pyzeal/tests/
+    pytest --cov=pyzeal/ --cov-report=html --cov-append -m "locator" pyzeal/tests/
     echo ""
 fi
 

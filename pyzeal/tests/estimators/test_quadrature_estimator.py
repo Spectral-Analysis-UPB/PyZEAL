@@ -6,7 +6,7 @@ import pytest
 
 from pyzeal.algorithms.estimators import EstimatorCache
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.tests.resources.testing_estimator_resources import (
+from pyzeal.tests.resources.estimator_resources import (
     lineCases,
     rectangleCases,
 )
@@ -23,7 +23,7 @@ def testQuadratueEstimatorRectangle(testName: str) -> None:
 
     :param testName: Case to test.
     """
-    context, order, reRan, imRan, expected = rectangleCases[testName]
+    context, order, expected = rectangleCases[testName]
     est = EstimatorFactory.getConcreteEstimator(
         EstimatorTypes.QUADRATURE_ESTIMATOR,
         numPts=6500,
@@ -31,7 +31,7 @@ def testQuadratueEstimatorRectangle(testName: str) -> None:
         maxPrecision=1e-10,
         cache=EstimatorCache(),
     )
-    result = est.calcMoment(order, reRan, imRan, context)
+    result = est.calcMoment(order, context.reRan, context.imRan, context)
     assert np.abs(result - expected) < 1e-6
 
 

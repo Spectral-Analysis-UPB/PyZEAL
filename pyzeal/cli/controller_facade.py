@@ -7,7 +7,11 @@ Authors:\n
 
 from typing import Protocol, runtime_checkable
 
-from pyzeal.cli.parse_results import PluginParseResults, SettingsParseResults
+from pyzeal.cli.parse_results import (
+    InstallTestingParseResults,
+    PluginParseResults,
+    SettingsParseResults,
+)
 
 
 @runtime_checkable
@@ -38,7 +42,16 @@ class CLIControllerFacade(Protocol):
         Check if the 'plugin' subcommand was selected and manipulate plugins
         accordingly.
 
-        :param args: _description_
-        :raises SystemExit: _description_
+        :param args: Parsed plugin request values
+        """
+        ...
+
+    def handleTestingOption(self, args: InstallTestingParseResults) -> bool:
+        """
+        Check if the '--test' option was selected and start testing the local
+        `PyZEAL` installation accordingly.
+
+        :param args: parsed testing option
+        :return: flag indicating if the testing option was given
         """
         ...
