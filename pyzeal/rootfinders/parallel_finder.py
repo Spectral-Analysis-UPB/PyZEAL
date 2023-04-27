@@ -160,6 +160,7 @@ class ParallelRootFinder(RootFinder):
 
             # add found roots to the current instance's container
             self.logger.debug("transferring roots from queue to container!")
+            precision = (precision[0] - 1, precision[1] - 1)
             while not rootQueue.empty():
                 self.container.addRoot(
                     rootQueue.get(),
