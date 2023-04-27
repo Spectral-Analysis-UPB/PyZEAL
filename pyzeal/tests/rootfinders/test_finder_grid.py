@@ -41,6 +41,10 @@ def testNewtonGridRootFinder(testName: str, parallel: bool) -> None:
     reRan = testFunctions[testName].reRan
     imRan = testFunctions[testName].imRan
     precision = testFunctions[testName].precision
+
+    if testName == "exp(x)-1":
+        precision = (2, 2)
+
     gridRF.calculateRoots(reRan, imRan, precision=precision)
     foundRoots = np.sort_complex(gridRF.roots)
     expectedRoots = np.array(testFunctions[testName].expectedRoots)

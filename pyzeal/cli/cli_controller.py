@@ -99,7 +99,8 @@ class CLIController(CLIControllerFacade):
     # docstr-coverage:inherited
     def handleTestingOption(self, args: InstallTestingParseResults) -> bool:
         if args.doTest:
-            # TODO: include rootfinder tests after refactoring them!
+            # right now we do not include root finder tests here to reduce
+            # runtime; one could include those tests after performance increase
             modules = ["cli", "algorithms", "containers", "estimators"]
             for module in modules:
                 self.testingHandler.testModule(module=module)

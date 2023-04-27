@@ -8,7 +8,12 @@
             "enum": ["RoundingContainer"]
         },
         "defaultAlgorithm": {
-            "enum": ["NewtonGrid", "SimpleArgument", "SimpleArgumentNewton"]
+            "enum": [
+                "NewtonGrid",
+                "SimpleArgument",
+                "SimpleArgumentNewton",
+                "AssociatedPolynomial"
+            ]
         },
         "defaultEstimator": {
             "enum": ["SummationEstimator", "QuadratureEstimator"]
