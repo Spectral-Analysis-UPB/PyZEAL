@@ -118,6 +118,7 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
                 "newton_grid",
                 "simple_argument",
                 "simple_argument_newton",
+                "associated_polynomial",
             ],
             help="change current default algorithm",
         )
