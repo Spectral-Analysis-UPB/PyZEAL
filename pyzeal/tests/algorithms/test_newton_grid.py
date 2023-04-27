@@ -13,8 +13,8 @@ from pyzeal.algorithms.newton_grid import NewtonGridAlgorithm
 from pyzeal.pyzeal_types.filter_types import FilterTypes
 from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
-from pyzeal.tests.resources.testing_resources import testFunctions
-from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.tests.resources.finder_test_cases import testFunctions
+from pyzeal.tests.resources.utils import rootsMatchClosely
 from pyzeal.utils.containers.rounding_container import RoundingContainer
 from pyzeal.utils.factories.container_factory import ContainerFactory
 from pyzeal.utils.root_context import RootContext
@@ -38,7 +38,7 @@ def testNewtonGridRootFinder(testName: str) -> None:
     if testName in KNOWN_FAILURES:
         pytest.skip()
 
-    for numSamplePoints in [25, 40]:
+    for numSamplePoints in [25, 35]:
         precision = testFunctions[testName].precision
         newtonGridAlgo = NewtonGridAlgorithm(numSamplePoints=numSamplePoints)
         container = RoundingContainer(precision=precision)

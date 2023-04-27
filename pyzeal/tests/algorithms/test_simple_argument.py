@@ -15,11 +15,11 @@ from pyzeal.algorithms.simple_holo import SimpleArgumentAlgorithm
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
-from pyzeal.tests.resources.testing_resources import (
+from pyzeal.tests.resources.finder_test_cases import (
     buildContextFromData,
     testFunctions,
 )
-from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.tests.resources.utils import rootsMatchClosely
 from pyzeal.utils.factories.estimator_factory import EstimatorFactory
 from pyzeal.utils.service_locator import ServiceLocator
 

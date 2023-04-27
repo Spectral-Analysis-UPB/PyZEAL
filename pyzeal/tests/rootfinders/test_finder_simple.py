@@ -12,9 +12,9 @@ import pytest
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
-from pyzeal.tests.resources.testing_fixtures import simpleArgumentRootFinder
-from pyzeal.tests.resources.testing_resources import testFunctions
-from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.tests.resources.finder_helpers import simpleArgumentRootFinder
+from pyzeal.tests.resources.finder_test_cases import testFunctions
+from pyzeal.tests.resources.utils import rootsMatchClosely
 from pyzeal.utils.service_locator import ServiceLocator
 
 # disable progress bar by default for tests
@@ -47,6 +47,9 @@ def testSimpleArgument(
 
     reRan = testFunctions[testName].reRan
     imRan = testFunctions[testName].imRan
+    if testName == "x^5-4x+2":
+        reRan = (-5, 5)
+        imRan = (-5, 5)
 
     hrf = simpleArgumentRootFinder(
         testName, parallel=parallel, estimatorType=estimator

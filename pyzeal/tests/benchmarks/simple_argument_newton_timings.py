@@ -10,10 +10,10 @@ Authors:\n
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
-from pyzeal.tests.resources.testing_fixtures import (
+from pyzeal.tests.resources.finder_helpers import (
     simpleArgumentNewtonRootFinder,
 )
-from pyzeal.tests.resources.testing_resources import IM_RAN, RE_RAN
+from pyzeal.tests.resources.finder_test_cases import testFunctions
 from pyzeal.utils.service_locator import ServiceLocator
 
 benchmarkFunctions = [
@@ -49,7 +49,9 @@ class SimpleArgumentNewtonSuite:
                 parallel=False,
                 estimatorType=EstimatorTypes.SUMMATION_ESTIMATOR,
             )
-            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))
+            reRan = testFunctions[caseName].reRan
+            imRan = testFunctions[caseName].imRan
+            hrf.calculateRoots(reRan, imRan, precision=(5, 5))
 
     def TimeSimpleArgumentNewtonQuadrature(self) -> None:
         """
@@ -62,4 +64,6 @@ class SimpleArgumentNewtonSuite:
                 parallel=False,
                 estimatorType=EstimatorTypes.QUADRATURE_ESTIMATOR,
             )
-            hrf.calculateRoots(RE_RAN, IM_RAN, (5, 5))
+            reRan = testFunctions[caseName].reRan
+            imRan = testFunctions[caseName].imRan
+            hrf.calculateRoots(reRan, imRan, precision=(5, 5))

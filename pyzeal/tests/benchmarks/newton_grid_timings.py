@@ -7,8 +7,8 @@ Authors:\n
 
 from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
-from pyzeal.tests.resources.testing_fixtures import newtonGridFinder
-from pyzeal.tests.resources.testing_resources import IM_RAN, RE_RAN
+from pyzeal.tests.resources.finder_helpers import newtonGridFinder
+from pyzeal.tests.resources.finder_test_cases import testFunctions
 from pyzeal.utils.service_locator import ServiceLocator
 
 benchmarkFunctions = [
@@ -41,7 +41,9 @@ class NewtonGridSuite:
             gridRF = newtonGridFinder(
                 caseName, numSamplePoints=50, parallel=False
             )
-            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(5, 5))
+            reRan = testFunctions[caseName].reRan
+            imRan = testFunctions[caseName].imRan
+            gridRF.calculateRoots(reRan, imRan, precision=(5, 5))
 
     def TimeNewtonGridRootfinderDerivativeFree(self) -> None:
         """
@@ -55,4 +57,6 @@ class NewtonGridSuite:
                 derivativeFree=True,
                 parallel=False,
             )
-            gridRF.calculateRoots(IM_RAN, RE_RAN, precision=(5, 5))
+            reRan = testFunctions[caseName].reRan
+            imRan = testFunctions[caseName].imRan
+            gridRF.calculateRoots(reRan, imRan, precision=(5, 5))

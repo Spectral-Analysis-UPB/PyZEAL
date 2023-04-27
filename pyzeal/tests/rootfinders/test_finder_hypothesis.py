@@ -23,7 +23,7 @@ from pyzeal.rootfinders import RootFinder
 from pyzeal.rootfinders.parallel_finder import ParallelRootFinder
 from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
-from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.tests.resources.utils import rootsMatchClosely
 from pyzeal.utils.service_locator import ServiceLocator
 
 settingsService = RAMSettingsService(verbose=False)

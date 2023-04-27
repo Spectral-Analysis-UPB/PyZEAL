@@ -6,7 +6,7 @@ import pytest
 
 from pyzeal.algorithms.estimators import EstimatorCache
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
-from pyzeal.tests.resources.testing_estimator_resources import (
+from pyzeal.tests.resources.estimator_resources import (
     lineCases,
     rectangleCases,
 )

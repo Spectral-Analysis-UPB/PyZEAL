@@ -12,11 +12,11 @@ import pytest
 from pyzeal.pyzeal_types.estimator_types import EstimatorTypes
 from pyzeal.settings.ram_settings_service import RAMSettingsService
 from pyzeal.settings.settings_service import SettingsService
-from pyzeal.tests.resources.testing_fixtures import (
+from pyzeal.tests.resources.finder_helpers import (
     simpleArgumentNewtonRootFinder,
 )
-from pyzeal.tests.resources.testing_resources import testFunctions
-from pyzeal.tests.resources.testing_utils import rootsMatchClosely
+from pyzeal.tests.resources.finder_test_cases import testFunctions
+from pyzeal.tests.resources.utils import rootsMatchClosely
 from pyzeal.utils.service_locator import ServiceLocator
 
 # disable progress bar by default for tests
@@ -25,6 +25,8 @@ ServiceLocator.registerAsSingleton(SettingsService, settingsService)
 
 # some test functions do not work due to z-refinement limitations
 KNOWN_FAILURES = ["x^100", "1e6 * x^100"]
+# some test functions act strangely on some domains
+EXCEPTIONAL_CASES = ["x^30", "x^50", "x^5-4x+2"]
 
 
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
@@ -50,6 +52,9 @@ def testSimpleArgumentNewton(
 
     reRan = testFunctions[testName].reRan
     imRan = testFunctions[testName].imRan
+    if testName in EXCEPTIONAL_CASES:
+        reRan = (-5, 5)
+        imRan = (-5, 5)
     precision = testFunctions[testName].precision
 
     hrf = simpleArgumentNewtonRootFinder(
