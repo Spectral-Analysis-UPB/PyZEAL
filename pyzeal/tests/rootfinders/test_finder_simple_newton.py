@@ -53,8 +53,8 @@ def testSimpleArgumentNewton(
     reRan = testFunctions[testName].reRan
     imRan = testFunctions[testName].imRan
     if testName in EXCEPTIONAL_CASES:
-        reRan = (-5, 5)
-        imRan = (-5, 5)
+        reRan = (-5, 5.1)
+        imRan = (-5, 5.1)
     precision = testFunctions[testName].precision
 
     hrf = simpleArgumentNewtonRootFinder(
