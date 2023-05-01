@@ -21,5 +21,5 @@ DEFAULT_NUM_PTS: Final[int] = 6500
 DEFAULT_DELTA_PHI: Final[float] = 1e-2
 DEFAULT_MAX_PRECISION: Final[float] = 1e-10
 
-# cutoff for polynomial construction
-MAX_PHASE: Final[float] = 0.85 * (6 * pi)
+# cutoff for polynomial construction (at most 6*pi)
+MAX_PHASE: Final[float] = 0.85 * (8 * pi)

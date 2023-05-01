@@ -70,13 +70,15 @@ class AssociatedPolynomialAlgorithm(SimpleArgumentAlgorithm):
         # check if the current box contains sufficiently few roots to construct
         # an associated polynomial with stable coefficients/roots
         if TWO_PI < phi < MAX_PHASE:
+            degree = int(round(phi / (2 * np.pi), 0))
             self.logger.debug(
-                "constructing Newton polynomials from higher moments!"
+                "constructing associated poly of degree %d from moments!",
+                degree,
             )
 
             # store higher moments for associated polynomial construction
             moments: List[complex] = []
-            for order in range(1, int(round(phi / (2 * np.pi), 0)) + 1):
+            for order in range(1, degree + 1):
                 moment = self.estimator.calcMoment(
                     order=order,
                     reRan=(x1, x2),
