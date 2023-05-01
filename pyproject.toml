@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PyZEAL"
-version = "1.0.0-rc1"
+version = "1.0.0"
 authors = [
     {name = "Philipp Schuette", email = "pschuet2@mail.uni-paderborn.de"}
 ]

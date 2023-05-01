@@ -6,7 +6,7 @@ The PyZEAL numerical project
    :target: https://pypi.org/project/docstr-coverage/
 
 .. |badge1| image:: https://img.shields.io/badge/Language-Python-blue.svg
-   :target: https://www.python.org/
+   :target: https://pypi.org/project/PyZEAL/
 
 .. |badge2| image:: http://img.shields.io/badge/benchmarked%20by-asv-blue.svg?style=flat
    :target: https://github.com/Spectral-Analysis-UPB/PyZEAL
