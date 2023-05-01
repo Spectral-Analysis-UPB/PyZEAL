@@ -47,9 +47,9 @@ def buildContextFromData(data: TestData) -> RootContext:
     """
     # build a simple container for the context
     container = RoundingContainer(precision=data.precision)
-    ContainerFactory.registerPreDefinedFilter(
-        container, filterType=FilterTypes.FUNCTION_VALUE_ZERO
-    )
+    # ContainerFactory.registerPreDefinedFilter(
+    #     container, filterType=FilterTypes.FUNCTION_VALUE_ZERO
+    # )
     ContainerFactory.registerPreDefinedFilter(
         container, filterType=FilterTypes.ZERO_IN_BOUNDS
     )
@@ -273,9 +273,9 @@ localTestFunctions: Dict[str, TestData] = {
             -0.5 * np.pi,
             -1.5 * np.pi,
         ),
-        (-5, 5.01),
-        (-5, 5.02),
-        precision=(3, 3),
+        (-5.0001, 5.0102),
+        (-5.0003, 5.0204),
+        precision=(4, 4),
     ),
     "log and sinh composition": TestData(
         lambda x: cast(tVec, np.log(np.sinh(0.2 * x) ** 2 + 1)),
@@ -291,15 +291,21 @@ localTestFunctions: Dict[str, TestData] = {
         (-5, 5),
         precision=(3, 3),
     ),
-    "square root of exp": TestData(
-        lambda x: cast(tVec, np.emath.sqrt(np.exp(2 * np.pi * x / 4)) - 1),
-        lambda x: cast(
-            tVec, 0.25 * np.pi / np.emath.sqrt(np.exp(2 * np.pi * x / 4))
-        ),
-        (0, -4j, 4j),
-        (-5, 5),
-        (-5, 5),
+    "scaled exp": TestData(
+        lambda x: cast(tVec, np.exp(np.pi * x) - 1),
+        lambda x: cast(tVec, np.pi * np.exp(np.pi * x)),
+        (-2j, 0, 2j),
+        (-3, 3),
+        (-3, 3),
         precision=(3, 3),
+    ),
+    "moved root": TestData(
+        lambda x: cast(tVec, np.emath.sqrt(x - 10)),
+        lambda x: cast(tVec, 0.5 / np.emath.sqrt(x - 10)),
+        (),
+        (-6, 6),
+        (-3, 7),
+        precision=(5, 5),
     ),
     "log(x^2+26)": TestData(
         lambda x: cast(tVec, np.log(x**2 + 26)),

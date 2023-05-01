@@ -51,9 +51,10 @@ class EstimatorCache(Loggable):
         else:
             orderCache[(zStart, zEnd)] = argument
         self.logger.debug(
-            "stored value %s under key %s in estimator cache!",
+            "stored value %s under key (%s, %d) in estimator cache!",
             str(argument),
             str((order, (zStart, zEnd))),
+            order,
         )
 
     def retrieve(

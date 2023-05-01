@@ -17,9 +17,9 @@ TWO_PI: Final[float] = 0.8 * (2 * pi)
 FOUR_PI: Final[float] = 0.65 * (4 * pi)
 
 # default values for argument estimation via phase summation
-DEFAULT_NUM_PTS = 6500
-DEFAULT_DELTA_PHI = 0.01
-DEFAULT_MAX_PRECISION = 1e-10
+DEFAULT_NUM_PTS: Final[int] = 6500
+DEFAULT_DELTA_PHI: Final[float] = 1e-2
+DEFAULT_MAX_PRECISION: Final[float] = 1e-10
 
-# cutoff for polynomial construction
-MAXIMUM_PHASE_MULTIPLIER: Final[int] = 2
+# cutoff for polynomial construction (at most 6*pi)
+MAX_PHASE: Final[float] = 0.85 * (8 * pi)
