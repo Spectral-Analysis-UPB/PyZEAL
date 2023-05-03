@@ -85,6 +85,11 @@ standardized API.
     This is an ongoing project. Any contributions such as feature requests, bug reports, or
     collaborations on documentation, theoretical background, or practical implementation are
     much appreciated!
+    
+.. note::
+
+   This work has received funding from the Deutsche Forschungsgemeinschaft (DFG) (Grant No. WE 6173/1-1 Emmy Noether group
+   "Microlocal Methods for Hyperbolic Dynamics").
 
 .. _SciPy: https://scipy.org/
 .. _NumPy: https://numpy.org/
@@ -97,7 +102,16 @@ standardized API.
 Installation
 ------------
 
-First, clone the repository from GitHub_ using ``git clone``. Then issue the following command in the resulting
+The easiest way to install the latest release of this package locally on your machine is via ``pip``:
+
+.. code:: console
+
+   $ python3 -m pip install pyzeal
+   
+Upon completion you will be able to use the **PyZEAL** command line interface and import the classes into your own scripts. Take a
+look into the `documentation <https://pyzeal.readthedocs.io/en/latest//>`_ for ways to get started!
+
+Alternatively you can clone the repository from GitHub_ using ``git clone``. Then issue the following command in the resulting
 directory to install the package with ``pip``:
 
 .. code:: console
@@ -111,10 +125,6 @@ to build and contribute to the docs) and ``[all]``.
 
 You can now import the packages and classes of **PyZEAL** into your own scripts, run the tests on your local
 installation, and extend the project by e.g. writing plugins.
-
-.. note::
-
-  A ``pip``-installable version of **PyZEAL** will be published on ``PyPI`` as part of release **v1.0.0** (soon).
 
 .. _GitHub: https://github.com/Spectral-Analysis-UPB/PyZEAL
 
