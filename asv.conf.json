@@ -3,7 +3,7 @@
     "project": "PyZEAL",
     "project_url": "https://github.com/Spectral-Analysis-UPB/PyZEAL",
     "repo": ".",
-    "install_command": ["python3.8 -m pip install ."],
+    "install_command": ["python3.9 -m pip install .[all]"],
     "build_command": [],
     "branches": ["main"],
     "dvcs": "git",
