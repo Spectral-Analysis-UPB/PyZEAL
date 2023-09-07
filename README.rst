@@ -2,7 +2,7 @@
 The PyZEAL numerical project
 ============================
 
-.. |badge0| image:: ./docs/_static/docstr_coverage_badge.svg
+.. |badge0| image:: https://github.com/Spectral-Analysis-UPB/PyZEAL/blob/main/docs/_static/docstr_coverage_badge.svg
    :target: https://pypi.org/project/docstr-coverage/
 
 .. |badge1| image:: https://img.shields.io/badge/Language-Python-blue.svg

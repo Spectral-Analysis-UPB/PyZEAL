@@ -2,4 +2,3 @@ include README.rst
 include pyzeal/py.typed
 include pyzeal/settings/default_settings.json
 include pyzeal/settings/settings_schema.json
-include docs/_static/docstr_coverage_badge.svg
