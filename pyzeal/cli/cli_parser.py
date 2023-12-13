@@ -90,7 +90,7 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         """
         Add view subcommand and its options to the cli.
 
-        :param subParsers: _description_
+        :param subParsers: The subparser to add Plugin commands to
         """
         viewParser = subParsers.add_parser("view")
         viewParser.add_argument(
@@ -103,7 +103,7 @@ class PyZEALParser(ArgumentParser, PyZEALParserInterface):
         """
         Add change subcommand and its options to the cli.
 
-        :param subParsers: _description_
+        :param subParsers: The subparser to add Plugin commands to
         """
         changeParser = subParsers.add_parser("change")
         changeParser.add_argument(
